@@ -621,7 +621,7 @@ async function runTrial(ctx, trial, { index, isPractice }) {
     screen.hidden = false;
     screen.replaceChildren();
     // 用「这是第几个正式试次」，而不是 plan 索引 ——
-    // plan 里夹着 attention check，直接用 index 会显示成「第 34 题」（实际只有 32 题）
+    // plan 里夹着 attention check，直接用 index 会显示成「第 51 题」（实际只有 48 题）
     const mainNo = session.trials.filter((x) => x.phase === 'main').length;
     const ease = await perTrialEase(screen, mainNo - 1);
     session.per_trial_ease.push({ trial_index: index, ease });

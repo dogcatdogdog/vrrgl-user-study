@@ -35,7 +35,7 @@ const DICT = {
     welcome: {
       title: 'Graph layout and readability',
       intro: 'In this session you will look at a series of network graphs and answer short questions about them. ' +
-        'It takes about 30–35 minutes, and there are breaks.',
+        'It takes about 45–50 minutes, and there are breaks.',
       note: 'There is no time limit on any question, and no penalty for wrong answers.',
       pidLabel: 'Participant ID',
       labHint: 'To start the next participant, close this tab and open a new one.',
@@ -225,7 +225,7 @@ const DICT = {
 
     welcome: {
       title: '图布局与可读性',
-      intro: '本次实验你会看到一系列网络图，并回答关于它们的简短问题。全程约 30–35 分钟，中间有休息。',
+      intro: '本次实验你会看到一系列网络图，并回答关于它们的简短问题。全程约 45–50 分钟，中间有休息。',
       note: '所有题目都没有时间限制，答错也不会扣分。',
       pidLabel: '被试编号',
       labHint: '开始下一位被试：关闭本标签页，再新开一个。',
