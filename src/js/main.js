@@ -539,12 +539,13 @@ async function runTrial(ctx, trial, { index, isPractice }) {
     num.placeholder = t('trial.typeNumberPlaceholder');
     controls.append(num, submitBtn);
     submitBtn.disabled = false;
-    submitBtn.addEventListener('click', () => {
-      if (!controller.submitForm(num.value)) {
-        noteEl.textContent = t('trial.typeNumber');
-      }
-    });
+    const submitT2 = () => {
+      if (!controller.submitForm(num.value)) noteEl.textContent = t('trial.typeNumber');
+    };
+    submitBtn.addEventListener('click', submitT2);
+    num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submitT2(); } });
     controls.append(noteEl);
+    setTimeout(() => num.focus(), 50);
   } else if (trial.task === 'T4') {
     controls.append(h('p', 'hint', t('trial.clickOneTarget')));
   }

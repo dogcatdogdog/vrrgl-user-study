@@ -16,7 +16,7 @@ const DEFAULTS = {
   tasks: {
     T1: { enabled: true, wording: 'factual' },   // 'factual' | 'perceptual'（GVRRI 的 VRR 措辞）
     T4: { enabled: true },
-    T2: { enabled: false },                      // ← 默认关闭，pilot 后决定
+    T2: { enabled: true },                       // ★ 三任务全开（资料分析：D1/D3）
   },
   // practiceTrials = 各任务的题数上限，**仅对 enabled 的任务生效**
   //   T2 关闭时（默认）→ 练习 4 题（T1:2 + T4:2）
