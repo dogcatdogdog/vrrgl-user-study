@@ -2,7 +2,7 @@
  * 流程状态机与流程内控件（docs/01 §5）
  *
  * WELCOME → CONSENT → DEMOGRAPHICS → LITERACY → INSTRUCTIONS
- *   → PRACTICE×4 → MAIN×48（每 12 题强制休息）→ QUESTIONNAIRE → DONE
+ *   → PRACTICE×5 → MAIN×48（每 12 题强制休息）→ QUESTIONNAIRE → DONE
  */
 
 import { t } from './i18n.js';
