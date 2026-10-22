@@ -130,6 +130,13 @@ python tools/serve.py
 
 远程被试需要一个公网网址。**App 是纯静态的**，可以直接放 GitHub Pages。
 
+> ✅ **已部署**：<https://dogcatdogdog.github.io/vrrgl-user-study/>
+> （根路径会自动跳到 `/src/`，并保留 `?code=` 参数）
+>
+> ⚠️ **大陆访问 `github.io` 可能很慢或间歇不通**（实测 `stimuli.json` 1.1MB 经代理需 16–25 秒）。
+> 正式发给大陆被试前，请用**手机热点 + 不同浏览器**实测一次；
+> 若不稳，改用大陆服务器托管（见 `docs/07_数据导出.md` 的讨论）。
+
 ```bash
 cd user_study_app
 git init && git add . && git commit -m "user study app"
