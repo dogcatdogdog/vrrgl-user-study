@@ -1,11 +1,59 @@
 {
  "meta": {
   "version": "1.0",
-  "generated": "2026-10-22T07:15:52+00:00",
-  "n_codes": 20,
+  "generated": "2026-10-22T08:00:42+00:00",
+  "n_codes": 32,
   "layouts_per_offset": 4
  },
  "codes": {
+  "P4SUV": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P4WTT": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P8B73": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P8RFN": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "PDZN9": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "PGT6U": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "PL675": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "PPDQB": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "PPHX2": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "PUBXS": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "PUTWU": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "PX37C": {
+   "offset": 0,
+   "group": "remote"
+  },
   "R2SQ6": {
    "offset": 0,
    "group": "remote"
