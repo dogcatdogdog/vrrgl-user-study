@@ -126,6 +126,10 @@ input.num { max-width: 14rem; }
 
 #trialroot { display: flex; flex: 1; gap: 0; padding: 1rem 1.5rem; align-items: flex-start; }
 
+/* hidden 属性必须真的隐藏 —— 上面的 display:flex 会覆盖浏览器默认的 [hidden]{display:none}，
+   导致切到问卷/完成页时，最后一个试次的界面仍然留在页面上。 */
+#screen[hidden], #trialroot[hidden], #progressbar[hidden] { display: none !important; }
+
 .idpanel {
   width: 210px; flex: none; min-height: 300px;
   border: 1px solid var(--line); border-radius: var(--radius);

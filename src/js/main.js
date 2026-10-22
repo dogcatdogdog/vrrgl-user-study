@@ -435,6 +435,8 @@ async function run(ctx) {
   renderDone(showScreen(), {
     session, cfg: CONFIG,
     onExport: () => store.download(session),
+    onShare: () => store.share(session),
+    canShare: store.canShare(session),
   });
 }
 

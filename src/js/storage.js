@@ -54,16 +54,58 @@ export class Storage {
 
   clear(pid) { this._del(KEY(pid)); }
 
-  /** 导出被试 JSON（Blob 下载）。 */
+  /** 下载时使用的文件名 —— 同时也是「文件是否被浏览器改名」的判断依据。 */
+  fileName(data) {
+    return `${data.participant_id || 'participant'}.json`;
+  }
+
+  /** 导出被试 JSON（Blob 下载）。
+   *
+   * ⚠️ 移动端 Chrome / 部分内嵌浏览器**不支持给 Blob 下载指定文件名**，
+   *    会把文件存成 Blob URL 里的一串 UUID（如 b862bfeb-…）。
+   *    数据本身是完整的，只是名字丢了。这些环境请改用 share()。
+   */
   download(data) {
+    const name = this.fileName(data);
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${data.participant_id}.json`;
+    a.download = name;
     document.body.append(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return name;
+  }
+
+  /** 能否用系统分享面板直接发送文件（移动端推荐 —— 文件名不会丢）。 */
+  canShare(data) {
+    try {
+      if (!navigator.canShare || typeof File === 'undefined') return false;
+      return navigator.canShare({ files: [this._file(data)] });
+    } catch {
+      return false;
+    }
+  }
+
+  _file(data) {
+    return new File([JSON.stringify(data, null, 2)], this.fileName(data),
+      { type: 'application/json' });
+  }
+
+  /** 通过系统分享面板发送 JSON（微信 / 邮件 / 网盘均可）。返回是否成功。 */
+  async share(data) {
+    try {
+      await navigator.share({
+        files: [this._file(data)],
+        title: `实验数据 ${data.participant_id || ''}`.trim(),
+      });
+      return true;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return false;   // 用户取消
+      console.error('[storage] share 失败：', e);
+      return false;
+    }
   }
 }

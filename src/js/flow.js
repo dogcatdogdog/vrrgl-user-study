@@ -151,7 +151,7 @@ function drawStatic(svg, stim, targets) {
 }
 
 /** 结束页（Prolific 用完成码）。 */
-export function renderDone(container, { session, cfg, onExport }) {
+export function renderDone(container, { session, cfg, onExport, onShare, canShare }) {
   container.replaceChildren();
   const w = h('div', 'screen done');
   w.append(h('h1', null, t('done.title')));
@@ -179,6 +179,22 @@ export function renderDone(container, { session, cfg, onExport }) {
   const b = h('button', 'btn primary', t('common.download'));
   b.addEventListener('click', onExport);
   w.append(b);
+
+  // 移动端浏览器可能忽略 Blob 下载的文件名（存成一串 UUID）。
+  // 系统分享面板能带上正确文件名，微信/邮件都能收。
+  const shareStatus = h('p', 'hint', '');
+  if (onShare && canShare) {
+    const s = h('button', 'btn', t('done.share'));
+    s.addEventListener('click', async () => {
+      const ok = await onShare();
+      shareStatus.textContent = ok ? t('done.shareOk') : t('done.shareFail');
+    });
+    w.append(s, shareStatus);
+  }
+
+  const expectName = `${session.participant_id || 'participant'}.json`;
+  w.append(h('p', 'hint', t('done.fileNameHint', { name: expectName })));
+
   if (session.group === 'remote') {
     // 远程被试：数据只在他自己的浏览器里，必须提醒他发回来
     w.append(h('p', 'consent-preamble', t('done.remoteCollect')));

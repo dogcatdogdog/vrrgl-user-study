@@ -157,6 +157,11 @@ const DICT = {
       collect: 'The researcher will collect this file. Your data are stored under a participant code.',
       remoteCollect: 'Please SEND this downloaded file back to the researcher. '
         + 'Your results are stored only in this browser — the researcher cannot see them otherwise.',
+      share: 'Share / send the data file',
+      shareOk: 'The share panel has opened — choose WeChat, email, or another app.',
+      shareFail: 'Sharing was cancelled or unavailable. Please use the download button instead.',
+      fileNameHint: 'The file should be named {name}. If your browser saved it under a long code '
+        + 'instead, just rename it to {name} — the contents are complete.',
     },
 
     preference: {
@@ -347,6 +352,11 @@ const DICT = {
       collect: '研究员会收集这个文件。你的数据以被试编号存储。',
       remoteCollect: '请把下载的这个文件【发回给研究者】。你的作答只存在这个浏览器里，'
         + '不发回来的话研究者拿不到。',
+      share: '分享 / 发送数据文件',
+      shareOk: '已打开系统分享面板，可选择微信、邮件等发送。',
+      shareFail: '分享已取消或不可用，请改用上面的下载按钮。',
+      fileNameHint: '下载的文件名应为 {name}。如果浏览器把它存成了一长串字符，'
+        + '请直接改名为 {name}，文件内容不受影响。',
     },
 
     preference: {
