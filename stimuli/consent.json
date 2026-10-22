@@ -1,0 +1,566 @@
+{
+ "meta": {
+  "version": "1.0",
+  "source": "docs/06_知情同意书.md",
+  "note": "正文里的 [ ] 是待填项（共 23 项，清单见 docs/06 §3）。填完这里即可，不需要改代码。 ｜ 中文版为开发方翻译初稿，须经作者与伦理委员会确认后再用。",
+  "implementation": "docs/06 §2「实现要点」：记录时间戳；强制选择、不预勾选；『不同意』走筛除链接而非完成码。",
+  "locales": [
+   "en",
+   "zh"
+  ]
+ },
+ "lab": {
+  "en": {
+   "title": "How Graph Layout Affects the Readability of a Node's Neighbourhood",
+   "header": [
+    {
+     "label": "Principal investigator",
+     "value": "[Full name], [Department], [University]"
+    },
+    {
+     "label": "Supervisor",
+     "value": "[Full name], [Department]"
+    },
+    {
+     "label": "Ethics approval",
+     "value": "[IRB/REB name], protocol no. [XXXX-XXXX]"
+    },
+    {
+     "label": "Version",
+     "value": "[1.0], [date]"
+    }
+   ],
+   "preamble": "Please read this page before you decide whether to take part. Ask us anything that is unclear — now or at any time during the session.",
+   "keyInfo": [
+    "We are studying how different ways of drawing network graphs affect how easily people can read a node's connections.",
+    "You will complete one session of about 30–35 minutes at [location].",
+    "You will look at graphs and answer questions about them, and complete short questionnaires.",
+    "The main discomfort is tiredness or boredom. You can take breaks and you can stop at any time.",
+    "You will be paid $10, even if you stop early.",
+    "We record your answers, whether they were correct, your response times, and your questionnaire answers. We do not record your name, email address, or IP address.",
+    "Taking part is voluntary. Saying no has no consequences for you."
+   ],
+   "sections": [
+    {
+     "heading": "1. Why are we doing this study?",
+     "paragraphs": [
+      "Graphs made of dots (nodes) joined by lines (links) are used to show networks — friendship networks, computer networks, and many others. We are comparing several ways of laying out these graphs. We want to know which layouts make it easiest to see which nodes are connected to a particular node. The results will help designers choose better layouts.",
+      "We are not studying you. We are studying the layouts."
+     ]
+    },
+    {
+     "heading": "2. Who can take part?",
+     "paragraphs": [
+      "Anyone aged 18 or over with normal or corrected-to-normal vision (glasses or contact lenses are fine).",
+      "The task highlights nodes in blue. If you have difficulty telling colours apart, please tell the researcher before we start."
+     ]
+    },
+    {
+     "heading": "3. What will you do?",
+     "paragraphs": [
+      "One session, about 30–35 minutes:"
+     ],
+     "bullets": [
+      "Background questions — your age, gender, field of study, and how familiar you are with graphs. (2 min)",
+      "Instructions and 4 practice trials — you can ask questions during this part. (5 min)",
+      "32 trials. In each trial you see one graph. Task A (16 trials): one node is highlighted in blue. Click every node directly connected to it, then click Submit. Task B (16 trials): two nodes are highlighted in blue. Click the one you think is connected to more nodes.",
+      "There is no time limit on any trial, and no penalty for being slow.",
+      "Breaks. After every 12 trials the screen offers a 30-second break. You may also pause between trials whenever you want, and you may leave the room with the researcher's knowledge at any point.",
+      "Short questionnaires — a few questions about how mentally demanding the task felt, and how readable you found the graphs. (5 min)"
+     ]
+    },
+    {
+     "heading": "4. Where the graphs come from",
+     "paragraphs": [
+      "The graphs come from public graph-drawing benchmark datasets and real-world network data (for example film co-appearance networks and ecological interaction networks). Before use, every node name has been replaced with a number, so the graphs contain no identifying or personal information about any person or organisation. We will only publish derived graph layouts or aggregate findings, never the original data.",
+      "[TRIM — optional sentence if you want to be more explicit:] You are not being asked to assess any real organisation or person."
+     ]
+    },
+    {
+     "heading": "5. Some graphs appear more than once",
+     "paragraphs": [
+      "You will see 32 graph presentations in total, and some graphs appear more than once — but you will be asked a different question each time. This is a normal part of the study design, not a mistake, and it is not a sign that something went wrong.",
+      "[TRIM — optional:] If you notice a graph repeating, please just answer the question as it is asked."
+     ]
+    },
+    {
+     "heading": "6. Risks and discomfort",
+     "paragraphs": [
+      "This is a minimal-risk study. The risks are the same as those you face in everyday life. The discomforts we expect are:"
+     ],
+     "bullets": [
+      "Tired eyes or mental fatigue from looking at graphs for an extended period",
+      "Boredom, because the trials are repetitive",
+      "Mild frustration if a graph is hard to read"
+     ],
+     "paragraphsAfter": [
+      "To reduce these, we give you frequent breaks, there are no time limits, and there is no penalty for wrong answers. You may stop at any time.",
+      "You may also find that seeing many similar graphs is monotonous. If you would rather stop, just say so — you will still be paid in full."
+     ]
+    },
+    {
+     "heading": "7. Benefits",
+     "paragraphs": [
+      "There is no direct benefit to you. You will get a first-hand look at how a visualization experiment is run, and you will be contributing to research that helps people design more readable network graphs. We can share a summary of the results with you if you would like — ask the researcher."
+     ]
+    },
+    {
+     "heading": "8. Payment",
+     "paragraphs": [
+      "You will receive $10 at the end of the session. This is paid even if you stop early or skip questions, and it does not depend on your performance."
+     ]
+    },
+    {
+     "heading": "9. What we record",
+     "paragraphs": [
+      "For each trial we record:"
+     ],
+     "bullets": [
+      "which nodes you clicked",
+      "whether your answer was correct",
+      "how long you took to answer",
+      "the number of times you switched away from the study window during the session"
+     ],
+     "paragraphsAfter": [
+      "We also record your questionnaire answers, your background answers (age, gender, field of study, graph familiarity), and basic technical information from your browser (browser type and version, screen resolution).",
+      "We do not record your name, your email address, or your IP address.",
+      "[TRIM — drop this if your IRB objects to the wording:] The window-switching count is used only to check data quality. It is not used to judge you, and it does not affect your payment."
+     ]
+    },
+    {
+     "heading": "10. Confidentiality, storage, and how long we keep your data",
+     "bullets": [
+      "Your data are stored under a participant code (for example, P017), not under your name.",
+      "The list linking your code to your name (used only for the payment record) is stored separately from your study data, in a [locked cabinet / password-protected file] accessible only to [PI name].",
+      "Electronic data are stored on [encrypted, access-controlled university storage].",
+      "Only the research team ([names/roles]) can see the data.",
+      "We keep the data for [X] years after the study ends and then securely destroy it. Signed consent forms are kept separately for [X] years as required by [institution] for audit purposes.",
+      "Once your data have been de-identified, we may not be able to delete it on request, because we will no longer be able to tell which data are yours."
+     ]
+    },
+    {
+     "heading": "11. How we report results",
+     "paragraphs": [
+      "We report averages and summaries across all participants, never individual responses. We may also publish de-identified data (participant code, clicks, times, questionnaire answers — with no names or identifying details) in a public research repository so others can check our analysis. You may say no to this without affecting anything else."
+     ]
+    },
+    {
+     "heading": "12. Taking part is voluntary, and you can stop at any time",
+     "paragraphs": [
+      "Taking part is your choice. If you decide not to take part, or if you stop partway through, there is no penalty of any kind and you do not lose any benefits you would otherwise have. Your decision will not affect your grades, your standing at [University], or your relationship with the researchers.",
+      "If you stop: you will still be paid in full. You may ask us to destroy your data at that point, and we will. After the session ends, you may [email [address]] within [X days] to withdraw your data. After that date the data will be de-identified and we will not be able to identify yours."
+     ]
+    },
+    {
+     "heading": "13. Questions and contacts",
+     "paragraphs": [
+      "About the study: [PI name], [email], [phone]",
+      "About your rights as a participant, or to report a problem: [IRB/REB name], [email], [phone], [address]",
+      "If you have concerns about how this study is being conducted, you may contact [IRB] — you do not need to speak to the researchers first."
+     ]
+    },
+    {
+     "heading": "14. Statement of consent",
+     "paragraphs": [
+      "Please initial each box."
+     ]
+    }
+   ],
+   "agreement": {
+    "mode": "lab",
+    "items": [
+     "I have read this form, or it has been read to me. I have had the chance to ask questions and my questions have been answered.",
+     "I understand that I can stop at any time, without giving a reason, and that I will still be paid.",
+     "I understand what data will be recorded and how it will be stored and used, as described in sections 9–11.",
+     "I agree to my de-identified data being kept for future research (optional).",
+     "I am 18 years of age or older."
+    ],
+    "optionalIndices": [
+     3
+    ],
+    "optionalNote": "Checking this box does not affect your participation or your payment.",
+    "agreeLabel": "I agree to take part in this study."
+   }
+  },
+  "zh": {
+   "title": "图布局如何影响节点邻域的可读性",
+   "header": [
+    {
+     "label": "主要研究者",
+     "value": "[姓名]，[院系]，[大学]"
+    },
+    {
+     "label": "导师",
+     "value": "[姓名]，[院系]"
+    },
+    {
+     "label": "伦理批准",
+     "value": "[IRB/伦理委员会名称]，批号 [XXXX-XXXX]"
+    },
+    {
+     "label": "版本",
+     "value": "[1.0]，[日期]"
+    }
+   ],
+   "preamble": "在决定是否参加之前，请先阅读本页。如有任何不清楚之处，现在或实验过程中的任何时间都可以向我们提问。",
+   "keyInfo": [
+    "我们在研究：不同的网络图绘制方式，会如何影响人们看懂某个节点连接关系的难易程度。",
+    "你将在 [地点] 参加一次约 30–35 分钟的测试。",
+    "你会看一些图、回答关于它们的问题，并填写几份简短问卷。",
+    "主要的不适是疲倦或无聊。你可以随时休息，也可以随时终止。",
+    "你将获得 [金额] 的报酬，即使提前终止也会全额支付。",
+    "我们会记录你的作答、作答是否正确、反应时间以及问卷答案。我们不会记录你的姓名、电子邮箱或 IP 地址。",
+    "参加完全自愿。拒绝参加不会带来任何后果。"
+   ],
+   "sections": [
+    {
+     "heading": "1. 为什么做这个研究？",
+     "paragraphs": [
+      "由点（节点）和线（边）组成的图被用来表示网络——朋友关系网、计算机网络等等。我们正在比较几种不同的图布局方式，想知道哪一种最容易让人看出哪些节点与某个特定节点相连。研究结果可以帮助设计者选择更好的布局。",
+      "我们研究的不是你，而是布局。"
+     ]
+    },
+    {
+     "heading": "2. 谁可以参加？",
+     "paragraphs": [
+      "年满 18 周岁、视力正常或已矫正（戴眼镜或隐形眼镜都可以）的人。",
+      "任务会用蓝色高亮节点。如果你分辨颜色有困难，请在开始前告知研究者。"
+     ]
+    },
+    {
+     "heading": "3. 你需要做什么？",
+     "paragraphs": [
+      "一次测试，约 30–35 分钟："
+     ],
+     "bullets": [
+      "背景问题——年龄、性别、专业，以及你对图的熟悉程度。（约 2 分钟）",
+      "任务说明与 4 个练习试次——这部分可以提问。（约 5 分钟）",
+      "32 个正式试次。每个试次呈现一张图：任务 A（16 个）中有一个节点被高亮成蓝色，请点击所有与它直接相连的节点，然后点「提交」；任务 B（16 个）中有两个节点被高亮成蓝色，请点击你认为连接更多的那个。",
+      "所有题目都没有时间限制，答得慢也没有惩罚。",
+      "休息——每 12 个试次会强制休息 30 秒。你也可以在试次之间自行暂停，并在告知研究者后随时离开房间。",
+      "简短问卷——关于任务的脑力负担，以及你对图的易读性的主观评价。（约 5 分钟）"
+     ]
+    },
+    {
+     "heading": "4. 这些图来自哪里",
+     "paragraphs": [
+      "这些图取自公开的图绘制基准数据集与真实网络数据（例如电影共演网络、生态相互作用网络）。使用前，图中所有节点名称都已替换为编号，不包含任何可识别个人或组织的信息。我们只会公开派生的图布局或汇总结果，不会公开原始数据。"
+     ]
+    },
+    {
+     "heading": "5. 有些图会出现不止一次",
+     "paragraphs": [
+      "你一共会看到 32 个图次，其中有些图会出现不止一次——但每次问的是不同的问题。这是实验设计的正常部分，不是出错。",
+      "如果你发现某张图重复出现，照常回答当下的问题即可。"
+     ]
+    },
+    {
+     "heading": "6. 风险与不适",
+     "paragraphs": [
+      "这是一个低风险研究。风险与日常生活中相当。可能出现的不适包括："
+     ],
+     "bullets": [
+      "长时间看图导致的眼睛疲劳或精神疲劳",
+      "因为任务重复而产生的无聊感",
+      "遇到难读的图时产生的轻微挫败感"
+     ],
+     "paragraphsAfter": [
+      "为减轻这些不适，我们提供频繁的休息，没有时间限制，答错也没有惩罚。你可以随时终止。",
+      "连续看很多相似的图也可能让人感到单调。如果你更想停下来，直接说即可——报酬仍会全额支付。"
+     ]
+    },
+    {
+     "heading": "7. 收益",
+     "paragraphs": [
+      "本次研究对你没有直接收益。你将亲身体验可视化实验是如何进行的，并为「如何设计更易读的网络图」这一研究做出贡献。如果你愿意，我们可以与你分享结果摘要——请向研究者索取。"
+     ]
+    },
+    {
+     "heading": "8. 报酬",
+     "paragraphs": [
+      "测试结束后你将获得 [金额]。即使你提前终止或跳过问题，也会全额支付；报酬与你的表现无关。"
+     ]
+    },
+    {
+     "heading": "9. 我们记录什么",
+     "paragraphs": [
+      "每个试次我们会记录："
+     ],
+     "bullets": [
+      "你点击了哪些节点",
+      "你的答案是否正确",
+      "你用了多长时间作答",
+      "整个过程中你切换到其它窗口的次数"
+     ],
+     "paragraphsAfter": [
+      "我们还会记录你的问卷答案、背景信息（年龄、性别、专业、图的熟悉程度），以及浏览器的基本信息（类型版本、屏幕分辨率）。",
+      "我们不会记录你的姓名、电子邮箱或 IP 地址。",
+      "切换窗口的次数仅用于检查数据质量，不用于评价你，也不影响报酬。"
+     ]
+    },
+    {
+     "heading": "10. 保密、存储与保存期限",
+     "bullets": [
+      "你的数据以被试编号（例如 P017）存储，而不是以你的姓名存储。",
+      "编号与姓名之间的对应表（仅用于报酬记录）与实验数据分开存放，保存在 [上锁的柜子 / 加密文件] 中，仅 [PI 姓名] 可以访问。",
+      "电子数据保存在 [加密、受访问控制的高校存储] 中。",
+      "只有研究团队（[姓名/角色]）可以查看数据。",
+      "研究结束后数据保存 [X] 年，之后安全销毁。签署的同意书按 [机构] 的要求单独保存 [X] 年以备审计。",
+      "数据完成去标识化后，我们可能无法再按你的要求删除，因为我们将无法辨认哪些数据属于你。"
+     ]
+    },
+    {
+     "heading": "11. 结果如何发表",
+     "paragraphs": [
+      "我们只报告跨所有被试的平均值与汇总结果，从不报告个人作答。我们也可能将去标识化的数据（被试编号、点击、时间、问卷答案——不含任何姓名或可识别信息）发布到公共研究仓库，以便他人核查我们的分析。你可以拒绝这一项，且不会影响其它任何事情。"
+     ]
+    },
+    {
+     "heading": "12. 参加是自愿的，你可以随时终止",
+     "paragraphs": [
+      "是否参加由你决定。如果你决定不参加，或中途终止，不会有任何形式的惩罚，也不会失去你本应获得的任何权益。你的决定不会影响你的成绩、你在 [大学] 的身份，或你与研究者的关系。",
+      "如果你终止：报酬仍会全额支付。你可以要求我们当场销毁你的数据，我们会照做。测试结束后，你可以在 [X 天] 内通过 [邮箱] 要求撤回数据；超过该期限后数据将完成去标识化，我们将无法识别哪些是你的。"
+     ]
+    },
+    {
+     "heading": "13. 问题与联系方式",
+     "paragraphs": [
+      "关于研究本身：[PI 姓名]，[邮箱]，[电话]",
+      "关于你作为参与者的权利，或报告问题：[IRB/伦理委员会名称]，[邮箱]，[电话]，[地址]",
+      "如果你对本研究的实施方式有疑虑，可以直接联系 [IRB]——不必先与研究者沟通。"
+     ]
+    }
+   ],
+   "agreement": {
+    "mode": "lab",
+    "items": [
+     "我已阅读本知情同意书（或已由他人向我宣读）。我有机会提问，且我的问题已得到解答。",
+     "我理解我可以随时终止，无需给出理由，且仍会获得报酬。",
+     "我理解将记录哪些数据，以及这些数据如何存储和使用（见第 9–11 节）。",
+     "我同意将我的去标识化数据用于未来的研究（可选项）。",
+     "我已年满 18 周岁。"
+    ],
+    "optionalIndices": [
+     3
+    ],
+    "optionalNote": "勾选此项不影响你参加本次研究，也不影响报酬。",
+    "agreeLabel": "我同意参加本项研究。",
+    "disagreeLabel": "我不同意。"
+   }
+  }
+ },
+ "prolific": {
+  "en": {
+   "title": "How Graph Layout Affects the Readability of a Node's Neighbourhood",
+   "header": [
+    {
+     "label": "Researcher",
+     "value": "[Full name], [Department], [University], [email]"
+    },
+    {
+     "label": "Ethics approval",
+     "value": "[IRB/REB name], protocol no. [XXXX-XXXX]"
+    },
+    {
+     "label": "Data controller",
+     "value": "[University]"
+    }
+   ],
+   "preamble": "If you do not wish to take part, please click \"I do not agree\" below and return your submission on Prolific — you will not be penalised and nothing will be recorded.",
+   "keyInfo": [
+    "A desktop or laptop computer is required. The study will not work properly on a phone or tablet, and an external mouse is strongly recommended.",
+    "Payout is [£/$ X.XX], [$per hour] per hour. You will be paid even if you stop early or skip questions — message us via Prolific and we will approve your submission.",
+    "You may withdraw and have your data deleted up to [X days] after completing the study.",
+    "Your responses are linked to your Prolific ID so that we can pay you. Your Prolific ID is stored separately from your study data.",
+    "We are studying how different ways of drawing network graphs affect how easily people can read a node's connections.",
+    "You will look at graphs and answer questions about them, and complete short questionnaires.",
+    "The main discomfort is tiredness or boredom. You can take breaks and you can stop at any time.",
+    "Taking part is voluntary. Saying no has no consequences for you."
+   ],
+   "sections": [
+    {
+     "heading": "2. Who can take part?",
+     "paragraphs": [
+      "Anyone aged 18 or over with normal or corrected-to-normal vision (glasses or contact lenses are fine).",
+      "Normal colour vision. The task highlights nodes in blue. If you cannot reliably tell blue from other colours, please do not accept this study.",
+      "You must complete the study on a desktop or laptop with a mouse. Data from phones and tablets will be rejected."
+     ]
+    },
+    {
+     "heading": "3. What will you do?",
+     "paragraphs": [
+      "One session, about 30–35 minutes: background questions (2 min); instructions and 4 practice trials (5 min); 32 trials; a 30-second break offered every 12 trials; short questionnaires (5 min).",
+      "Please do not use a second screen, or look up answers, or use assistive tools during the trials. We ask you to work alone.",
+      "We record how many times you switch away from the study window. Please close other tabs and notifications before you begin."
+     ]
+    },
+    {
+     "heading": "6. Risks and discomfort",
+     "paragraphs": [
+      "This is a minimal-risk study. The discomforts we expect are tired eyes or mental fatigue, boredom, and mild frustration if a graph is hard to read. There are no time limits and no penalty for wrong answers.",
+      "Because you are completing this online, you are responsible for your own comfort — please sit comfortably, keep the screen at a sensible distance, and take a longer break if you need one."
+     ]
+    },
+    {
+     "heading": "9. What we record",
+     "bullets": [
+      "which nodes you clicked, whether your answer was correct, and how long you took",
+      "the number of times you switched away from the study window",
+      "your questionnaire answers and background answers",
+      "basic technical information from your browser (browser type and version, screen resolution)"
+     ],
+     "paragraphsAfter": [
+      "We do not collect your name, email address, or IP address. We cannot access them.",
+      "We do collect your Prolific ID. Prolific holds your personal information and processes it under its own privacy policy: https://www.prolific.com/privacy-policy"
+     ]
+    },
+    {
+     "heading": "10. Confidentiality and your rights",
+     "bullets": [
+      "Your data are stored under a participant code, not under your name.",
+      "Legal basis for processing: [University] processes your personal data for research purposes under [state your basis — e.g. \"performance of a task in the public interest\" Art. 6(1)(e); or \"your consent\" Art. 6(1)(a)]. (必须由 DPO 书面确认，不要自己猜 —— 选 consent 会改变撤回义务)",
+      "Your rights: under the GDPR/UK GDPR you have the right to access, rectify, erase, restrict, or object to processing, and to lodge a complaint with [your supervisory authority]. Contact [DPO email].",
+      "We keep the data for [X] years after the study ends and then securely destroy it.",
+      "Once your data have been de-identified, we may not be able to delete it on request."
+     ]
+    },
+    {
+     "heading": "12. Voluntary participation",
+     "bullets": [
+      "Refusing or stopping will have no effect on your ability to take part in future studies on Prolific.",
+      "If you stop early: return your submission on Prolific (\"Stop Without Completing\"), or message us, and we will still approve and pay you."
+     ]
+    },
+    {
+     "heading": "13. Contacts",
+     "paragraphs": [
+      "About the study: [PI name], [email], [phone]",
+      "About your rights, or to report a problem: [IRB/REB name], [email], [phone], [address]",
+      "If you have a problem with the Prolific platform itself (payment, eligibility, account), please contact Prolific support: https://participant-help.prolific.com/"
+     ]
+    }
+   ],
+   "agreement": {
+    "mode": "prolific",
+    "items": [
+     "I have read and understood the information above.",
+     "I understand that taking part is voluntary, and that I can stop at any time, without giving a reason and without penalty.",
+     "I understand that I will still be paid if I stop early.",
+     "I understand what data will be recorded and how it will be stored and used.",
+     "I am 18 years of age or older.",
+     "I have normal or corrected-to-normal colour vision.",
+     "I am completing this study on a desktop or laptop computer."
+    ],
+    "optionalIndices": [],
+    "agreeLabel": "I agree to take part in this study.",
+    "disagreeLabel": "I do not agree."
+   }
+  },
+  "zh": {
+   "title": "图布局如何影响节点邻域的可读性",
+   "header": [
+    {
+     "label": "研究者",
+     "value": "[姓名]，[院系]，[大学]，[邮箱]"
+    },
+    {
+     "label": "伦理批准",
+     "value": "[IRB/伦理委员会名称]，批号 [XXXX-XXXX]"
+    },
+    {
+     "label": "数据控制者",
+     "value": "[大学]"
+    }
+   ],
+   "preamble": "如果你不想参加，请点击下方「我不同意」，并在 Prolific 上归还你的任务——你不会受到任何处罚，也不会记录任何数据。",
+   "keyInfo": [
+    "本实验需要台式机或笔记本电脑。手机和平板上无法正常工作，强烈建议使用外接鼠标。",
+    "报酬为 [金额]，折合每小时 [金额]。即使你提前终止或跳过问题，也会获得报酬——请在 Prolific 上给我们留言，我们会批准你的提交。",
+    "你可以在完成研究后的 [X 天] 内撤回并要求删除数据。",
+    "你的作答会与你的 Prolific ID 关联，以便支付报酬。Prolific ID 与实验数据分开存储。",
+    "我们在研究：不同的网络图绘制方式，会如何影响人们看懂某个节点连接关系的难易程度。",
+    "你会看一些图、回答关于它们的问题，并填写几份简短问卷。",
+    "主要的不适是疲倦或无聊。你可以随时休息，也可以随时终止。",
+    "参加完全自愿。拒绝参加不会带来任何后果。"
+   ],
+   "sections": [
+    {
+     "heading": "2. 谁可以参加？",
+     "paragraphs": [
+      "年满 18 周岁、视力正常或已矫正（戴眼镜或隐形眼镜都可以）的人。",
+      "色觉正常。任务会用蓝色高亮节点。如果你无法可靠地区分蓝色与其它颜色，请不要接受本任务。",
+      "必须在台式机或笔记本上完成，并使用鼠标。来自手机和平板的数据将被拒绝。"
+     ]
+    },
+    {
+     "heading": "3. 你需要做什么？",
+     "paragraphs": [
+      "一次约 30–35 分钟的测试：背景问题（约 2 分钟）；任务说明与 4 个练习试次（约 5 分钟）；32 个正式试次；每 12 个试次强制休息 30 秒；简短问卷（约 5 分钟）。",
+      "在试次过程中请不要使用第二块屏幕、查阅答案或使用辅助工具。请独立完成。",
+      "我们会记录你切换到其它窗口的次数。请在开始前关闭其它标签页和通知。"
+     ]
+    },
+    {
+     "heading": "6. 风险与不适",
+     "paragraphs": [
+      "这是一个低风险研究。可能出现的不适是眼睛疲劳、精神疲劳、无聊，以及遇到难读的图时的轻微挫败感。没有时间限制，答错也没有惩罚。",
+      "由于是在线完成，你需要自己注意舒适度——请坐得舒服一些，让屏幕保持适当距离，需要时可以休息更久。"
+     ]
+    },
+    {
+     "heading": "9. 我们记录什么",
+     "bullets": [
+      "你点击了哪些节点、答案是否正确、用了多长时间",
+      "你切换到其它窗口的次数",
+      "你的问卷答案与背景信息",
+      "浏览器的基本信息（类型版本、屏幕分辨率）"
+     ],
+     "paragraphsAfter": [
+      "我们不收集你的姓名、电子邮箱或 IP 地址，也无法访问这些信息。",
+      "我们会收集你的 Prolific ID。Prolific 持有你的个人信息，并按它自己的隐私政策处理：https://www.prolific.com/privacy-policy"
+     ]
+    },
+    {
+     "heading": "10. 保密与你的权利",
+     "bullets": [
+      "你的数据以被试编号存储，而不是以你的姓名存储。",
+      "处理的合法性基础：[大学] 基于 [请由 DPO 书面确认——例如「为公共利益执行任务」GDPR 第 6(1)(e) 条；或「你的同意」第 6(1)(a) 条] 为研究目的处理你的个人数据。（必须由 DPO 书面确认，不要自行选择；选「同意」会改变撤回义务。）",
+      "你的权利：根据 GDPR / UK GDPR，你有权访问、更正、删除、限制或反对处理，并有权向 [监管机构] 投诉。联系方式：[DPO 邮箱]。",
+      "研究结束后数据保存 [X] 年，之后安全销毁。",
+      "数据完成去标识化后，我们可能无法再按你的要求删除。"
+     ]
+    },
+    {
+     "heading": "12. 自愿参加",
+     "bullets": [
+      "拒绝或终止不会影响你今后参加 Prolific 上的研究。",
+      "如果你提前终止：在 Prolific 上归还任务（「Stop Without Completing」），或给我们留言，我们仍会批准并支付报酬。"
+     ]
+    },
+    {
+     "heading": "13. 联系方式",
+     "paragraphs": [
+      "关于研究本身：[PI 姓名]，[邮箱]，[电话]",
+      "关于你的权利，或报告问题：[IRB/伦理委员会名称]，[邮箱]，[电话]，[地址]",
+      "如果你对 Prolific 平台本身有问题（报酬、资格、账户），请联系 Prolific 支持：https://participant-help.prolific.com/"
+     ]
+    }
+   ],
+   "agreement": {
+    "mode": "prolific",
+    "items": [
+     "我已阅读并理解上述信息。",
+     "我理解参加是自愿的，我可以随时终止，无需给出理由，也不会受到惩罚。",
+     "我理解即使提前终止也会获得报酬。",
+     "我理解将记录哪些数据，以及这些数据如何存储和使用。",
+     "我已年满 18 周岁。",
+     "我的色觉正常或已矫正。",
+     "我正在使用台式机或笔记本电脑完成本实验。"
+    ],
+    "optionalIndices": [],
+    "agreeLabel": "我同意参加本项研究。",
+    "disagreeLabel": "我不同意。"
+   }
+  }
+ }
+}

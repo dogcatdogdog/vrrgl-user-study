@@ -1,0 +1,90 @@
+{
+ "meta": {
+  "version": "1.0",
+  "generated": "2026-10-22T07:15:52+00:00",
+  "n_codes": 20,
+  "layouts_per_offset": 4
+ },
+ "codes": {
+  "R2SQ6": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "RAYW9": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "RBXTM": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "RCR2S": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "RDWCW": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "RDYVR": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "RERP2": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "RFM3X": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "RGJ98": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "RGWB3": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "RGZC2": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "RJAU6": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "RLTEV": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "RNS2S": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "RNX9G": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "RTVWS": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "RTWEF": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "RUTBY": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "RWHP8": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "RWLVX": {
+   "offset": 1,
+   "group": "remote"
+  }
+ }
+}

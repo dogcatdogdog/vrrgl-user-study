@@ -1,0 +1,851 @@
+{
+ "citation_line_check": {
+  "docs/01_平台设计.md": [
+   {
+    "line": 84,
+    "expect_substring": "边溢出画布",
+    "actual": "| 缺点 | **引入混淆**：紧凑的布局被放大 → 节点看起来更分散 → 更容易读 | 边长很不均匀的布局可能有边溢出画布 |",
+    "match": true
+   },
+   {
+    "line": 100,
+    "expect_substring": "蓝色填充",
+    "actual": "| **目标节点** | **蓝色填充**（不是轮廓圈） | GVRRI 原文 |",
+    "match": true
+   },
+   {
+    "line": 101,
+    "expect_substring": "被选中的节点",
+    "actual": "| **被选中的节点** | **变红** | GVRRI 原文 |",
+    "match": true
+   },
+   {
+    "line": 119,
+    "expect_substring": "蓝底 + 红描边",
+    "actual": "> ⚠️ **一个待确认项**：GVRRI 用蓝色标目标节点、红色标已选节点。如果我们也用红色表示「已选中」，需要确保**「被选中的目标节点」的样式**不会让人困惑（目标节点被选中后会变红，失去蓝色标识）。实现时请确认这",
+    "match": true
+   },
+   {
+    "line": 154,
+    "expect_substring": "practiceTrials",
+    "actual": "practiceTrials:  { T1: 2, T4: 2, T2: 1 },",
+    "match": true
+   },
+   {
+    "line": 207,
+    "expect_substring": "三布局并排排序",
+    "actual": "preference: false,               // 实验末的三布局并排排序（会破坏盲测，必须放最后）",
+    "match": true
+   },
+   {
+    "line": 275,
+    "expect_substring": "MAIN × 36",
+    "actual": "MAIN × 36        正式，无反馈",
+    "match": true
+   },
+   {
+    "line": 414,
+    "expect_substring": "轮廓圈、半径、颜色必须完全一致",
+    "actual": "| 视觉 | 两个高亮节点的**轮廓圈、半径、颜色必须完全一致**——不得暗示哪个度数更高 |",
+    "match": true
+   },
+   {
+    "line": 430,
+    "expect_substring": "只用轮廓圈高亮",
+    "actual": "| 2 | **目标节点只用轮廓圈高亮**，不填充、不放大 |",
+    "match": true
+   },
+   {
+    "line": 444,
+    "expect_substring": "输入：24 张图",
+    "actual": "输入：24 张图（低/中/高三档各 8 张） × 4 种布局",
+    "match": true
+   },
+   {
+    "line": 447,
+    "expect_substring": "恰好出现一次",
+    "actual": "① 每张图对被试恰好出现一次     ← 避免记忆污染（见 02_数据方案.md §6.1）",
+    "match": true
+   },
+   {
+    "line": 452,
+    "expect_substring": "算法",
+    "actual": "**算法**（确定性，按 `pid` 派生种子，保证刷新后一致、且可复现）：",
+    "match": true
+   },
+   {
+    "line": 457,
+    "expect_substring": "const offset",
+    "actual": "const offset = hash(pid) % LAYOUTS.length;          // 0 | 1 | 2 | 3",
+    "match": true
+   },
+   {
+    "line": 460,
+    "expect_substring": "const layoutIndex",
+    "actual": "const layoutIndex = (i + offset) % LAYOUTS.length;",
+    "match": true
+   },
+   {
+    "line": 468,
+    "expect_substring": "每布局 6 张",
+    "actual": "| ② 每布局 6 张 | 24 / 4 = 6；且**每档 8 张**，所以每个 (布局, 度数档) 单元恰好 2 张 |",
+    "match": true
+   },
+   {
+    "line": 473,
+    "expect_substring": "24 个 trial",
+    "actual": "> ⚠️ **24 张图、4 种布局 = 每人每任务 24 个 trial**，两个任务共 48 个。相比 3 布局方案的 36 个增加了 33%，pilot 时要留意疲劳。",
+    "match": true
+   },
+   {
+    "line": 475,
+    "expect_substring": "试次顺序",
+    "actual": "### 8.2 试次顺序",
+    "match": true
+   },
+   {
+    "line": 479,
+    "expect_substring": "避免连续出现同一图",
+    "actual": "- 因为每张图只出现一次，**不需要**额外的「避免连续出现同一图」逻辑",
+    "match": true
+   },
+   {
+    "line": 488,
+    "expect_substring": "bench_pipeline_out_0612_rome1000",
+    "actual": "输入：data/eval_out/bench_pipeline_out_0612_rome1000/graph_details/*.json",
+    "match": true
+   },
+   {
+    "line": 489,
+    "expect_substring": "16 种算法",
+    "actual": "（每个文件含 16 种算法的布局与坐标）",
+    "match": true
+   },
+   {
+    "line": 492,
+    "expect_substring": "50–100 节点",
+    "actual": "1. 读所有图，筛出 50–100 节点的",
+    "match": true
+   },
+   {
+    "line": 494,
+    "expect_substring": "共 6 张",
+    "actual": "3. 每个度数档各取 2 张图 → 共 6 张",
+    "match": true
+   },
+   {
+    "line": 495,
+    "expect_substring": "四种布局的坐标",
+    "actual": "4. 对每张图，提取四种布局的坐标：",
+    "match": true
+   },
+   {
+    "line": 500,
+    "expect_substring": "每档度数选 1 个节点",
+    "actual": "T1: 每档度数选 1 个节点",
+    "match": true
+   },
+   {
+    "line": 562,
+    "expect_substring": "Rome 还是自采数据",
+    "actual": "| 1 | **刺激图用 Rome 还是自采数据** | 🔄 调研中 |",
+    "match": true
+   }
+  ],
+  "docs/02_数据方案.md": [
+   {
+    "line": 82,
+    "expect_substring": "hub 阈值",
+    "actual": "| 文件 | 节点 | 边 | 最大度 | hub 阈值 | hub 数 |",
+    "match": true
+   },
+   {
+    "line": 157,
+    "expect_substring": "ego 节点数",
+    "actual": "| 源文件 | seed 度数 | ego 节点数 | ego 边数 | ego 内最大度 | hub 数 |",
+    "match": true
+   },
+   {
+    "line": 181,
+    "expect_substring": "hub, bridge, and peripheral nodes",
+    "actual": "> *\"To ensure diversity in degree distribution, target nodes were selected to ensure that they **covered high-",
+    "match": true
+   },
+   {
+    "line": 199,
+    "expect_substring": "每档 1 个",
+    "actual": "| **每图的可用目标数** | ≥3（每档 1 个） | 见 §6 刺激清单 |",
+    "match": true
+   },
+   {
+    "line": 220,
+    "expect_substring": "含四种布局的坐标",
+    "actual": "（含四种布局的坐标；LPFD = \"ablation_exp0_baseline\"，KK = \"Kamada-Kawai\"，",
+    "match": true
+   },
+   {
+    "line": 221,
+    "expect_substring": "ForceAtlas2",
+    "actual": "FR = \"Fruchterman-Reingold\"，FA2 = \"ForceAtlas2\"）",
+    "match": true
+   },
+   {
+    "line": 280,
+    "expect_substring": "seed 目标度数",
+    "actual": "| 档位 | seed 目标度数 | 说明 |",
+    "match": true
+   },
+   {
+    "line": 290,
+    "expect_substring": "四种布局各自独立归一化",
+    "actual": "四种布局各自独立归一化，**按中位边长映射到固定像素**：",
+    "match": true
+   },
+   {
+    "line": 342,
+    "expect_substring": "第一次就学到了答案",
+    "actual": "**若同一被试在四种布局下看到同一张图，他第一次就学到了答案，后三次测的是记忆而非可读性。** 而且这个偏差方向是**抹平差异**（四种布局趋同），会让实验「失败但你不知道」。",
+    "match": true
+   },
+   {
+    "line": 352,
+    "expect_substring": "24 trial / 任务",
+    "actual": "每个被试：24 trial / 任务",
+    "match": true
+   },
+   {
+    "line": 358,
+    "expect_substring": "48 trial",
+    "actual": "两个任务共 **48 trial**（约 45–50 分钟）。",
+    "match": true
+   },
+   {
+    "line": 364,
+    "expect_substring": "case 派生的 ego network",
+    "actual": "| **case 派生的 ego network** | **24**（每档 8 张） | 50~70 | 主实验 |",
+    "match": true
+   },
+   {
+    "line": 375,
+    "expect_substring": "27 个候选",
+    "actual": "**供给**：改成 4 布局后需要 24 张，而 9 张 case 图 × 3 档 = 只有 **27 个候选**，余量仅 3 个——**太紧**。",
+    "match": true
+   },
+   {
+    "line": 377,
+    "expect_substring": "抽 2 个 seed",
+    "actual": "**解决**：**每个 (case 图, 度数档) 抽 2 个 seed** → 9 × 3 × 2 = **54 个候选**，取 24 个后余量充足。",
+    "match": true
+   }
+  ],
+  "docs/03_任务定义.md": [
+   {
+    "line": 64,
+    "expect_substring": "红色轮廓圈",
+    "actual": "│     · 目标节点带红色轮廓圈（仅此一个）       │",
+    "match": true
+   },
+   {
+    "line": 148,
+    "expect_substring": "红色轮廓圈",
+    "actual": "│     · 两个节点带相同的红色轮廓圈            │",
+    "match": true
+   },
+   {
+    "line": 177,
+    "expect_substring": "hub 集合",
+    "actual": "deg_max_node 属于该图的 hub 集合（deg > mean + std）",
+    "match": true
+   },
+   {
+    "line": 180,
+    "expect_substring": "轮廓圈、同样的半径",
+    "actual": "**两个节点的渲染样式必须完全相同**（同样的轮廓圈、同样的半径、同样的颜色）。**不得**通过大小、颜色、位置暗示哪个度数更高。",
+    "match": true
+   },
+   {
+    "line": 307,
+    "expect_substring": "三种不同的画法",
+    "actual": "**但它有个适配问题**：PREVis 是为「评价**一个**可视化」设计的，而我们的被试在实验中看了**几十张不同的图、三种不同的画法**。直接问「请评价这个可视化」会指代不明。",
+    "match": true
+   },
+   {
+    "line": 336,
+    "expect_substring": "四种布局并排",
+    "actual": "实验最后展示**同一张图的四种布局并排**，问：",
+    "match": true
+   },
+   {
+    "line": 338,
+    "expect_substring": "Which of these layouts",
+    "actual": "> **Which of these layouts is the easiest to read? Please rank them (1 = easiest).**",
+    "match": true
+   },
+   {
+    "line": 340,
+    "expect_substring": "有三种画法",
+    "actual": "**注意**：这个屏**明确告诉被试有三种画法**，所以必须放在**所有正式试次之后**，否则会破坏盲测。",
+    "match": true
+   },
+   {
+    "line": 362,
+    "expect_substring": "练习 trial（4 个）",
+    "actual": "### 6.1 练习 trial（4 个）",
+    "match": true
+   },
+   {
+    "line": 392,
+    "expect_substring": "练习 × 4",
+    "actual": "② 练习 × 4（带反馈）",
+    "match": true
+   },
+   {
+    "line": 394,
+    "expect_substring": "× 36",
+    "actual": "③ 正式 trial × 36（每个任务 18）",
+    "match": true
+   },
+   {
+    "line": 440,
+    "expect_substring": "48 trial",
+    "actual": "| 4 | 每个任务做 24 个 trial 是否合适？ | 4 布局方案下必需；2 个任务 = 48 trial ≈ **45–50 分钟**。**偏长，pilot 时要留意疲劳**——若疲劳明显，考虑砍掉 FR（见 ",
+    "match": true
+   }
+  ],
+  "docs/04_相关工作与定位.md": [
+   {
+    "line": 132,
+    "expect_substring": "四种对比",
+    "actual": "| **布局** | **只有一种**（D3 force-directed） | **四种对比**（LPFD / KK / **FR / FA2**）← **直接回答他们的 open question，且覆盖他们点名的两",
+    "match": true
+   },
+   {
+    "line": 158,
+    "expect_substring": "蓝色",
+    "actual": "| **目标节点样式** | 蓝色（不体现度数） |",
+    "match": true
+   },
+   {
+    "line": 171,
+    "expect_substring": "三种",
+    "actual": "| **布局** | 一种 | **三种** | 我们的自变量 |",
+    "match": true
+   },
+   {
+    "line": 172,
+    "expect_substring": "四种布局必须盲测",
+    "actual": "| **方法名/图名** | 无对照，不需盲测 | **绝不能显示** | 四种布局必须盲测 |",
+    "match": true
+   }
+  ],
+  "README.md": [
+   {
+    "line": 30,
+    "expect_substring": "rome1000",
+    "actual": "D:\\VRRGL\\data\\eval_out\\bench_pipeline_out_0612_rome1000\\graph_details\\*_layouts.json",
+    "match": true
+   },
+   {
+    "line": 103,
+    "expect_substring": "调研中",
+    "actual": "- [ ] **刺激数据方案**（Rome vs 自采数据 —— 调研中）",
+    "match": true
+   }
+  ]
+ },
+ "citation_mismatches": [],
+ "layouts_file_algorithm_counts": {
+  "15": 46
+ },
+ "full_graph_hub_thresholds": {
+  "case1": {
+   "mean_plus_std": 11.48,
+   "hubs": 3
+  },
+  "case2": {
+   "mean_plus_std": 11.69,
+   "hubs": 11
+  },
+  "case3": {
+   "mean_plus_std": 10.32,
+   "hubs": 9
+  },
+  "case4": {
+   "mean_plus_std": 11.42,
+   "hubs": 7
+  },
+  "case5": {
+   "mean_plus_std": 10.11,
+   "hubs": 14
+  },
+  "case6": {
+   "mean_plus_std": 12.89,
+   "hubs": 55
+  },
+  "case7": {
+   "mean_plus_std": 16.19,
+   "hubs": 7
+  },
+  "case8": {
+   "mean_plus_std": 14.07,
+   "hubs": 5
+  },
+  "case9": {
+   "mean_plus_std": 15.55,
+   "hubs": 15
+  }
+ },
+ "ego_table_reproduction": {
+  "case1": {
+   "seed_degree": 18,
+   "ego_nodes": 60,
+   "ego_edges": 102,
+   "ego_max_degree": 36,
+   "ego_hubs": 3
+  },
+  "case2": {
+   "seed_degree": 20,
+   "ego_nodes": 55,
+   "ego_edges": 174,
+   "ego_max_degree": 24,
+   "ego_hubs": 8
+  },
+  "case3": {
+   "seed_degree": 22,
+   "ego_nodes": 57,
+   "ego_edges": 130,
+   "ego_max_degree": 29,
+   "ego_hubs": 4
+  },
+  "case4": {
+   "seed_degree": 22,
+   "ego_nodes": 60,
+   "ego_edges": 64,
+   "ego_max_degree": 40,
+   "ego_hubs": 2
+  },
+  "case6": {
+   "seed_degree": 20,
+   "ego_nodes": 60,
+   "ego_edges": 127,
+   "ego_max_degree": 38,
+   "ego_hubs": 3
+  },
+  "case7": {
+   "seed_degree": 19,
+   "ego_nodes": 60,
+   "ego_edges": 264,
+   "ego_max_degree": 45,
+   "ego_hubs": 5
+  },
+  "case8": {
+   "seed_degree": 21,
+   "ego_nodes": 60,
+   "ego_edges": 80,
+   "ego_max_degree": 49,
+   "ego_hubs": 2
+  },
+  "case9": {
+   "seed_degree": 20,
+   "ego_nodes": 60,
+   "ego_edges": 128,
+   "ego_max_degree": 57,
+   "ego_hubs": 3
+  }
+ },
+ "case5_degree_histogram": {
+  "gap_11_to_33_count": 0,
+  "nodes_in_12_25": 0,
+  "nodes_in_13_26": 0,
+  "low_segment": {
+   "1": 316,
+   "2": 65,
+   "3": 15,
+   "4": 46,
+   "5": 60,
+   "6": 18,
+   "7": 17,
+   "8": 22,
+   "9": 9,
+   "10": 7
+  }
+ },
+ "seed_role_distribution": {
+  "low": {
+   "bridge": 417,
+   "other": 82,
+   "hub": 11
+  },
+  "mid": {
+   "hub": 29,
+   "bridge": 1
+  },
+  "high": {
+   "hub": 69
+  }
+ },
+ "candidate_supply_by_band": {
+  "low": 510,
+  "mid": 30,
+  "high": 69
+ },
+ "bbox_median_edge_normalized": {
+  "case1-mid": {
+   "LPFD": {
+    "raw_w": 334,
+    "raw_h": 145,
+    "fit_w": 334,
+    "fit_h": 145,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 161,
+    "raw_h": 104,
+    "fit_w": 161,
+    "fit_h": 104,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 239,
+    "raw_h": 419,
+    "fit_w": 239,
+    "fit_h": 419,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 129,
+    "raw_h": 295,
+    "fit_w": 129,
+    "fit_h": 295,
+    "shrunk_to_fit": false
+   }
+  },
+  "case1-high": {
+   "LPFD": {
+    "raw_w": 139,
+    "raw_h": 114,
+    "fit_w": 139,
+    "fit_h": 114,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 111,
+    "raw_h": 108,
+    "fit_w": 111,
+    "fit_h": 108,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 118,
+    "raw_h": 136,
+    "fit_w": 118,
+    "fit_h": 136,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 120,
+    "raw_h": 150,
+    "fit_w": 120,
+    "fit_h": 150,
+    "shrunk_to_fit": false
+   }
+  },
+  "case2-mid": {
+   "LPFD": {
+    "raw_w": 349,
+    "raw_h": 511,
+    "fit_w": 349,
+    "fit_h": 511,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 122,
+    "raw_h": 119,
+    "fit_w": 122,
+    "fit_h": 119,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 460,
+    "raw_h": 634,
+    "fit_w": 421,
+    "fit_h": 580,
+    "shrunk_to_fit": true
+   },
+   "FA2": {
+    "raw_w": 235,
+    "raw_h": 276,
+    "fit_w": 235,
+    "fit_h": 276,
+    "shrunk_to_fit": false
+   }
+  },
+  "case2-high": {
+   "LPFD": {
+    "raw_w": 164,
+    "raw_h": 193,
+    "fit_w": 164,
+    "fit_h": 193,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 169,
+    "raw_h": 157,
+    "fit_w": 169,
+    "fit_h": 157,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 332,
+    "raw_h": 241,
+    "fit_w": 332,
+    "fit_h": 241,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 218,
+    "raw_h": 196,
+    "fit_w": 218,
+    "fit_h": 196,
+    "shrunk_to_fit": false
+   }
+  },
+  "case4-mid": {
+   "LPFD": {
+    "raw_w": 212,
+    "raw_h": 197,
+    "fit_w": 212,
+    "fit_h": 197,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 133,
+    "raw_h": 120,
+    "fit_w": 133,
+    "fit_h": 120,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 209,
+    "raw_h": 283,
+    "fit_w": 209,
+    "fit_h": 283,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 248,
+    "raw_h": 201,
+    "fit_w": 248,
+    "fit_h": 201,
+    "shrunk_to_fit": false
+   }
+  },
+  "case4-high": {
+   "LPFD": {
+    "raw_w": 366,
+    "raw_h": 333,
+    "fit_w": 366,
+    "fit_h": 333,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 207,
+    "raw_h": 199,
+    "fit_w": 207,
+    "fit_h": 199,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 443,
+    "raw_h": 527,
+    "fit_w": 443,
+    "fit_h": 527,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 849,
+    "raw_h": 437,
+    "fit_w": 849,
+    "fit_h": 437,
+    "shrunk_to_fit": false
+   }
+  },
+  "case7-mid": {
+   "LPFD": {
+    "raw_w": 180,
+    "raw_h": 128,
+    "fit_w": 180,
+    "fit_h": 128,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 79,
+    "raw_h": 80,
+    "fit_w": 79,
+    "fit_h": 80,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 197,
+    "raw_h": 156,
+    "fit_w": 197,
+    "fit_h": 156,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 151,
+    "raw_h": 136,
+    "fit_w": 151,
+    "fit_h": 136,
+    "shrunk_to_fit": false
+   }
+  },
+  "case7-high": {
+   "LPFD": {
+    "raw_w": 147,
+    "raw_h": 166,
+    "fit_w": 147,
+    "fit_h": 166,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 107,
+    "raw_h": 112,
+    "fit_w": 107,
+    "fit_h": 112,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 130,
+    "raw_h": 183,
+    "fit_w": 130,
+    "fit_h": 183,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 133,
+    "raw_h": 113,
+    "fit_w": 133,
+    "fit_h": 113,
+    "shrunk_to_fit": false
+   }
+  },
+  "case9-mid": {
+   "LPFD": {
+    "raw_w": 294,
+    "raw_h": 225,
+    "fit_w": 294,
+    "fit_h": 225,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 126,
+    "raw_h": 86,
+    "fit_w": 126,
+    "fit_h": 86,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 197,
+    "raw_h": 196,
+    "fit_w": 197,
+    "fit_h": 196,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 263,
+    "raw_h": 323,
+    "fit_w": 263,
+    "fit_h": 323,
+    "shrunk_to_fit": false
+   }
+  },
+  "case9-high": {
+   "LPFD": {
+    "raw_w": 304,
+    "raw_h": 88,
+    "fit_w": 304,
+    "fit_h": 88,
+    "shrunk_to_fit": false
+   },
+   "KK": {
+    "raw_w": 43,
+    "raw_h": 118,
+    "fit_w": 43,
+    "fit_h": 118,
+    "shrunk_to_fit": false
+   },
+   "FR": {
+    "raw_w": 180,
+    "raw_h": 176,
+    "fit_w": 180,
+    "fit_h": 176,
+    "shrunk_to_fit": false
+   },
+   "FA2": {
+    "raw_w": 225,
+    "raw_h": 247,
+    "fit_w": 225,
+    "fit_h": 247,
+    "shrunk_to_fit": false
+   }
+  }
+ },
+ "bbox_summary": {
+  "samples": 40,
+  "needing_shrink": 1,
+  "overflow_rate": 0.025
+ },
+ "layout_availability": {
+  "files": 46,
+  "all_ok": true,
+  "detail": {
+   "GD1-toy_case1_graph_layouts.json": "OK",
+   "GD10-cy_case1_layouts.json": "OK",
+   "GD12-dt_case2_layouts.json": "OK",
+   "GD13-pr_case1-new_layouts.json": "OK",
+   "GD14-pr_case2_layouts.json": "OK",
+   "GD2-toy_case2_layouts.json": "OK",
+   "GD5-toy_case7_graph_layouts.json": "OK",
+   "GD6-toy_case8_layouts.json": "OK",
+   "GD7-toy_case10_layouts.json": "OK",
+   "GD8-toy_case11_graph_layouts.json": "OK",
+   "GD9-toy_case12_layouts.json": "OK",
+   "Moviegalaxies - Babel_graph_layouts.json": "OK",
+   "aves_weaver_layouts.json": "OK",
+   "case1_layouts.json": "OK",
+   "case2_layouts.json": "OK",
+   "case3_layouts.json": "OK",
+   "case4_layouts.json": "OK",
+   "case5_layouts.json": "OK",
+   "case6_layouts.json": "OK",
+   "case7_layouts.json": "OK",
+   "case8_layouts.json": "OK",
+   "case9_layouts.json": "OK",
+   "ch_g103_layouts.json": "OK",
+   "grafo10051.30_layouts.json": "OK",
+   "grafo11599.91_layouts.json": "OK",
+   "grafo1567.57_layouts.json": "OK",
+   "grafo2746.38_layouts.json": "OK",
+   "grafo3202.35_layouts.json": "OK",
+   "grafo3335.40_layouts.json": "OK",
+   "grafo3438.36_layouts.json": "OK",
+   "grafo3492.51_layouts.json": "OK",
+   "grafo4777.61_layouts.json": "OK",
+   "grafo4882.53_layouts.json": "OK",
+   "grafo5737.34_layouts.json": "OK",
+   "grafo6186.67_layouts.json": "OK",
+   "grafo728.28_layouts.json": "OK",
+   "grafo9756.68_layouts.json": "OK",
+   "intro_case1_layouts.json": "OK",
+   "moviegalaxies-25_layouts.json": "OK",
+   "moviegalaxies-271_layouts.json": "OK",
+   "moviegalaxies-371_layouts.json": "OK",
+   "moviegalaxies-402_layouts.json": "OK",
+   "moviegalaxies-92_layouts.json": "OK",
+   "pre_case1_layouts.json": "OK",
+   "pre_case2_layouts.json": "OK",
+   "rt_case10_layouts.json": "OK"
+  }
+ }
+}

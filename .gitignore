@@ -1,0 +1,10 @@
+# 本机被试数据不入库（数据在浏览器 localStorage，这里是占位目录）
+data/
+# 编号花名册 —— 只留本地，绝不上传
+codes_roster.csv
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 第三方论文 PDF / 全文抽取 —— 有版权问题，且部署用不到，只留本地
+docs/refs/

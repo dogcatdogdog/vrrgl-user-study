@@ -1,0 +1,6 @@
+{
+  "name": "vrrgl-user-study-app",
+  "private": true,
+  "type": "module",
+  "comment": "只为了让 Node 把 js/*.js 当 ES module（tools/test_randomize.mjs 要 import 它们）。浏览器不读这个文件，零构建的约束不受影响。"
+}

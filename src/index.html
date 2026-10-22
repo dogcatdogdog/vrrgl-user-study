@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph layout and readability — user study</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- 非图屏（欢迎 / 同意 / 问卷 / 休息 / 结束） -->
+  <div id="screen"></div>
+
+  <!-- 试次屏：左侧 ID 面板 + 图 + 作答控件 -->
+  <div id="trialroot" hidden></div>
+
+  <!-- 底部进度条（GVRRI 做法） -->
+  <footer id="progressbar"></footer>
+</div>
+
+<noscript>
+  <p style="padding:2rem">This study requires JavaScript.</p>
+</noscript>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
