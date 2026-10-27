@@ -423,12 +423,14 @@ def build(normalization, allow_overlap, target_rule="top"):
 
 # ─────────────────────────── 输出 ───────────────────────────
 
-def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skipped):
+def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skipped,
+                  target_rule="top"):
     os.makedirs(OUT_DIR, exist_ok=True)
     suffix = "" if normalization == "bbox" else f".{normalization}"
     meta = {
         "version": "2.0",
         "data_source": "自选数据集里 ≤110 节点的原生图（不裁剪、不重新布局）",
+        "target_rule": target_rule,
         "normalization": "bounding_box" if normalization == "bbox" else "median_edge_length",
         "usable_fraction": USABLE if normalization == "bbox" else None,
         "target_median_px": TARGET_MEDIAN_PX if normalization != "bbox" else None,
@@ -770,7 +772,7 @@ def main():
      skipped) = build(args.normalization, args.allow_overlap, args.target_rule)
 
     meta_path = write_outputs(args.normalization, stimuli, report, norm_log,
-                              graphs, picked, skipped)
+                              graphs, picked, skipped, args.target_rule)
     used = {n for b in BAND_ORDER for n in picked[b]}
     if args.normalization == "bbox":
         write_practice_and_examples(graphs, used, args.normalization)
