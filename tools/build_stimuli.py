@@ -183,12 +183,13 @@ def pick_target(G: nx.Graph, band: str, rule: str = "top"):
 
     | rule | 低档取到 | 高档取到 | 跨档对比度 | 风险 |
     |---|---|---|---|---|
-    | **`top`（默认）** | ≈8 | 图的最大度 | 2×–4×（最弱） | 无 |
+    | `top` | ≈8 | 图的最大度 | 2×–4×（最弱） | 无 |
     | `bottom` | ≈2 | 图的最大度 | 8×–16×（最强） | 低档只有 2 个邻居 → T1 可能天花板 |
-    | `mid` | ≈5 | 图的最大度 | 3×–6× | 折中 |
+    | **`mid`（当前）** | ≈5 | 按度数排序的中位 hub（避开唯一的极端最大度） | 3×–5× | 高档只有 1 个候选时无法避开最大度 |
 
-    默认取 `top`（「档内最像 hub 的那个」）：**在低档也会给出一个有实质邻域的节点**，
-    避开 docs/02 §3.2 自己点名的低度天花板风险。要追求最大对比度用 `--target-rule bottom`。
+    `mid` 是 2026-10-27 pilot 后确定的目标规则：「典型 hub」而非「全图最大度」。
+    低档固定取度 5 附近（避免度 2 导致天花板）；高档无上限，按度数排序取中位名次，
+    使目标落在 LPFD 有局部角分辨率优势的区间。要复现旧版请用 `--target-rule top`。
     """
     lo, hi = BANDS[band]
     cands = [v for v, d in G.degree() if in_band(d, band)]
@@ -199,9 +200,13 @@ def pick_target(G: nx.Graph, band: str, rule: str = "top"):
         return sorted(cands, key=lambda v: (-deg[v], str(v)))[0]
     if rule == "bottom":
         return sorted(cands, key=lambda v: (deg[v], str(v)))[0]
-    # mid：取档内度数最接近中位数的（高档无上限时以判据下界 + 4 为参考）
-    ref = (lo + (hi if hi is not None else lo + 8)) / 2
-    return sorted(cands, key=lambda v: (abs(deg[v] - ref), str(v)))[0]
+    if band == "low":
+        ref = (lo + hi) / 2          # 5：低档的典型节点，避开度 2 的天花板
+        return sorted(cands, key=lambda v: (abs(deg[v] - ref), str(v)))[0]
+    # high（无上限）：按度数排序取中位名次，避免选中全图唯一的极端 hub。
+    # 该档只有 1 个候选时无法避开，会在 README 中标注。
+    ordered = sorted(cands, key=lambda v: (-deg[v], str(v)))
+    return ordered[len(ordered) // 2]
 
 
 def select_graphs(graphs, allow_overlap=False, target_rule="top"):
@@ -569,15 +574,15 @@ def write_readme(report, picked, skipped, normalization, allow_overlap, target_r
     A("> ⚠️ **确定性**：排序全用字符串键，无浮点比较。\n")
     A("> 已实测 `PYTHONHASHSEED ∈ {1,7,99999,31337}` 下产物 md5 完全一致。\n\n")
 
-    A(f"### 档内怎么挑目标节点 —— `--target-rule {target_rule}`\n\n")
+    A(f"### 档内怎么挑目标节点 —— `--target-rule {target_rule}`（当前）\n\n")
     A("⚠️ **文档没有规定档内怎么挑**（docs/02 §4 步骤 3 只说「每图挑 1 个该档的目标节点」）。\n")
-    A("这是实现方补的规则，三种取法：\n\n")
+    A("2026-10-27 pilot 后确定用 **`mid`**：目标是「典型 hub」，不是全图唯一的极端最大度。\n\n")
     A("| rule | 低档取到 | 高档取到 | 跨档对比度 | 风险 |\n|---|---|---|---|---|\n")
-    A("| **`top`（当前）** | ≈8 | 图的最大度 | 2×–4× | 无 |\n")
+    A("| `top`（旧版） | ≈8 | 图的最大度 | 2×–4× | 目标落在 LPFD 最弱的极端 hub 上 |\n")
     A("| `bottom` | ≈2 | 图的最大度 | 8×–16× | 低档只有 2 个邻居 → T1 可能天花板 |\n")
-    A("| `mid` | ≈5 | 图的最大度 | 3×–6× | 折中 |\n\n")
-    A("默认 `top`（档内最像 hub 的那个）：在低档也给出有实质邻域的节点，\n")
-    A("避开 docs/02 §3.2 自己点名的低度天花板风险。追求最大对比度用 `--target-rule bottom`。\n\n")
+    A("| **`mid`（当前）** | ≈5 | 按度数排序的中位 hub | 3×–5× | 高档只有 1 个候选时仍取最大度 |\n\n")
+    A("低档固定取度 5 附近，避免度 2 导致天花板；高档按度数降序取中位名次，\n")
+    A("避开唯一的极端最大度。旧版行为可用 `--target-rule top` 复现。\n\n")
 
     A("## 实际选中的图\n\n")
     for b in BAND_ORDER:

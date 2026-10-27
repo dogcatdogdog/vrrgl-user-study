@@ -2,6 +2,7 @@
  "meta": {
   "version": "2.0",
   "data_source": "自选数据集里 ≤110 节点的原生图（不裁剪、不重新布局）",
+  "target_rule": "mid",
   "normalization": "bounding_box",
   "usable_fraction": 0.84,
   "target_median_px": null,
@@ -39,8 +40,8 @@
    "degree_level": "low",
    "n_nodes": 21,
    "n_edges": 37,
-   "target": "n11",
-   "target_degree": 6,
+   "target": "n3",
+   "target_degree": 5,
    "t4_pair": [
     "n1",
     "n2"
@@ -54,8 +55,8 @@
    "degree_level": "low",
    "n_nodes": 67,
    "n_edges": 131,
-   "target": "n25",
-   "target_degree": 6,
+   "target": "n7",
+   "target_degree": 5,
    "t4_pair": [
     "n0",
     "n25"
@@ -69,8 +70,8 @@
    "degree_level": "low",
    "n_nodes": 30,
    "n_edges": 35,
-   "target": "n26",
-   "target_degree": 8,
+   "target": "n27",
+   "target_degree": 4,
    "t4_pair": [
     "n0",
     "n26"
@@ -84,8 +85,8 @@
    "degree_level": "low",
    "n_nodes": 91,
    "n_edges": 121,
-   "target": "n75",
-   "target_degree": 7,
+   "target": "n0",
+   "target_degree": 5,
    "t4_pair": [
     "n1",
     "n5"
@@ -99,8 +100,8 @@
    "degree_level": "low",
    "n_nodes": 57,
    "n_edges": 74,
-   "target": "n10",
-   "target_degree": 7,
+   "target": "n7",
+   "target_degree": 5,
    "t4_pair": [
     "n1",
     "n2"
@@ -114,8 +115,8 @@
    "degree_level": "low",
    "n_nodes": 38,
    "n_edges": 44,
-   "target": "n1",
-   "target_degree": 7,
+   "target": "n5",
+   "target_degree": 5,
    "t4_pair": [
     "n2",
     "n6"
@@ -144,8 +145,8 @@
    "degree_level": "low",
    "n_nodes": 40,
    "n_edges": 53,
-   "target": "n0",
-   "target_degree": 6,
+   "target": "n10",
+   "target_degree": 5,
    "t4_pair": [
     "n0",
     "n9"
@@ -159,8 +160,8 @@
    "degree_level": "high",
    "n_nodes": 40,
    "n_edges": 52,
-   "target": "n1",
-   "target_degree": 19,
+   "target": "n23",
+   "target_degree": 17,
    "t4_pair": [
     "n0",
     "n23"
@@ -174,8 +175,8 @@
    "degree_level": "high",
    "n_nodes": 96,
    "n_edges": 123,
-   "target": "n0",
-   "target_degree": 18,
+   "target": "n20",
+   "target_degree": 17,
    "t4_pair": [
     "n39",
     "n42"
@@ -189,8 +190,8 @@
    "degree_level": "high",
    "n_nodes": 105,
    "n_edges": 164,
-   "target": "n12",
-   "target_degree": 33,
+   "target": "n98",
+   "target_degree": 20,
    "t4_pair": [
     "n12",
     "n47"
@@ -204,8 +205,8 @@
    "degree_level": "high",
    "n_nodes": 71,
    "n_edges": 154,
-   "target": "n7",
-   "target_degree": 23,
+   "target": "n10",
+   "target_degree": 18,
    "t4_pair": [
     "n10",
     "n28"
@@ -219,8 +220,8 @@
    "degree_level": "high",
    "n_nodes": 42,
    "n_edges": 152,
-   "target": "n1",
-   "target_degree": 27,
+   "target": "n12",
+   "target_degree": 17,
    "t4_pair": [
     "n6",
     "n7"
@@ -249,8 +250,8 @@
    "degree_level": "high",
    "n_nodes": 68,
    "n_edges": 160,
-   "target": "n18",
-   "target_degree": 26,
+   "target": "n44",
+   "target_degree": 23,
    "t4_pair": [
     "n14",
     "n18"
