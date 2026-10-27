@@ -2,7 +2,7 @@
  * 流程状态机与流程内控件（docs/01 §5）
  *
  * WELCOME → CONSENT → DEMOGRAPHICS → LITERACY → INSTRUCTIONS
- *   → PRACTICE×5 → MAIN×48（每 12 题强制休息）→ QUESTIONNAIRE → DONE
+ *   → PRACTICE×3 → MAIN×32（每 12 题强制休息）→ QUESTIONNAIRE → DONE
  */
 
 import { t } from './i18n.js';
@@ -84,7 +84,7 @@ export function renderWelcome(container, onStart, pid = null, group = 'lab') {
 }
 
 /** 任务说明页（每个任务给一个静态示意 —— docs/03 §8①）。 */
-export function renderInstructions(container, { enabledTasks, examples, onStart }) {
+export function renderInstructions(container, { enabledTasks, examples, onStart, t1Wording = 'factual' }) {
   container.replaceChildren();
   const w = h('div', 'screen instructions');
   w.append(h('h2', null, t('instructions.title')));
@@ -92,7 +92,8 @@ export function renderInstructions(container, { enabledTasks, examples, onStart 
   if (enabledTasks.includes('T1')) {
     const s = h('section');
     s.append(h('h3', null, t('instructions.t1Title')));
-    s.append(h('p', null, t('instructions.t1Text')));
+    s.append(h('p', null, t(t1Wording === 'perceptual'
+      ? 'instructions.t1TextPerceptual' : 'instructions.t1TextFactual')));
     s.append(h('p', 'hint', t('instructions.t1Hint')));
     w.append(s);
   }

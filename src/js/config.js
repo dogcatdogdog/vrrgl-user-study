@@ -14,13 +14,14 @@ import { getLocale } from './i18n.js';
 const DEFAULTS = {
   // ───────── 任务 ─────────
   tasks: {
-    T1: { enabled: true, wording: 'factual' },   // 'factual' | 'perceptual'（GVRRI 的 VRR 措辞）
-    T4: { enabled: true },
-    T2: { enabled: true },                       // ★ 三任务全开（资料分析：D1/D3）
+    // T1 改为感知型措辞（GVRRI 的 VRR 问法）：测「邻域感知」而非逐边追踪
+    T1: { enabled: true, wording: 'perceptual' },   // 'factual' | 'perceptual'
+    // T4 于 2026-10-27 撤出：pilot 准确率 95/96（天花板），无法区分布局
+    T4: { enabled: false },
+    T2: { enabled: true },
   },
   // practiceTrials = 各任务的题数上限，**仅对 enabled 的任务生效**
-  //   T2 关闭时（默认）→ 练习 4 题（T1:2 + T4:2）
-  //   T2 开启时        → 练习 5 题（T1:2 + T4:2 + T2:1）
+  //   当前 T4 关闭 → 练习 3 题（T1:2 + T2:1）
   practiceTrials: { T1: 2, T4: 2, T2: 1 },
   practiceFeedback: true,
 

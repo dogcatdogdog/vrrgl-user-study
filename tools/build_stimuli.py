@@ -553,10 +553,10 @@ def write_readme(report, picked, skipped, normalization, allow_overlap, target_r
     A("## 文件\n\n| 文件 | 内容 |\n|---|---|\n")
     A(f"| `stimuli.json` | {len({e['graph_id'] for e in report})} 图 × 4 布局 × 2 任务 = "
       f"**{len({e['graph_id'] for e in report}) * 8}** 条 |\n")
-    A(f"| `practice.json` | 4 条（题序 T4/T1/T4/T1，取自池外） |\n")
+    A(f"| `practice.json` | 3 条练习（T1×2 + T2×1，取自池外） |\n")
     A(f"| `examples.json` | 4 条（说明页示意，固定 LPFD） |\n")
     A(f"| `selection_report.json` | 机器可读，供论文撰写 |\n\n")
-    A("**每任务 16 trial，三个任务共 48 trial**（约 45–50 分钟）。\n\n")
+    A("**每任务 16 trial，两个任务（T1+T2）共 32 trial**（约 30–35 分钟）。T4 已关闭。\n\n")
 
     A("## 选图规则（docs/02 §4.2）\n\n")
     A("1. 读 `*.json` + `*.graphml`，筛出 **n ≤ 110** 的 → 26 张\n")
@@ -613,9 +613,9 @@ def write_readme(report, picked, skipped, normalization, allow_overlap, target_r
 
     A("## ⚠️ 必须在论文 Limitations 里报告的取舍（docs/02 §7.2）\n\n")
     A("### F1 — 跨任务图重复\n\n")
-    A("T1 与 T4 **共用同一批 16 张图、同一份「图 → 布局」映射**。\n")
-    A("每被试 48 trial ⇒ 每张图见 **3 次，三次都是同一种布局**。\n")
-    A("残留风险：T1 学到的结构可能迁移到 T4，方向是**抹平各布局差异**（保守偏差）。\n")
+    A("T1 与 T2 **共用同一批 16 张图、同一份「图 → 布局」映射**。\n")
+    A("每被试 32 trial ⇒ 每张图见 **2 次，两次都是同一种布局**。\n")
+    A("残留风险：T1 学到的结构可能迁移到 T2，方向是**抹平各布局差异**（保守偏差）。\n")
     A("缓解：任务分块；两个任务问的是不同问题。\n\n")
     A("> 「跨任务错位」曾被考虑并**否决** —— 它把「自我污染」换成「交叉污染」，不可归因。\n\n")
     A("### F2 — 没有真正的 hub\n\n")

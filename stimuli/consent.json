@@ -33,7 +33,7 @@
    "preamble": "Please read this page before you decide whether to take part. Ask us anything that is unclear — now or at any time during the session.",
    "keyInfo": [
     "We are studying how different ways of drawing network graphs affect how easily people can read a node's connections.",
-    "You will complete one session of about 45–50 minutes at [location].",
+    "You will complete one session of about 30–35 minutes at [location].",
     "You will look at graphs and answer questions about them, and complete short questionnaires.",
     "The main discomfort is tiredness or boredom. You can take breaks and you can stop at any time.",
     "You will be paid $10, even if you stop early.",
@@ -60,12 +60,12 @@
     {
      "heading": "3. What will you do?",
      "paragraphs": [
-      "One session, about 45–50 minutes:"
+      "One session, about 30–35 minutes:"
      ],
      "bullets": [
       "Background questions — your age, gender, field of study, and how familiar you are with graphs. (2 min)",
-      "Instructions and 5 practice trials — you can ask questions during this part. (5 min)",
-      "48 trials. In each trial you see one graph. Task A (16 trials): one node is highlighted in blue — click every node directly connected to it. Task B (16 trials): two nodes are highlighted — click the one you think is connected to more nodes. Task C (16 trials): one node is highlighted — type how many nodes are directly connected to it.",
+      "Instructions and 3 practice trials — you can ask questions during this part. (4 min)",
+      "32 trials. In each trial you see one graph. Task A (16 trials): one node is highlighted in blue — select the nodes that appear to belong to its neighbourhood. Task B (16 trials): one node is highlighted in blue — type how many nodes are directly connected to it.",
       "There is no time limit on any trial, and no penalty for being slow.",
       "Breaks. After every 12 trials the screen offers a 30-second break. You may also pause between trials whenever you want, and you may leave the room with the researcher's knowledge at any point.",
       "Short questionnaires — a few questions about how mentally demanding the task felt, and how readable you found the graphs. (5 min)"
@@ -218,7 +218,7 @@
    "preamble": "在决定是否参加之前，请先阅读本页。如有任何不清楚之处，现在或实验过程中的任何时间都可以向我们提问。",
    "keyInfo": [
     "我们在研究：不同的网络图绘制方式，会如何影响人们看懂某个节点连接关系的难易程度。",
-    "你将在 [地点] 参加一次约 45–50 分钟的测试。",
+    "你将在 [地点] 参加一次约 30–35 分钟的测试。",
     "你会看一些图、回答关于它们的问题，并填写几份简短问卷。",
     "主要的不适是疲倦或无聊。你可以随时休息，也可以随时终止。",
     "你将获得 [金额] 的报酬，即使提前终止也会全额支付。",
@@ -245,12 +245,12 @@
     {
      "heading": "3. 你需要做什么？",
      "paragraphs": [
-      "一次测试，约 45–50 分钟："
+      "一次测试，约 30–35 分钟："
      ],
      "bullets": [
       "背景问题——年龄、性别、专业，以及你对图的熟悉程度。（约 2 分钟）",
-      "任务说明与 5 个练习试次——这部分可以提问。（约 5 分钟）",
-      "48 个正式试次。每个试次呈现一张图。任务 A（16 个）：一个节点被高亮成蓝色，请点击所有与它直接相连的节点；任务 B（16 个）：两个节点被高亮，请点击你认为连接更多的那个；任务 C（16 个）：一个节点被高亮，请输入与它直接相连的节点个数。",
+      "任务说明与 3 个练习试次——这部分可以提问。（约 4 分钟）",
+      "32 个正式试次。每个试次呈现一张图。任务 A（16 个）：一个节点被高亮成蓝色，请选出你认为属于它邻域的节点；任务 B（16 个）：一个节点被高亮，请输入与它直接相连的节点个数。",
       "所有题目都没有时间限制，答得慢也没有惩罚。",
       "休息——每 12 个试次会强制休息 30 秒。你也可以在试次之间自行暂停，并在告知研究者后随时离开房间。",
       "简短问卷——关于任务的脑力负担，以及你对图的易读性的主观评价。（约 5 分钟）"
@@ -415,7 +415,7 @@
     {
      "heading": "3. What will you do?",
      "paragraphs": [
-      "One session, about 45–50 minutes: background questions (2 min); instructions and 5 practice trials (5 min); 48 trials (three kinds of question); a 30-second break offered every 12 trials; short questionnaires (5 min).",
+      "One session, about 30–35 minutes: background questions (2 min); instructions and 3 practice trials (4 min); 32 trials (two kinds of question); a 30-second break offered every 12 trials; short questionnaires (5 min).",
       "Please do not use a second screen, or look up answers, or use assistive tools during the trials. We ask you to work alone.",
       "We record how many times you switch away from the study window. Please close other tabs and notifications before you begin."
      ],
@@ -530,7 +530,7 @@
     {
      "heading": "3. 你需要做什么？",
      "paragraphs": [
-      "一次约 45–50 分钟的测试：背景问题（约 2 分钟）；任务说明与 5 个练习试次（约 5 分钟）；48 个正式试次（三种题型）；每 12 个试次强制休息 30 秒；简短问卷（约 5 分钟）。",
+      "一次约 30–35 分钟的测试：背景问题（约 2 分钟）；任务说明与 3 个练习试次（约 4 分钟）；32 个正式试次（两种题型）；每 12 个试次强制休息 30 秒；简短问卷（约 5 分钟）。",
       "在试次过程中请不要使用第二块屏幕、查阅答案或使用辅助工具。请独立完成。",
       "我们会记录你切换到其它窗口的次数。请在开始前关闭其它标签页和通知。"
      ],

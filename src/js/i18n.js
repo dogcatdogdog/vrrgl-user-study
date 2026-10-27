@@ -35,7 +35,7 @@ const DICT = {
     welcome: {
       title: 'Graph layout and readability',
       intro: 'In this session you will look at a series of network graphs and answer short questions about them. ' +
-        'It takes about 45–50 minutes, and there are breaks.',
+        'It takes about 30–35 minutes, and there are breaks.',
       note: 'There is no time limit on any question, and no penalty for wrong answers.',
       pidLabel: 'Participant ID',
       labHint: 'To start the next participant, close this tab and open a new one.',
@@ -84,7 +84,8 @@ const DICT = {
     instructions: {
       title: 'How to answer',
       t1Title: 'Finding neighbours',
-      t1Text: 'One node is highlighted in blue. Click every node that is directly connected to it by a single line, then click Submit.',
+      t1TextFactual: 'One node is highlighted in blue. Click every node that is directly connected to it by a single line, then click Submit.',
+      t1TextPerceptual: 'One node is highlighted in blue. Select the nodes that appear to belong to its neighbourhood, then click Submit.',
       t1Hint: 'You can click nodes one by one to select or deselect them, or drag a rectangle on empty space to select several at once. Use the mouse wheel to zoom.',
       t4Title: 'Comparing connections',
       t4Text: 'Two nodes are highlighted in blue. Click the one you think is connected to more nodes. Your answer is recorded as soon as you click.',
@@ -95,7 +96,7 @@ const DICT = {
 
     trial: {
       t1Factual: 'Click on all nodes that are directly connected to the highlighted node.',
-      t1Perceptual: "Circle the nodes that appear to belong to the highlighted node's neighborhood.",
+      t1Perceptual: "Select the nodes that appear to belong to the highlighted node's neighborhood.",
       t4: 'Which of the highlighted nodes has more direct connections?',
       t2: 'How many nodes are directly connected to the highlighted node?',
       selectedNodes: 'Selected nodes',
@@ -230,7 +231,7 @@ const DICT = {
 
     welcome: {
       title: '图布局与可读性',
-      intro: '本次实验你会看到一系列网络图，并回答关于它们的简短问题。全程约 45–50 分钟，中间有休息。',
+      intro: '本次实验你会看到一系列网络图，并回答关于它们的简短问题。全程约 30–35 分钟，中间有休息。',
       note: '所有题目都没有时间限制，答错也不会扣分。',
       pidLabel: '被试编号',
       labHint: '开始下一位被试：关闭本标签页，再新开一个。',
@@ -279,7 +280,8 @@ const DICT = {
     instructions: {
       title: '如何作答',
       t1Title: '找邻居',
-      t1Text: '有一个节点被高亮成蓝色。请点击所有与它由一条线直接相连的节点，然后点「提交」。',
+      t1TextFactual: '有一个节点被高亮成蓝色。请点击所有与它由一条线直接相连的节点，然后点「提交」。',
+      t1TextPerceptual: '有一个节点被高亮成蓝色。请选出你认为属于它邻域的节点，然后点「提交」。',
       t1Hint: '你可以逐个点击节点来选中或取消，也可以在空白处拖出一个矩形一次选中多个。用鼠标滚轮缩放。',
       t4Title: '比较连接数',
       t4Text: '有两个节点被高亮成蓝色。请点击你认为连接更多的那个。点击即提交。',
@@ -290,7 +292,7 @@ const DICT = {
 
     trial: {
       t1Factual: '点击所有与高亮节点直接相连的节点。',
-      t1Perceptual: '圈出你认为属于高亮节点邻域的节点。',
+      t1Perceptual: '选出你认为属于高亮节点邻域的节点。',
       t4: '两个高亮节点中，哪一个有更多的直接连接？',
       t2: '高亮节点有多少个直接邻居？',
       selectedNodes: '已选节点',

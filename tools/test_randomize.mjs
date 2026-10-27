@@ -210,5 +210,20 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
     '同一 pid 重复访问 offset 固定不变');
 }
 
+// 8) 当前实际配置：T4 关闭，T1（感知型）+ T2，共 32 题、3 个练习
+{
+  const { CONFIG } = await import('../src/js/config.js');
+  const plan = buildTrialPlan({
+    stimuli, graphIds, layouts: CONFIG.layouts, pid: 'REAL01', participantIndex: 0, cfg: CONFIG,
+  });
+  const main = plan.trials.filter((x) => x.phase === 'main');
+  ok(main.length === 32, '当前配置：32 个正式题', String(main.length));
+  ok(main.filter((x) => x.task === 'T1').length === 16
+    && main.filter((x) => x.task === 'T2').length === 16, '当前配置：T1 / T2 各 16');
+  ok(!plan.trials.some((x) => x.task === 'T4'), '当前配置：没有 T4');
+  const pr = buildPracticePlan({ practiceStimuli, pid: 'REAL01', cfg: CONFIG });
+  ok(pr.length === 3, '当前配置：3 个练习', String(pr.length));
+}
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : failures + ' FAILURE(S)'}\n`);
 process.exit(failures ? 1 : 0);
