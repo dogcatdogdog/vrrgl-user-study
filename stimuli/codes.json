@@ -1,11 +1,59 @@
 {
  "meta": {
   "version": "1.0",
-  "generated": "2026-10-22T08:00:42+00:00",
-  "n_codes": 32,
+  "generated": "2026-10-27T08:06:33+00:00",
+  "n_codes": 44,
   "layouts_per_offset": 4
  },
  "codes": {
+  "P295C3": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P29FRV": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P2DAXB": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P2EEQB": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P2FG25": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "P2GBP8": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P2JSZV": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "P2N6X3": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P2PXGA": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P2VEKJ": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P2WZA6": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "P2ZLHZ": {
+   "offset": 3,
+   "group": "remote"
+  },
   "P4SUV": {
    "offset": 1,
    "group": "remote"
