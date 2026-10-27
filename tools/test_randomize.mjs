@@ -217,6 +217,7 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
     stimuli, graphIds, layouts: CONFIG.layouts, pid: 'REAL01', participantIndex: 0, cfg: CONFIG,
   });
   const main = plan.trials.filter((x) => x.phase === 'main');
+  ok(CONFIG.tasks.T1.wording === 'factual', '当前配置：T1 事实型措辞', CONFIG.tasks.T1.wording);
   ok(main.length === 32, '当前配置：32 个正式题', String(main.length));
   ok(main.filter((x) => x.task === 'T1').length === 16
     && main.filter((x) => x.task === 'T2').length === 16, '当前配置：T1 / T2 各 16');

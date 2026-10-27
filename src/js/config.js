@@ -14,8 +14,8 @@ import { getLocale } from './i18n.js';
 const DEFAULTS = {
   // ───────── 任务 ─────────
   tasks: {
-    // T1 改为感知型措辞（GVRRI 的 VRR 问法）：测「邻域感知」而非逐边追踪
-    T1: { enabled: true, wording: 'perceptual' },   // 'factual' | 'perceptual'
+    // T1 用事实型措辞（2026-10-27 由感知型恢复）：题干问「直接相连」的节点
+    T1: { enabled: true, wording: 'factual' },      // 'factual' | 'perceptual'
     // T4 于 2026-10-27 撤出：pilot 准确率 95/96（天花板），无法区分布局
     T4: { enabled: false },
     T2: { enabled: true },

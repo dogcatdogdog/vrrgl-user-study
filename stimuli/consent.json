@@ -65,7 +65,7 @@
      "bullets": [
       "Background questions — your age, gender, field of study, and how familiar you are with graphs. (2 min)",
       "Instructions and 3 practice trials — you can ask questions during this part. (4 min)",
-      "32 trials. In each trial you see one graph. Task A (16 trials): one node is highlighted in blue — select the nodes that appear to belong to its neighbourhood. Task B (16 trials): one node is highlighted in blue — type how many nodes are directly connected to it.",
+      "32 trials. In each trial you see one graph. Task A (16 trials): one node is highlighted in blue — click every node directly connected to it. Task B (16 trials): one node is highlighted in blue — type how many nodes are directly connected to it.",
       "There is no time limit on any trial, and no penalty for being slow.",
       "Breaks. After every 12 trials the screen offers a 30-second break. You may also pause between trials whenever you want, and you may leave the room with the researcher's knowledge at any point.",
       "Short questionnaires — a few questions about how mentally demanding the task felt, and how readable you found the graphs. (5 min)"
@@ -250,7 +250,7 @@
      "bullets": [
       "背景问题——年龄、性别、专业，以及你对图的熟悉程度。（约 2 分钟）",
       "任务说明与 3 个练习试次——这部分可以提问。（约 4 分钟）",
-      "32 个正式试次。每个试次呈现一张图。任务 A（16 个）：一个节点被高亮成蓝色，请选出你认为属于它邻域的节点；任务 B（16 个）：一个节点被高亮，请输入与它直接相连的节点个数。",
+      "32 个正式试次。每个试次呈现一张图。任务 A（16 个）：一个节点被高亮成蓝色，请点击所有与它直接相连的节点；任务 B（16 个）：一个节点被高亮，请输入与它直接相连的节点个数。",
       "所有题目都没有时间限制，答得慢也没有惩罚。",
       "休息——每 12 个试次会强制休息 30 秒。你也可以在试次之间自行暂停，并在告知研究者后随时离开房间。",
       "简短问卷——关于任务的脑力负担，以及你对图的易读性的主观评价。（约 5 分钟）"
