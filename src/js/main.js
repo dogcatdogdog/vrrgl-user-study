@@ -656,14 +656,16 @@ async function runAttention(ctx, root, index) {
 
   await new Promise((resolve) => {
     btn.addEventListener('click', () => {
-      const v = inp.value.trim().toUpperCase();
+      // NFKC：中文输入法常把字母打成全角（ＧＲＡＰＨ，U+FF27…），
+      // toUpperCase 不会转成半角，会冤枉完全照做的被试；顺带去掉所有空白。
+      const v = inp.value.normalize('NFKC').replace(/\s+/g, '').toUpperCase();
       if (!v) { err.textContent = t('attention.empty'); return; }
       const passed = v === 'GRAPH';
       session.attention.total += 1;
       if (passed) session.attention.passed += 1; else session.attention.failed += 1;
       session.trials.push({
         trial_index: index, phase: 'attention', task: 'ATTENTION',
-        response: v, correct: passed ? 1 : 0,
+        response: v, raw_response: inp.value, correct: passed ? 1 : 0,
         rt_ms: Math.round(performance.now() - t0),
         timestamp: Date.now(),
         visibility_switches: session.trials.at(-1)?.visibility_switches ?? 0,
