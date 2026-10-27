@@ -998,18 +998,16 @@
     }
    ],
    "targets": [
-    "n31"
+    "n1"
    ],
-   "target_degree": 7,
+   "target_degree": 5,
    "ground_truth": {
-    "n31": [
-     "n21",
-     "n22",
-     "n40",
-     "n41",
-     "n42",
-     "n43",
-     "n58"
+    "n1": [
+     "n0",
+     "n2",
+     "n56",
+     "n60",
+     "n66"
     ]
    },
    "pair": null
@@ -1298,19 +1296,15 @@
     }
    ],
    "targets": [
-    "n21"
+    "n6"
    ],
-   "target_degree": 8,
+   "target_degree": 4,
    "ground_truth": {
-    "n21": [
-     "n10",
-     "n11",
-     "n16",
-     "n19",
-     "n6",
-     "n7",
-     "n8",
-     "n9"
+    "n6": [
+     "n0",
+     "n12",
+     "n20",
+     "n21"
     ]
    },
    "pair": null
@@ -2011,19 +2005,16 @@
     }
    ],
    "targets": [
-    "n44"
+    "n18"
    ],
-   "target_degree": 8,
+   "target_degree": 5,
    "ground_truth": {
-    "n44": [
+    "n18": [
      "n15",
      "n17",
-     "n26",
-     "n41",
-     "n42",
-     "n53",
-     "n63",
-     "n64"
+     "n20",
+     "n24",
+     "n3"
     ]
    },
    "pair": null

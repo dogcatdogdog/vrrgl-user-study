@@ -464,11 +464,11 @@ def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skip
     return path
 
 
-def write_practice_and_examples(graphs, used_names, normalization):
+def write_practice_and_examples(graphs, used_names, normalization, target_rule="top"):
     """练习 × 4（T4/T1/T4/T1）与示例 × 4 —— 全部取自刺激池【之外】的图。"""
     pool = [n for n in sorted(graphs, key=str) if n not in used_names]
     ok = [n for n in pool
-          if pick_target(graphs[n], "low") is not None and t4_pair(graphs[n], "low", True) is not None
+          if pick_target(graphs[n], "low", target_rule) is not None and t4_pair(graphs[n], "low", True) is not None
           or t4_pair(graphs[n], "low", False) is not None]
     ok = sorted(set(ok), key=str)
     if len(ok) < 4:
@@ -478,7 +478,7 @@ def write_practice_and_examples(graphs, used_names, normalization):
         G = graphs[name]
         layouts = load_layouts(name)
         remap, nodes, edges, cbl = anonymize(G, layouts)
-        tgt = pick_target(G, "low") or sorted(G.nodes(), key=str)[0]
+        tgt = pick_target(G, "low", target_rule) or sorted(G.nodes(), key=str)[0]
         t = remap[tgt]
         out = {}
         for layout, raw in cbl.items():
@@ -780,7 +780,7 @@ def main():
                               graphs, picked, skipped, args.target_rule)
     used = {n for b in BAND_ORDER for n in picked[b]}
     if args.normalization == "bbox":
-        write_practice_and_examples(graphs, used, args.normalization)
+        write_practice_and_examples(graphs, used, args.normalization, args.target_rule)
         write_readme(report, picked, skipped, args.normalization,
                      args.allow_overlap, args.target_rule)
 
