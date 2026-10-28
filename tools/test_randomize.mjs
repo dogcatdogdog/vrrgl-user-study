@@ -226,5 +226,18 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
   ok(pr.length === 3, '当前配置：3 个练习', String(pr.length));
 }
 
+// 9) 复测模式：强制单一布局
+{
+  const { CONFIG } = await import('../src/js/config.js');
+  const plan = buildTrialPlan({
+    stimuli, graphIds, layouts: CONFIG.layouts, pid: 'REVIEW01', participantIndex: 0,
+    cfg: { ...CONFIG, attentionChecks: 0 }, forcedLayout: 'LPFD',
+  });
+  const main = plan.trials.filter((x) => x.phase === 'main');
+  ok(main.length === 32, '复测模式：32 个正式题', String(main.length));
+  ok(main.every((x) => x.layout === 'LPFD'), '复测模式：全部为 LPFD');
+  ok(!plan.trials.some((x) => x.task === 'ATTENTION'), '复测模式：无注意力检查');
+}
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : failures + ' FAILURE(S)'}\n`);
 process.exit(failures ? 1 : 0);

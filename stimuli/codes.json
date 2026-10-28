@@ -2,8 +2,13 @@
  "meta": {
   "version": "1.0",
   "generated": "2026-10-27T08:06:33+00:00",
-  "n_codes": 44,
-  "layouts_per_offset": 4
+  "n_codes": 47,
+  "layouts_per_offset": 4,
+  "review_codes": [
+   "LPFD1",
+   "LPFD2",
+   "LPFD3"
+  ]
  },
  "codes": {
   "P295C3": {
@@ -181,6 +186,24 @@
   "RWLVX": {
    "offset": 1,
    "group": "remote"
+  },
+  "LPFD1": {
+   "offset": 0,
+   "group": "remote",
+   "mode": "lpfd",
+   "review": true
+  },
+  "LPFD2": {
+   "offset": 0,
+   "group": "remote",
+   "mode": "lpfd",
+   "review": true
+  },
+  "LPFD3": {
+   "offset": 0,
+   "group": "remote",
+   "mode": "lpfd",
+   "review": true
   }
  }
 }

@@ -52,7 +52,8 @@ def next_offset(codes):
 
     这样无论把实验室和远程合并分析、还是分开分析，分布都是均衡的。
     """
-    n = len(codes)
+    # 复测编号（review=true）不参与实验分派，不能影响正式编号的 offset 轮转
+    n = sum(1 for m in codes.values() if not m.get("review"))
     return n % N_LAYOUTS
 
 

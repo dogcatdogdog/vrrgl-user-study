@@ -151,6 +151,15 @@ async function boot() {
   const save = () => { if (CONFIG.storage.autosaveEveryTrial) store.save(session); };
   save();
 
+  // 复测模式：编号表里的 mode='lpfd' 强制所有图使用 LPFD，只跑 T1/T2，不插注意力检查
+  const forcedLayout = entry?.mode === 'lpfd' ? 'LPFD' : null;
+  if (forcedLayout) {
+    session.review_mode = 'lpfd';
+    session.forced_layout = forcedLayout;
+    save();
+  }
+  const planCfg = forcedLayout ? { ...CONFIG, attentionChecks: 0 } : CONFIG;
+
   const recorder = new Recorder(CONFIG);
   installAntiCheat();
 
@@ -169,7 +178,7 @@ async function boot() {
     const graphIds = [...new Set(stimuli.map((s) => s.graph_id))].sort();
     const plan = buildTrialPlan({
       stimuli, graphIds, layouts: CONFIG.layouts, pid: session.participant_id,
-      participantIndex, offset: assignedOffset, cfg: CONFIG,
+      participantIndex, offset: assignedOffset, cfg: planCfg, forcedLayout,
     });
     session.assignment = {
       offset: plan.offset,
@@ -183,7 +192,7 @@ async function boot() {
   const graphIds = [...new Set(stimuli.map((s) => s.graph_id))].sort();
   const plan = buildTrialPlan({
     stimuli, graphIds, layouts: CONFIG.layouts, pid: session.participant_id,
-    participantIndex, offset: assignedOffset, cfg: CONFIG,
+    participantIndex, offset: assignedOffset, cfg: planCfg, forcedLayout,
   });
 
   console.info(`[flow] offset=${plan.offset}  trial 总数=${plan.trials.length}` +
@@ -370,7 +379,14 @@ async function run(ctx) {
   }
 
   // ⑤ 说明 + 练习
-  const practice = buildPracticePlan({ practiceStimuli, pid: session.participant_id, cfg: CONFIG });
+  // 复测模式用 LPFD 示例图做练习，保证练习与正式题同布局
+  const practiceSource = session.forced_layout
+    ? (examples || []).filter((s) => s.task === 'T1' && s.layout === session.forced_layout)
+    : practiceStimuli;
+  const practice = buildPracticePlan({
+    practiceStimuli: practiceSource.length ? practiceSource : practiceStimuli,
+    pid: session.participant_id, cfg: CONFIG,
+  });
   const totalPractice = practice.length;
   const totalMain = plan.trials.length;
 

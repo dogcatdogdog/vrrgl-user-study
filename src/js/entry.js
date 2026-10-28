@@ -37,7 +37,8 @@ export function lookupCode(codesDoc, raw) {
   const key = normalizeCode(raw);
   if (!key) return null;
   const meta = codesDoc?.codes?.[key];
-  return meta ? { code: key, offset: meta.offset, group: meta.group } : null;
+  // 保留 mode 等扩展字段（复测编号用），不要把 meta 里的信息丢掉
+  return meta ? { ...meta, code: key } : null;
 }
 
 /**
