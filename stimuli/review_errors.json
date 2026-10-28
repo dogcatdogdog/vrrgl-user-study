@@ -1,0 +1,157 @@
+{
+ "meta": {
+  "generated_from": [
+   "P295C3",
+   "P2DAXB",
+   "P2JSZV",
+   "P2N6X3"
+  ],
+  "definition": "LPFD trials with T1 jaccard<1 or T2 error>0",
+  "n": 13
+ },
+ "items": [
+  {
+   "graph_id": "GD1-toy_case1_graph",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P295C3",
+   "target_node": "n3",
+   "target_degree": 5,
+   "jaccard": 0.8,
+   "missed": 1,
+   "false_pos": 0
+  },
+  {
+   "graph_id": "GD2-toy_case2",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P295C3",
+   "target_node": "n23",
+   "target_degree": 17,
+   "jaccard": 0.9412,
+   "missed": 1,
+   "false_pos": 0
+  },
+  {
+   "graph_id": "aves_weaver",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P295C3",
+   "target_node": "n12",
+   "target_degree": 17,
+   "jaccard": 0.9412,
+   "missed": 1,
+   "false_pos": 0
+  },
+  {
+   "graph_id": "aves_weaver",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P295C3",
+   "target_node": "n12",
+   "target_degree": 17,
+   "error": 2,
+   "answer": 15,
+   "truth": 17
+  },
+  {
+   "graph_id": "GD1-toy_case1_graph",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P295C3",
+   "target_node": "n3",
+   "target_degree": 5,
+   "error": 1,
+   "answer": 4,
+   "truth": 5
+  },
+  {
+   "graph_id": "Moviegalaxies - Babel_graph",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P2DAXB",
+   "target_node": "n10",
+   "target_degree": 18,
+   "error": 4,
+   "answer": 14,
+   "truth": 18
+  },
+  {
+   "graph_id": "moviegalaxies-371",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P2DAXB",
+   "target_node": "n17",
+   "target_degree": 19,
+   "error": 2,
+   "answer": 17,
+   "truth": 19
+  },
+  {
+   "graph_id": "moviegalaxies-371",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P2DAXB",
+   "target_node": "n17",
+   "target_degree": 19,
+   "jaccard": 0.85,
+   "missed": 2,
+   "false_pos": 1
+  },
+  {
+   "graph_id": "Moviegalaxies - Babel_graph",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P2DAXB",
+   "target_node": "n10",
+   "target_degree": 18,
+   "jaccard": 0.9444,
+   "missed": 1,
+   "false_pos": 0
+  },
+  {
+   "graph_id": "moviegalaxies-271",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P2JSZV",
+   "target_node": "n44",
+   "target_degree": 23,
+   "error": 1,
+   "answer": 22,
+   "truth": 23
+  },
+  {
+   "graph_id": "moviegalaxies-271",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P2JSZV",
+   "target_node": "n44",
+   "target_degree": 23,
+   "jaccard": 0.875,
+   "missed": 2,
+   "false_pos": 1
+  },
+  {
+   "graph_id": "GD5-toy_case7_graph",
+   "task": "T2",
+   "layout": "LPFD",
+   "source_pid": "P2N6X3",
+   "target_node": "n20",
+   "target_degree": 17,
+   "error": 1,
+   "answer": 16,
+   "truth": 17
+  },
+  {
+   "graph_id": "GD5-toy_case7_graph",
+   "task": "T1",
+   "layout": "LPFD",
+   "source_pid": "P2N6X3",
+   "target_node": "n20",
+   "target_degree": 17,
+   "jaccard": 0.8824,
+   "missed": 2,
+   "false_pos": 0
+  }
+ ]
+}

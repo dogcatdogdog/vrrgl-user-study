@@ -161,10 +161,12 @@ python tools/make_codes.py --n 20 --group lab    --prefix L   # 可累加
 被试打开网址后会看到「**输入实验编号**」，输入你发给他的编号即可开始。
 也可以直接把编号放进链接：`https://…/src/?code=R7K4M`。
 
-**复测编号（仅 LPFD）**：`LPFD1`、`LPFD2`、`LPFD3`
-- 强制 16 张图全部使用 LPFD，只跑 T1 + T2（32 题），**不插注意力检查**；
-- 跳过 Latin square 分派，数据里标记 `review_mode = "lpfd"`、`forced_layout = "LPFD"`；
-- 用途：把 pilot 里 LPFD 的题目单独拿出来复做/复核；**不要发给正式被试**。
+**复测编号：`LPFD1`**
+- 只重做 4 位 pilot 被试在 **LPFD** 上答错的题：**13 题（T1 7 + T2 6）**，覆盖 7 张图；
+- 全部 LPFD，**不插注意力检查**，约 10 分钟；
+- 题目清单来自 `stimuli/review_errors.json`（由 pilot 数据生成）；
+- 数据里标记 `review_mode = "redo"`、`forced_layout = "LPFD"`；
+- 用途：只复核出错的那几题；**不要发给正式被试**。
 
 > **为什么要编号**：远程每个人都是全新浏览器，若自动编号会全都从 `001` 开始，
 > 导致**所有人看到完全相同的图和布局**（实测 20 人 → 1 种内容，布局与图的难度彻底混淆）。

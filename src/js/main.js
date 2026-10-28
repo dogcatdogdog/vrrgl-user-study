@@ -15,7 +15,7 @@ import { loadConsentText, renderConsent, routeDeclined, pickConsentDoc } from '.
 import {
   loadCodes, lookupCode, normalizeCode, renderCodeEntry, renderMissingCodes,
 } from './entry.js';
-import { buildTrialPlan, buildPracticePlan, hashString } from './randomize.js';
+import { buildTrialPlan, buildPracticePlan, buildReviewPlan, hashString } from './randomize.js';
 import {
   demographics, literacy, perTrialEase, nasaTlx, previs, preference,
 } from './survey.js';
@@ -151,14 +151,29 @@ async function boot() {
   const save = () => { if (CONFIG.storage.autosaveEveryTrial) store.save(session); };
   save();
 
-  // 复测模式：编号表里的 mode='lpfd' 强制所有图使用 LPFD，只跑 T1/T2，不插注意力检查
-  const forcedLayout = entry?.mode === 'lpfd' ? 'LPFD' : null;
-  if (forcedLayout) {
-    session.review_mode = 'lpfd';
+  // 复测模式：
+  //   mode='lpfd'  全部 16 张图的 LPFD 版 T1/T2
+  //   mode='redo'  只做 pilot 中在 LPFD 上答错的那几题
+  // 两者都不插注意力检查，练习统一用 LPFD 示例图。
+  const reviewMode = entry?.mode === 'lpfd' || entry?.mode === 'redo' ? entry.mode : null;
+  const forcedLayout = reviewMode ? 'LPFD' : null;
+  if (reviewMode) {
+    session.review_mode = reviewMode;
     session.forced_layout = forcedLayout;
     save();
   }
-  const planCfg = forcedLayout ? { ...CONFIG, attentionChecks: 0 } : CONFIG;
+  const planCfg = reviewMode ? { ...CONFIG, attentionChecks: 0 } : CONFIG;
+
+  let reviewItems = null;
+  if (reviewMode === 'redo') {
+    try {
+      const doc = await fetchJSON(`${CONFIG.storage.stimPath}/review_errors.json`);
+      reviewItems = doc.items;
+    } catch (e) {
+      renderError(app, t('errors.noData'), String(e));
+      return;
+    }
+  }
 
   const recorder = new Recorder(CONFIG);
   installAntiCheat();
@@ -173,30 +188,33 @@ async function boot() {
     return;
   }
 
-  // ── 分派（只在首次建立时固定下来，刷新也不变）──
-  if (!session.assignment) {
+  const makePlan = () => {
+    if (reviewMode === 'redo') {
+      return buildReviewPlan({ stimuli, items: reviewItems, pid: session.participant_id });
+    }
     const graphIds = [...new Set(stimuli.map((s) => s.graph_id))].sort();
-    const plan = buildTrialPlan({
+    return buildTrialPlan({
       stimuli, graphIds, layouts: CONFIG.layouts, pid: session.participant_id,
       participantIndex, offset: assignedOffset, cfg: planCfg, forcedLayout,
     });
+  };
+
+  // ── 分派（只在首次建立时固定下来，刷新也不变）──
+  if (!session.assignment) {
+    const plan0 = makePlan();
     session.assignment = {
-      offset: plan.offset,
-      mapping: plan.mapping,
-      nTrials: plan.trials.length,
+      offset: plan0.offset,
+      mapping: plan0.mapping,
+      nTrials: plan0.trials.length,
       // 只把分派结果存下来，trial 列表每次重建（避免旧版本污染）
     };
     save();
   }
 
-  const graphIds = [...new Set(stimuli.map((s) => s.graph_id))].sort();
-  const plan = buildTrialPlan({
-    stimuli, graphIds, layouts: CONFIG.layouts, pid: session.participant_id,
-    participantIndex, offset: assignedOffset, cfg: planCfg, forcedLayout,
-  });
+  const plan = makePlan();
 
   console.info(`[flow] offset=${plan.offset}  trial 总数=${plan.trials.length}` +
-    `（每任务 ${graphIds.length}，任务 ${enabled.filter((t) => t !== 'ATTENTION')}）`);
+    `（复测=${reviewMode || '否'}，任务 ${enabled.filter((t) => t !== 'ATTENTION')}）`);
 
   await run({ app, session, save, store, recorder, plan, practiceStimuli,
               examples, literacyDoc, consentDoc, enabled });

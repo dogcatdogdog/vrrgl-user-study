@@ -239,5 +239,19 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
   ok(!plan.trials.some((x) => x.task === 'ATTENTION'), '复测模式：无注意力检查');
 }
 
+// 10) 复测模式：只做 pilot 中答错的 LPFD 题
+{
+  const { buildReviewPlan } = await import('../src/js/randomize.js');
+  const doc = JSON.parse(readFileSync(join(ROOT, 'stimuli/review_errors.json'), 'utf8'));
+  const plan = buildReviewPlan({ stimuli, items: doc.items, pid: 'REDO01' });
+  const t1 = plan.trials.filter((x) => x.task === 'T1');
+  const t2 = plan.trials.filter((x) => x.task === 'T2');
+  ok(plan.trials.length === doc.items.length, '复测：题数等于错误清单', String(plan.trials.length));
+  ok(plan.trials.every((x) => x.layout === 'LPFD'), '复测：全部为 LPFD');
+  ok(t1.length === 7 && t2.length === 6, '复测：T1 7 / T2 6', `${t1.length}/${t2.length}`);
+  ok(t2.every((x) => String(x.stimulus.stimulus_id).startsWith('T2_')),
+    '复测：T2 的 stimulus_id 正确');
+}
+
 console.log(`\n${failures === 0 ? 'ALL PASS' : failures + ' FAILURE(S)'}\n`);
 process.exit(failures ? 1 : 0);

@@ -2,13 +2,12 @@
  "meta": {
   "version": "1.0",
   "generated": "2026-10-27T08:06:33+00:00",
-  "n_codes": 47,
+  "n_codes": 45,
   "layouts_per_offset": 4,
   "review_codes": [
-   "LPFD1",
-   "LPFD2",
-   "LPFD3"
-  ]
+   "LPFD1"
+  ],
+  "review_mode_note": "LPFD1 redoes only the LPFD trials the four pilot participants answered incorrectly"
  },
  "codes": {
   "P295C3": {
@@ -190,19 +189,7 @@
   "LPFD1": {
    "offset": 0,
    "group": "remote",
-   "mode": "lpfd",
-   "review": true
-  },
-  "LPFD2": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "lpfd",
-   "review": true
-  },
-  "LPFD3": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "lpfd",
+   "mode": "redo",
    "review": true
   }
  }
