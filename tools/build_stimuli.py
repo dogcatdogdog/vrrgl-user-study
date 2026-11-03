@@ -84,6 +84,16 @@ T2_MIN_LOW = 9
 T2_MIN_RATIO = 1.1
 T2_MAX_RATIO = 1.8
 T2_TOTAL_PAIRS = 16
+# T2 独立图集（2026-11-03）：较大的自选图，T1 不使用这些图。
+# 高度放宽到 16–35：严格 16–23 在这些图里几乎没有可用对。
+# 顺序很重要：case2 在 index 0、case1 在 index 4，二者布局相同；
+# case2 出 3 对、case1 出 1 对，合起来正好 4 对/布局。
+T2_MAX_HIGH = 35
+T2_GRAPHS = [
+    "case2", "pre_case2", "GD10-cy_case1", "case3",
+    "case1", "pre_case1", "GD8-toy_case11_graph", "GD12-dt_case2",
+]
+T2_PAIR_COUNTS = {"case2": 3, "case1": 1}  # 其余默认 2
 
 
 # ─────────────────────────── 工具 ───────────────────────────
@@ -137,8 +147,8 @@ def load_graph(path: str):
     return G
 
 
-def load_all_graphs():
-    """读 DATA_DIR 下所有 .json / .graphml，返回 {图名: G}（已按 n ≤ 110 过滤）。"""
+def load_all_graphs(max_nodes=MAX_NODES):
+    """读 DATA_DIR 下所有 .json / .graphml，返回 {图名: G}（n ≤ max_nodes）。"""
     out, skipped = {}, []
     for fn in sorted(os.listdir(DATA_DIR)):
         if not fn.endswith((".json", ".graphml")):
@@ -151,7 +161,7 @@ def load_all_graphs():
             continue
         if G.number_of_nodes() == 0:
             continue
-        if G.number_of_nodes() > MAX_NODES:
+        if G.number_of_nodes() > max_nodes:
             skipped.append((name, G.number_of_nodes()))
             continue
         out[name] = G
@@ -285,7 +295,8 @@ def t4_pair(G: nx.Graph, band: str, prefer_obvious: bool):
     return None
 
 
-def t2_close_pairs(G: nx.Graph, max_pairs: int = 3, min_low: int = T2_MIN_HIGH):
+def t2_close_pairs(G: nx.Graph, max_pairs: int = 3, min_low: int = T2_MIN_HIGH,
+                   min_ratio: float = T2_MIN_RATIO, max_high: int | None = None):
     """T2 接近对：两个度数都在 16–23（默认），比值 1.1–1.8。
 
     练习用 min_low=9 可以从池外图里找到更多对。
@@ -298,8 +309,10 @@ def t2_close_pairs(G: nx.Graph, max_pairs: int = 3, min_low: int = T2_MIN_HIGH):
         hi, lo = max(deg[a], deg[b]), min(deg[a], deg[b])
         if hi < T2_MIN_HIGH or lo < min_low:
             continue
+        if max_high is not None and hi > max_high:
+            continue
         r = hi / lo
-        if r < T2_MIN_RATIO or r > T2_MAX_RATIO:
+        if r < min_ratio or r > T2_MAX_RATIO:
             continue
         pair = [a, b] if str(a) <= str(b) else [b, a]
         cands.append((pair, r, hi, lo))
@@ -391,13 +404,7 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
     log(f"读入 {len(graphs)} 张图（≤{MAX_NODES} 节点），跳过 {len(skipped)} 张过大的")
 
     picked = select_graphs(graphs, allow_overlap, target_rule)
-    if t2_compare:
-        # T2 需要“双高度接近对”：从有这类节点对的图里取 8 张高档图。
-        # 低档图保持不变；这样 T1/T2 仍共用同一批图，只是高档换了两张。
-        pair_graphs = sorted([n for n, G in graphs.items() if t2_close_pairs(G, 1)])
-        if len(pair_graphs) < PER_BAND:
-            log(f"  [!] 有双高度接近对的图只有 {len(pair_graphs)} 张（需要 {PER_BAND}）")
-        picked = {"low": picked["low"], "high": pair_graphs[:PER_BAND]}
+    graphs_t2, _ = load_all_graphs(400) if t2_compare else ({}, [])
     log("选图：" + "  ".join(f"{b}={len(picked[b])}" for b in BAND_ORDER))
 
     slots = []
@@ -407,28 +414,6 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
             tgt = pick_target(G, band, target_rule)
             slots.append({"band": band, "name": name, "graph": G, "target": tgt,
                           "target_deg": G.degree(tgt)})
-
-    # T2 接近对：只在高档图上，每图最多 2 对，补足 16 对
-    t2_by_graph = {}
-    for sl in slots:
-        if sl["band"] == "high":
-            t2_by_graph[sl["name"]] = t2_close_pairs(sl["graph"], 6)
-    t2_chosen = {n: ps[:2] for n, ps in t2_by_graph.items()}
-    n_pairs = sum(len(v) for v in t2_chosen.values())
-    # 若不足，按“每图再加一对”的轮转补齐，避免某一张图占掉大部分 T2 题
-    while n_pairs < T2_TOTAL_PAIRS:
-        progressed = False
-        for n, ps in t2_by_graph.items():
-            if n_pairs >= T2_TOTAL_PAIRS:
-                break
-            if len(t2_chosen[n]) < len(ps):
-                t2_chosen[n].append(ps[len(t2_chosen[n])])
-                n_pairs += 1
-                progressed = True
-        if not progressed:
-            break
-    if n_pairs < T2_TOTAL_PAIRS:
-        log(f"  [!] T2 接近对只有 {n_pairs} 对（目标 {T2_TOTAL_PAIRS}）")
 
     stimuli, report, norm_log = [], [], []
     pair_kind = Counter()
@@ -450,14 +435,8 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
             "n_nodes": G.number_of_nodes(), "n_edges": G.number_of_edges(),
             "target": t, "target_degree": tdeg,
             "t4_pair": None, "t4_ratio": None, "t4_kind": None, "t4_fell_back": None,
-            "t2_pairs": [],
         }
         degmap = {n["id"]: n["deg"] for n in nodes}
-        t2_pairs = t2_chosen.get(name, [])
-        entry["t2_pairs"] = [
-            {"pair": [remap[x] for x in p_raw], "ratio": round(r, 3)}
-            for p_raw, r, _hi, _lo in t2_pairs
-        ]
 
         for layout, raw in coords_by_layout.items():
             if normalization == "bbox":
@@ -496,20 +475,6 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
                 })
             stimuli.append(t4)
 
-            # T2 接近对（同一个 graph/layout 可能有多对，stimulus_id 带 pair 序号）
-            for j, (p_raw, ratio, hi_d, lo_d) in enumerate(t2_pairs):
-                p = [remap[x] for x in p_raw]
-                answer = p[0] if degmap[p[0]] >= degmap[p[1]] else p[1]
-                stimuli.append({
-                    "stimulus_id": f"T2_{name}_p{j}_{layout}", "task": "T2",
-                    "graph_id": name, "layout": layout, "degree_level": band,
-                    **geo, "targets": list(p),
-                    "target_degree": {p[0]: degmap[p[0]], p[1]: degmap[p[1]]},
-                    "ground_truth": {"answer": answer},
-                    "pair": list(p), "degree_ratio": round(ratio, 3),
-                    "pair_kind": "close",
-                })
-
         if pair is not None:
             p_raw, ratio, hi_d, lo_d, fell = pair
             entry.update({"t4_pair": [remap[x] for x in p_raw], "t4_ratio": round(ratio, 3),
@@ -517,7 +482,69 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
                           "t4_fell_back": fell})
         report.append(entry)
 
-    return graphs, picked, slots, stimuli, report, norm_log, skipped
+    # T2 独立图集：8 张较大图 × 2 对 × 4 布局 = 64 条。
+    # T1 不使用这些图；T2 的布局由 app 用独立的 8 图轮转分配。
+    t2_practice = None
+    if t2_compare:
+        for name in T2_GRAPHS:
+            if name not in graphs_t2:
+                raise SystemExit(f"T2 图缺失：{name}")
+            G = graphs_t2[name]
+            layouts = load_layouts(name)
+            remap, nodes, edges, cbl = anonymize(G, layouts)
+            want = T2_PAIR_COUNTS.get(name, 2)
+            pairs = t2_close_pairs(G, max_pairs=want, min_low=T2_MIN_HIGH,
+                                   min_ratio=1.25, max_high=T2_MAX_HIGH)
+            if len(pairs) < want:
+                raise SystemExit(f"{name}: T2 接近对不足 {want} 对（实际 {len(pairs)}）")
+            degmap = {n["id"]: n["deg"] for n in nodes}
+            for j, (p_raw, ratio, hi_d, lo_d) in enumerate(pairs[:want]):
+                p = [remap[x] for x in p_raw]
+                answer = p[0] if degmap[p[0]] >= degmap[p[1]] else p[1]
+                for layout, raw in cbl.items():
+                    co, _ = (normalize_bbox(raw) if normalization == "bbox"
+                             else normalize_median_edge(raw, edges))
+                    pts = [{"id": k, "x": round(v[0], 2), "y": round(v[1], 2)}
+                           for k, v in sorted(co.items(), key=lambda kv: int(kv[0][1:]))]
+                    stimuli.append({
+                        "stimulus_id": f"T2_{name}_p{j}_{layout}", "task": "T2",
+                        "graph_id": name, "layout": layout, "degree_level": "high",
+                        "nodes": pts, "edges": edges, "targets": list(p),
+                        "target_degree": {p[0]: degmap[p[0]], p[1]: degmap[p[1]]},
+                        "ground_truth": {"answer": answer},
+                        "pair": list(p), "degree_ratio": round(ratio, 3),
+                        "pair_kind": "close",
+                    })
+        # T2 练习：取一张不属于 T1/T2 主图集的较大图
+        practice_candidates = [n for n in sorted(graphs_t2, key=str)
+                               if n not in T2_GRAPHS and n not in set(
+                                   slot["name"] for slot in slots)]
+        for name in practice_candidates:
+            G = graphs_t2[name]
+            pairs = t2_close_pairs(G, max_pairs=1, min_low=T2_MIN_HIGH, min_ratio=1.25, max_high=T2_MAX_HIGH)
+            if not pairs:
+                continue
+            layouts = load_layouts(name)
+            remap, nodes, edges, cbl = anonymize(G, layouts)
+            p_raw, ratio, hi_d, lo_d = pairs[0]
+            p = [remap[x] for x in p_raw]
+            degmap = {n["id"]: n["deg"] for n in nodes}
+            raw = cbl["LPFD"]
+            co, _ = (normalize_bbox(raw) if normalization == "bbox"
+                     else normalize_median_edge(raw, edges))
+            pts = [{"id": k, "x": round(v[0], 2), "y": round(v[1], 2)}
+                   for k, v in sorted(co.items(), key=lambda kv: int(kv[0][1:]))]
+            t2_practice = {
+                "stimulus_id": "T2_practice_LPFD", "task": "T2", "phase": "practice",
+                "graph_id": name, "layout": "LPFD", "degree_level": "high",
+                "nodes": pts, "edges": edges, "targets": list(p),
+                "target_degree": {p[0]: degmap[p[0]], p[1]: degmap[p[1]]},
+                "ground_truth": {"answer": max(p, key=lambda x: degmap[x])},
+                "pair": list(p), "degree_ratio": round(ratio, 3), "pair_kind": "close",
+            }
+            break
+
+    return graphs, picked, slots, stimuli, report, norm_log, skipped, t2_practice
 
 
 # ─────────────────────────── 输出 ───────────────────────────
@@ -537,9 +564,10 @@ def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skip
         "canvas": {"width": CANVAS_W, "height": CANVAS_H},
         "layouts": list(ALGORITHMS),
         "tasks": ["T1", "T2", "T4"],
-        "graphs": len({s["graph_id"] for s in stimuli}),
-        "trials_per_task": len({s["graph_id"] for s in stimuli}),
-        "total_trials": 2 * len({s["graph_id"] for s in stimuli}),
+        "graphs": len({s["graph_id"] for s in stimuli if s["task"] == "T1"}),
+        "t2_graphs": len({s["graph_id"] for s in stimuli if s["task"] == "T2"}),
+        "trials_per_task": len({s["graph_id"] for s in stimuli if s["task"] == "T1"}),
+        "total_trials": 2 * len({s["graph_id"] for s in stimuli if s["task"] == "T1"}),
         "degree_bands": {k: list(v) for k, v in BANDS.items()},
     }
     path = os.path.join(OUT_DIR, f"stimuli{suffix}.json")
@@ -559,7 +587,7 @@ def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skip
     return path
 
 
-def write_practice_and_examples(graphs, used_names, normalization, target_rule="top"):
+def write_practice_and_examples(graphs, used_names, normalization, target_rule="top", extra_practice=None):
     """练习 × 4（T4/T1/T4/T1）与示例 × 4 —— 全部取自刺激池【之外】的图。"""
     pool = [n for n in sorted(graphs, key=str) if n not in used_names]
     ok = [n for n in pool
@@ -645,11 +673,14 @@ def write_practice_and_examples(graphs, used_names, normalization, target_rule="
         sl = render(name, f"example{i}")
         examples.append(make_t1(sl, "LPFD"))
 
-    if t2_pool:
+    if t2_pool and not extra_practice:
         sl = render(t2_pool[0], "practice_t2")
         rec = make_t2(sl, "LPFD")
         if rec:
             practice.append(rec)
+
+    if extra_practice:
+        practice.extend(extra_practice)
 
     for fname, data, note in (
         ("practice.json", practice, "取自刺激池之外；题序 T4/T1/T4/T1（docs/03 §7）"),
@@ -782,12 +813,12 @@ def check(stimuli, graphs, picked):
     fails, notes = [], []
     bad = fails.append
 
-    gids = sorted({s["graph_id"] for s in stimuli})
+    gids = sorted({s["graph_id"] for s in stimuli if s["task"] == "T1"})
     want = PER_BAND * len(BAND_ORDER)
     if len(gids) != want:
-        bad(f"图数 {len(gids)} ≠ {want}")
+        bad(f"T1 图数 {len(gids)} ≠ {want}")
 
-    band_of = {s["graph_id"]: s["degree_level"] for s in stimuli}
+    band_of = {s["graph_id"]: s["degree_level"] for s in stimuli if s["task"] == "T1"}
     per_band = Counter(band_of.values())
     for b in BAND_ORDER:
         if per_band[b] != PER_BAND:
@@ -815,7 +846,7 @@ def check(stimuli, graphs, picked):
     if n_t2 and n_t2 % N_LAYOUTS != 0:
         bad(f"T2 记录数 {n_t2} 不是布局数的倍数")
 
-    # T2 接近对：每布局 16 对；两个度数都在 16–23；比值 1.1–1.8
+    # T2 独立图集：8 张图 × 2 对 × 4 布局；每布局 16 对；比值 1.25–1.8
     t2_by_layout = {}
     for s in stimuli:
         if s["task"] == "T2":
@@ -829,13 +860,23 @@ def check(stimuli, graphs, picked):
             hi, lo = max(da, db), min(da, db)
             if lo < T2_MIN_HIGH:
                 bad(f'{s["stimulus_id"]} 低度方 {lo} < {T2_MIN_HIGH}')
-            if not (T2_MIN_RATIO <= hi / lo <= T2_MAX_RATIO):
-                bad(f'{s["stimulus_id"]} 比值 {hi}/{lo} 不在 [{T2_MIN_RATIO},{T2_MAX_RATIO}]')
+            if hi > T2_MAX_HIGH:
+                bad(f'{s["stimulus_id"]} 高度方 {hi} > {T2_MAX_HIGH}')
+            if not (1.25 <= hi / lo <= T2_MAX_RATIO):
+                bad(f'{s["stimulus_id"]} 比值 {hi}/{lo} 不在 [1.25,{T2_MAX_RATIO}]')
             if s["ground_truth"]["answer"] != max(s["pair"], key=lambda x: s["target_degree"][x]):
                 bad(f'{s["stimulus_id"]} answer 不是度数更大者')
-            base = idx.get((s["graph_id"], s["layout"]), {}).get("T1")
-            if base and (s["nodes"] != base["nodes"] or s["edges"] != base["edges"]):
-                bad(f'{s["stimulus_id"]} 与 T1 几何不一致')
+
+    t2_graphs = sorted({s["graph_id"] for s in stimuli if s["task"] == "T2"})
+    if n_t2 and len(t2_graphs) != len(T2_GRAPHS):
+        bad(f"T2 图数 {len(t2_graphs)} ≠ {len(T2_GRAPHS)}")
+    if n_t2 and n_t2 != len(T2_GRAPHS) * 2 * N_LAYOUTS:
+        bad(f"T2 记录数 {n_t2} ≠ {len(T2_GRAPHS) * 2 * N_LAYOUTS}")
+    for g in t2_graphs:
+        c = sum(1 for s in stimuli if s["task"] == "T2" and s["graph_id"] == g and s["layout"] == "LPFD")
+        want_c = T2_PAIR_COUNTS.get(g, 2)
+        if c != want_c:
+            bad(f"{g} 的 T2 配对 {c} 对 ≠ {want_c}")
 
     # 目标节点度数必须落在它声明的档内
     for g, b in band_of.items():
@@ -926,22 +967,25 @@ def main():
     args = ap.parse_args()
 
     (graphs, picked, slots, stimuli, report, norm_log,
-     skipped) = build(args.normalization, args.allow_overlap, args.target_rule,
-                      args.t2_compare)
+     skipped, t2_practice) = build(args.normalization, args.allow_overlap, args.target_rule,
+                                   args.t2_compare)
 
     meta_path = write_outputs(args.normalization, stimuli, report, norm_log,
                               graphs, picked, skipped, args.target_rule, args.t2_compare)
     used = {n for b in BAND_ORDER for n in picked[b]}
+    if args.t2_compare:
+        used |= set(T2_GRAPHS)
     if args.normalization == "bbox":
-        write_practice_and_examples(graphs, used, args.normalization, args.target_rule)
+        write_practice_and_examples(graphs, used, args.normalization, args.target_rule,
+                                    [t2_practice] if t2_practice else None)
         write_readme(report, picked, skipped, args.normalization,
                      args.allow_overlap, args.target_rule)
 
-    gids = sorted({s["graph_id"] for s in stimuli})
+    gids = sorted({s["graph_id"] for s in stimuli if s["task"] == "T1"})
     log("")
     log(f"归一化 = {args.normalization}   两档重合 = {'允许' if args.allow_overlap else '不允许'}")
-    log(f"图 {len(gids)} 张（" + " / ".join(f"{b} {len(picked[b])}" for b in BAND_ORDER) + "）"
-        f"  →  每任务 {len(gids)} trial，两个任务共 {2 * len(gids)} trial")
+    log(f"T1 图 {len(gids)} 张（" + " / ".join(f"{b} {len(picked[b])}" for b in BAND_ORDER) + "）"
+        f"  →  T1 {len(gids)} trial，加 T2 {sum(1 for s in stimuli if s['task']=='T2' and s['layout']=='LPFD')} trial")
     log(f"目标度数：" + "  ".join(
         f"{b} {min(e['target_degree'] for e in report if e['degree_level'] == b)}"
         f"–{max(e['target_degree'] for e in report if e['degree_level'] == b)}"

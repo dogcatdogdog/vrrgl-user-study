@@ -171,7 +171,9 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
   // 档位顺序从 config 取（现在是 low/high 两档，不能写死三档）
   const bandOf = {};
   for (const s of stimuli) bandOf[s.graph_id] = s.degree_level;
-  const graphIds = orderGraphIds(rawGraphIds, bandOf, cfg.degreeLevels);
+  // T1 图集只包含有 T1 记录的图；T2 使用独立的图集
+  const t1Set = new Set(stimuli.filter((s) => s.task === 'T1').map((s) => s.graph_id));
+  const graphIds = orderGraphIds(rawGraphIds.filter((g) => t1Set.has(g)), bandOf, cfg.degreeLevels);
 
   // 复测模式：强制所有图使用同一种布局（不等于 Latin square，offset 无意义）
   if (forcedLayout && !layouts.includes(forcedLayout)) {
@@ -184,6 +186,12 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
   const mapping = forcedLayout
     ? Object.fromEntries(graphIds.map((g) => [g, forcedLayout]))
     : assignLayouts(graphIds, layouts, offset);
+  // T2 使用独立的图集（8 张较大图），布局单独轮转；每个被试每布局 2 张图
+  // 保持刺激生成顺序（不是字典序）：case2/case1 需要相隔 4 个索引以平衡布局
+  const t2GraphIds = [...new Set(stimuli.filter((s) => s.task === 'T2').map((s) => s.graph_id))];
+  const t2Mapping = forcedLayout
+    ? Object.fromEntries(t2GraphIds.map((g) => [g, forcedLayout]))
+    : Object.fromEntries(t2GraphIds.map((g, i) => [g, layouts[(i + offset) % layouts.length]]));
   const idx = indexStimuli(stimuli);
   const enabled = Object.entries(cfg.tasks).filter(([, t]) => t.enabled).map(([k]) => k);
 
@@ -206,7 +214,7 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
     if (cfg.tasks.T2?.mode === 'compare') {
       // T2 = 接近对比较：使用 stimulus 里预生成的 T2 记录（每图可能有多对）
       const list = stimuli
-        .filter((s) => s.task === 'T2' && s.layout === mapping[s.graph_id])
+        .filter((s) => s.task === 'T2' && s.layout === t2Mapping[s.graph_id])
         .map((s) => ({ task: 'T2', stimulus: s, graphId: s.graph_id, layout: s.layout, phase: 'main' }));
       if (!list.length) throw new Error('[randomize] 找不到 T2 接近对刺激');
       blocks.T2 = shuffle(list, rng);
@@ -247,7 +255,7 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
     trials = withChecks;
   }
 
-  return { offset, mapping, trials };
+  return { offset, mapping, t2Mapping, trials };
 }
 
 /**

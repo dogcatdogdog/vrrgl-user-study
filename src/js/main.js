@@ -205,6 +205,7 @@ async function boot() {
     session.assignment = {
       offset: plan0.offset,
       mapping: plan0.mapping,
+      t2Mapping: plan0.t2Mapping,
       nTrials: plan0.trials.length,
       // 只把分派结果存下来，trial 列表每次重建（避免旧版本污染）
     };

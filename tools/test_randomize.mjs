@@ -33,7 +33,8 @@ const cfg = {
 };
 
 const stimuli = JSON.parse(readFileSync(join(ROOT, 'stimuli/stimuli.json'), 'utf8')).stimuli;
-const graphIds = [...new Set(stimuli.map((s) => s.graph_id))].sort();
+const graphIds = [...new Set(stimuli.filter((s) => s.task === 'T1').map((s) => s.graph_id))].sort();
+const t2GraphIds = [...new Set(stimuli.filter((s) => s.task === 'T2').map((s) => s.graph_id))];
 const bandOf = Object.fromEntries(stimuli.map((s) => [s.graph_id, s.degree_level]));
 
 let failures = 0;
@@ -223,8 +224,15 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
   const t2m = main.filter((x) => x.task === 'T2');
   ok(t1m.length === 16 && t2m.length === 16, '当前配置：T1 / T2 各 16');
   ok(t2m.every((x) => Array.isArray(x.stimulus.pair) && x.stimulus.pair.length === 2
-    && x.stimulus.degree_ratio >= 1.1 && x.stimulus.degree_ratio <= 1.8),
-  '当前配置：T2 为 1.1–1.8 的接近对');
+    && x.stimulus.degree_ratio >= 1.25 && x.stimulus.degree_ratio <= 1.8),
+  '当前配置：T2 为 1.25–1.8 的接近对');
+  ok(Object.keys(plan.t2Mapping).length === t2GraphIds.length && t2GraphIds.length === 8,
+    '当前配置：T2 独立图集 8 张', String(t2GraphIds.length));
+  ok(t2GraphIds.every((g) => !graphIds.includes(g)), '当前配置：T1/T2 图集不重叠');
+  const t2c = {};
+  for (const x of t2m) t2c[x.layout] = (t2c[x.layout] || 0) + 1;
+  ok(['LPFD','KK','FR','FA2'].every((l) => t2c[l] === 4),
+    '当前配置：T2 每布局 4 对', JSON.stringify(t2c));
   ok(!plan.trials.some((x) => x.task === 'T4'), '当前配置：没有 T4');
   const pr = buildPracticePlan({ practiceStimuli, pid: 'REAL01', cfg: CONFIG });
   ok(pr.length === 3, '当前配置：3 个练习', String(pr.length));

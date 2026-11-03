@@ -71,11 +71,11 @@
 | `GD6-toy_case8` | 105 | 164 | 20 | 4.125 | obvious |
 | `Moviegalaxies - Babel_graph` | 71 | 154 | 18 | 2.0 | close |
 | `aves_weaver` | 42 | 152 | 17 | 4.0 | obvious |
-| `moviegalaxies-271` | 68 | 160 | 23 | 2.091 | close |
-| `moviegalaxies-402` | 74 | 134 | 23 | 4.0 | obvious |
-| `moviegalaxies-92` | 56 | 125 | 18 | 2.0 | close |
+| `moviegalaxies-25` | 30 | 44 | 16 | 4.0 | obvious |
+| `moviegalaxies-271` | 68 | 160 | 23 | 4.333 | obvious |
+| `moviegalaxies-371` | 36 | 73 | 19 | 2.111 | close |
 
-目标度数范围：low 4–5  high 17–23
+目标度数范围：low 4–5  high 16–23
 
 因超过 110 节点被跳过的图：20 张。
 
