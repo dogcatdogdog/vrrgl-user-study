@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "1.0",
-  "generated": "2026-11-03T07:28:13+00:00",
+  "generated": "2026-11-03T07:39:04+00:00",
   "n_codes": 52,
   "layouts_per_offset": 4
  },
@@ -54,44 +54,44 @@
    "offset": 3,
    "group": "remote"
   },
-  "P32ZX2": {
-   "offset": 3,
-   "group": "remote"
-  },
-  "P3559N": {
-   "offset": 1,
-   "group": "remote"
-  },
-  "P35SDK": {
-   "offset": 2,
-   "group": "remote"
-  },
-  "P38AJV": {
-   "offset": 0,
-   "group": "remote"
-  },
-  "P38ASG": {
-   "offset": 0,
-   "group": "remote"
-  },
-  "P3FT3S": {
-   "offset": 1,
-   "group": "remote"
-  },
-  "P3G3CP": {
-   "offset": 3,
-   "group": "remote"
-  },
-  "P3KXUP": {
-   "offset": 2,
-   "group": "remote"
-  },
   "P4SUV": {
    "offset": 1,
    "group": "remote"
   },
   "P4WTT": {
    "offset": 1,
+   "group": "remote"
+  },
+  "P57PQW": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "P588MT": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P5GBBK": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P5KU77": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P5Q3D5": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P5RPT5": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P5VAFG": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P5WN4C": {
+   "offset": 2,
    "group": "remote"
   },
   "P8B73": {
