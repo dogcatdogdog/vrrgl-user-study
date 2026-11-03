@@ -15,12 +15,12 @@ import { loadConsentText, renderConsent, routeDeclined, pickConsentDoc } from '.
 import {
   loadCodes, lookupCode, normalizeCode, renderCodeEntry, renderMissingCodes,
 } from './entry.js';
-import { buildTrialPlan, buildPracticePlan, buildReviewPlan, hashString } from './randomize.js';
+import { buildTrialPlan, buildPracticePlan, buildReviewPlan, buildFixPlan, hashString } from './randomize.js';
 import {
   demographics, literacy, perTrialEase, nasaTlx, previs, preference,
 } from './survey.js';
 import {
-  ProgressBar, BreakScreen, renderWelcome, renderInstructions, renderDone, renderError,
+  ProgressBar, BreakScreen, renderWelcome, renderInstructions, renderFixIntro, renderDone, renderError,
 } from './flow.js';
 
 const $ = (id) => document.getElementById(id);
@@ -151,24 +151,39 @@ async function boot() {
   const save = () => { if (CONFIG.storage.autosaveEveryTrial) store.save(session); };
   save();
 
-  // 复测模式：
-  //   mode='lpfd'  全部 16 张图的 LPFD 版 T1/T2
-  //   mode='redo'  只做 pilot 中在 LPFD 上答错的那几题
-  // 两者都不插注意力检查，练习统一用 LPFD 示例图。
-  const reviewMode = entry?.mode === 'lpfd' || entry?.mode === 'redo' ? entry.mode : null;
-  const forcedLayout = reviewMode ? 'LPFD' : null;
+  // 复测/补测模式：
+  //   mode='lpfd'  全部图的 LPFD 版
+  //   mode='redo'  旧版错题
+  //   mode='t2fix' 只补测某位被试的几何问题 T2 题（每人一个码）
+  const reviewMode = ['lpfd', 'redo', 't2fix'].includes(entry?.mode) ? entry.mode : null;
+  const forcedLayout = reviewMode === 'lpfd' || reviewMode === 'redo' ? 'LPFD' : null;
   if (reviewMode) {
     session.review_mode = reviewMode;
-    session.forced_layout = forcedLayout;
+    if (forcedLayout) session.forced_layout = forcedLayout;
+    if (reviewMode === 't2fix') {
+      session.source_pid = entry.source_pid;
+      session.consent = { agreed: true, timestamp: Date.now(), version: 'follow-up', condition: 'follow-up' };
+    }
     save();
   }
   const planCfg = reviewMode ? { ...CONFIG, attentionChecks: 0 } : CONFIG;
 
   let reviewItems = null;
+  let fixItems = null;
   if (reviewMode === 'redo') {
     try {
       const doc = await fetchJSON(`${CONFIG.storage.stimPath}/review_errors.json`);
       reviewItems = doc.items;
+    } catch (e) {
+      renderError(app, t('errors.noData'), String(e));
+      return;
+    }
+  }
+  if (reviewMode === 't2fix') {
+    try {
+      const doc = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fixes.json`);
+      fixItems = doc.fixes?.[entry.source_pid];
+      if (!fixItems || !fixItems.length) throw new Error(`没有 ${entry.source_pid} 的补测清单`);
     } catch (e) {
       renderError(app, t('errors.noData'), String(e));
       return;
@@ -189,6 +204,9 @@ async function boot() {
   }
 
   const makePlan = () => {
+    if (reviewMode === 't2fix') {
+      return buildFixPlan({ stimuli, items: fixItems, pid: session.participant_id });
+    }
     if (reviewMode === 'redo') {
       return buildReviewPlan({ stimuli, items: reviewItems, pid: session.participant_id });
     }
@@ -351,12 +369,13 @@ async function run(ctx) {
   // 断点续传：已完成到哪一步
   const done = session.trials.length;
   const resumeAt = done;
+  const fixMode = session.review_mode === 't2fix';
 
   $('progressbar').style.display = CONFIG.showProgressBar ? '' : 'none';
   const progress = new ProgressBar($('progressbar'));
 
   // ① 欢迎
-  if (!resumeAt && !session.consent) {
+  if (!fixMode && !resumeAt && !session.consent) {
     await new Promise((r) => renderWelcome(showScreen(), r, session.participant_id, session.group));
     if (CONFIG.fullscreenRequired) {
       try { await document.documentElement.requestFullscreen(); } catch { /* 可被拒 */ }
@@ -364,7 +383,7 @@ async function run(ctx) {
   }
 
   // ② 知情同意（docs/06）
-  if (!session.consent) {
+  if (!fixMode && !session.consent) {
     const verdict = await new Promise((resolve) => {
       renderConsent(showScreen(), pickConsentDoc(consentDoc, CONFIG.consent.condition, getLocale()), CONFIG, resolve);
     });
@@ -385,14 +404,14 @@ async function run(ctx) {
   }
 
   // ③ 人口学
-  if (CONFIG.survey.demographics && !session.demographics) {
+  if (!fixMode && CONFIG.survey.demographics && !session.demographics) {
     $('progressbar').style.display = 'none';
     session.demographics = await demographics(showScreen(), CONFIG);
     save();
   }
 
   // ④ 图素养前测
-  if (CONFIG.survey.literacy && literacyDoc && !session.literacy) {
+  if (!fixMode && CONFIG.survey.literacy && literacyDoc && !session.literacy) {
     session.literacy = await literacy(showScreen(), literacyDoc.items);
     save();
   }
@@ -409,7 +428,7 @@ async function run(ctx) {
   const totalPractice = practice.length;
   const totalMain = plan.trials.length;
 
-  if (resumeAt === 0) {
+  if (!fixMode && resumeAt === 0) {
     await new Promise((r) => renderInstructions(showScreen(), {
       enabledTasks: CONFIG.tasks && Object.entries(CONFIG.tasks)
         .filter(([, t]) => t.enabled).map(([k]) => k),
@@ -419,7 +438,7 @@ async function run(ctx) {
     }));
   }
 
-  if (totalPractice) {
+  if (!fixMode && totalPractice) {
     $('progressbar').style.display = CONFIG.showProgressBar ? '' : 'none';
     for (let i = 0; i < totalPractice; i++) {
       if (session.trials.filter((t) => t.phase === 'practice').length > i) continue;  // 已做
@@ -427,6 +446,10 @@ async function run(ctx) {
       await runTrial(ctx, practice[i], { index: i, isPractice: true });
     }
     progress.show(!resumeAt);
+  }
+
+  if (fixMode && resumeAt === 0) {
+    await new Promise((r) => renderFixIntro(showScreen(), plan.trials.length, r));
   }
 
   // ⑥ 正式试次
@@ -449,15 +472,15 @@ async function run(ctx) {
 
   // ⑦ 问卷
   $('progressbar').style.display = 'none';
-  if (CONFIG.survey.nasaTlx && !session.nasa_tlx) {
+  if (!fixMode && CONFIG.survey.nasaTlx && !session.nasa_tlx) {
     session.nasa_tlx = await nasaTlx(showScreen(), CONFIG);
     save();
   }
-  if (CONFIG.survey.prevIs && !session.previs) {
+  if (!fixMode && CONFIG.survey.prevIs && !session.previs) {
     session.previs = await previs(showScreen(), CONFIG);
     save();
   }
-  if (CONFIG.survey.preference && !session.preference) {
+  if (!fixMode && CONFIG.survey.preference && !session.preference) {
     // 界面上只用位置指代；布局顺序本身是随机的（用 pid 派生，保证两处一致）
     const order = shuffleDeterministic(CONFIG.layouts);
     session.preference = await preference(showScreen(), order);

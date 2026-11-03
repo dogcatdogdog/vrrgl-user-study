@@ -165,6 +165,12 @@ const DICT = {
         + 'instead, just rename it to {name} — the contents are complete.',
     },
 
+    fix: {
+      title: 'Follow-up: a few comparison questions',
+      text: 'Please answer {n} comparison questions again. It takes only a couple of minutes.',
+      start: 'Start',
+    },
+
     preference: {
       title: 'Which layout was easiest to read?',
       hint: 'During the study you saw the same graphs drawn in different ways. ' +
@@ -359,6 +365,12 @@ const DICT = {
       shareFail: '分享已取消或不可用，请改用上面的下载按钮。',
       fileNameHint: '下载的文件名应为 {name}。如果浏览器把它存成了一长串字符，'
         + '请直接改名为 {name}，文件内容不受影响。',
+    },
+
+    fix: {
+      title: '补充测试：几道比较题',
+      text: '请重新完成 {n} 道连接比较题，大约只需要几分钟。',
+      start: '开始',
     },
 
     preference: {

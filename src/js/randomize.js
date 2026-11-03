@@ -282,6 +282,19 @@ export function buildReviewPlan({ stimuli, items, pid }) {
   return { offset: 0, mapping, trials: shuffle(trials, rng) };
 }
 
+/** 补测计划：只跑指定的 T2 stimulus（来自 t2_fixes.json）。 */
+export function buildFixPlan({ stimuli, items, pid }) {
+  const byId = new Map(stimuli.map((s) => [s.stimulus_id, s]));
+  const trials = [];
+  for (const it of items) {
+    const s = byId.get(it.stimulus_id);
+    if (!s || s.task !== 'T2') throw new Error(`[randomize] 补测题缺失：${it.stimulus_id}`);
+    trials.push({ task: 'T2', stimulus: s, graphId: s.graph_id, layout: s.layout, phase: 'main' });
+  }
+  const rng = makeRng(hashString(pid + '|fix'));
+  return { offset: 0, mapping: {}, t2Mapping: {}, trials: shuffle(trials, rng) };
+}
+
 /** 练习 trial（题数由 config 推导，仅对 enabled 生效 —— docs/01 §3.1）。 */
 export function buildPracticePlan({ practiceStimuli, pid, cfg }) {
   const enabled = Object.entries(cfg.tasks).filter(([, t]) => t.enabled).map(([k]) => k);
