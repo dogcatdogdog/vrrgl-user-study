@@ -186,12 +186,44 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
   const mapping = forcedLayout
     ? Object.fromEntries(graphIds.map((g) => [g, forcedLayout]))
     : assignLayouts(graphIds, layouts, offset);
-  // T2 使用独立的图集（8 张较大图），布局单独轮转；每个被试每布局 2 张图
-  // 保持刺激生成顺序（不是字典序）：case2/case1 需要相隔 4 个索引以平衡布局
-  const t2GraphIds = [...new Set(stimuli.filter((s) => s.task === 'T2').map((s) => s.graph_id))];
-  const t2Mapping = forcedLayout
-    ? Object.fromEntries(t2GraphIds.map((g) => [g, forcedLayout]))
-    : Object.fromEntries(t2GraphIds.map((g, i) => [g, layouts[(i + offset) % layouts.length]]));
+  // T2 图集：4 张与 T1 共用（沿用 T1 布局）+ 4 张 T2 专用。
+  // T2 专用图的布局用一个确定性搜索分配，使每个被试的 T2 每布局恰好 4 对。
+  const t2Stim = stimuli.filter((s) => s.task === 'T2');
+  const t2GraphIds = [...new Set(t2Stim.map((s) => s.graph_id))];
+  const pairCount = {};
+  for (const s of t2Stim) if (s.layout === layouts[0]) pairCount[s.graph_id] = (pairCount[s.graph_id] || 0) + 1;
+  let t2Mapping;
+  if (forcedLayout) {
+    t2Mapping = Object.fromEntries(t2GraphIds.map((g) => [g, forcedLayout]));
+  } else {
+    const total = t2GraphIds.reduce((n, g) => n + (pairCount[g] || 0), 0);
+    const target = total / layouts.length;
+    const counts = Object.fromEntries(layouts.map((l) => [l, 0]));
+    const shared = t2GraphIds.filter((g) => mapping[g]);
+    const t2only = t2GraphIds.filter((g) => !mapping[g]).sort();
+    t2Mapping = {};
+    for (const g of shared) { t2Mapping[g] = mapping[g]; counts[mapping[g]] += pairCount[g] || 0; }
+    const assign = {};
+    const search = (i) => {
+      if (i === t2only.length) return layouts.every((l) => counts[l] === target);
+      const g = t2only[i];
+      for (const l of layouts) {
+        if (counts[l] + (pairCount[g] || 0) > target) continue;
+        counts[l] += pairCount[g] || 0; assign[g] = l;
+        if (search(i + 1)) return true;
+        counts[l] -= pairCount[g] || 0;
+      }
+      return false;
+    };
+    if (!search(0)) {
+      // 兜底：按当前计数最小者分配
+      for (const g of t2only) {
+        const l = layouts.slice().sort((a, b) => counts[a] - counts[b])[0];
+        assign[g] = l; counts[l] += pairCount[g] || 0;
+      }
+    }
+    Object.assign(t2Mapping, assign);
+  }
   const idx = indexStimuli(stimuli);
   const enabled = Object.entries(cfg.tasks).filter(([, t]) => t.enabled).map(([k]) => k);
 

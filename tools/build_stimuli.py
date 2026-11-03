@@ -89,11 +89,14 @@ T2_TOTAL_PAIRS = 16
 # 顺序很重要：case2 在 index 0、case1 在 index 4，二者布局相同；
 # case2 出 3 对、case1 出 1 对，合起来正好 4 对/布局。
 T2_MAX_HIGH = 35
+T2_MIN_DAB = 25.0      # 两个目标之间的最小画布距离（px）
+T2_MIN_NEAR = 8.0      # 目标到最近其他节点的最小距离（px）
+# 8 张图：4 张与 T1 共用（沿用 T1 布局），4 张 T2 专用。
 T2_GRAPHS = [
-    "case2", "pre_case2", "GD10-cy_case1", "case3",
-    "case1", "pre_case1", "GD8-toy_case11_graph", "GD12-dt_case2",
+    "GD6-toy_case8", "aves_weaver", "moviegalaxies-402", "Moviegalaxies - Babel_graph",
+    "GD12-dt_case2", "GD8-toy_case11_graph", "pre_case1", "pre_case2",
 ]
-T2_PAIR_COUNTS = {"case2": 3, "case1": 1}  # 其余默认 2
+T2_PAIR_COUNTS = {"Moviegalaxies - Babel_graph": 1, "GD12-dt_case2": 3}  # 其余默认 2
 
 
 # ─────────────────────────── 工具 ───────────────────────────
@@ -334,6 +337,47 @@ def t2_close_pairs(G: nx.Graph, max_pairs: int = 3, min_low: int = T2_MIN_HIGH,
     return out
 
 
+def t2_clean_pairs(G, co_by_layout, want, dmin=T2_MIN_DAB, nmin=T2_MIN_NEAR):
+    """在给定布局的归一化坐标下，挑几何干净的双高度接近对。
+
+    每对必须在【四种布局】都满足 dAB >= 25px 且目标到最近其他节点 >= 8px。
+    """
+    deg = dict(G.degree())
+    cands = []
+    for a, b in itertools.combinations(sorted(G.nodes(), key=str), 2):
+        hi, lo = max(deg[a], deg[b]), min(deg[a], deg[b])
+        if hi > T2_MAX_HIGH or lo < T2_MIN_HIGH:
+            continue
+        r = hi / lo
+        if not (1.25 <= r <= 1.8):
+            continue
+        ok = True
+        for P in co_by_layout.values():
+            dAB = math.dist(P[a], P[b])
+            near = min([math.dist(P[a], P[v]) for v in P if v not in (a, b)]
+                       + [math.dist(P[b], P[v]) for v in P if v not in (a, b)])
+            if dAB < dmin or near < nmin:
+                ok = False
+                break
+        if ok:
+            cands.append(([a, b] if str(a) <= str(b) else [b, a], r))
+    cands.sort(key=lambda t: (abs(t[1] - 1.4), t[1], str(t[0][0]), str(t[0][1])))
+    out, used = [], set()
+    for p, r in cands:
+        if len(out) >= want:
+            break
+        if p[0] in used or p[1] in used:
+            continue
+        out.append((p, r)); used.update(p)
+    for p, r in cands:
+        if len(out) >= want:
+            break
+        if any(p == q for q, _ in out):
+            continue
+        out.append((p, r))
+    return out
+
+
 # ─────────────────────────── 匿名化与归一化 ───────────────────────────
 
 def anonymize(G: nx.Graph, layouts):
@@ -482,8 +526,8 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
                           "t4_fell_back": fell})
         report.append(entry)
 
-    # T2 独立图集：8 张较大图 × 2 对 × 4 布局 = 64 条。
-    # T1 不使用这些图；T2 的布局由 app 用独立的 8 图轮转分配。
+    # T2 几何干净配对：8 张图，4 张与 T1 共用（沿用 T1 布局）+ 4 张 T2 专用。
+    # 所有对在四种布局下都满足 dAB>=25px、目标到最近其他节点>=8px。
     t2_practice = None
     if t2_compare:
         for name in T2_GRAPHS:
@@ -492,18 +536,25 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
             G = graphs_t2[name]
             layouts = load_layouts(name)
             remap, nodes, edges, cbl = anonymize(G, layouts)
+            Ga = nx.Graph()
+            for old in G.nodes():
+                Ga.add_node(remap[old])
+            for u, v in G.edges():
+                Ga.add_edge(remap[u], remap[v])
+            co_by_layout = {}
+            for layout, raw in cbl.items():
+                co, _ = (normalize_bbox(raw) if normalization == "bbox"
+                         else normalize_median_edge(raw, edges))
+                co_by_layout[layout] = co
             want = T2_PAIR_COUNTS.get(name, 2)
-            pairs = t2_close_pairs(G, max_pairs=want, min_low=T2_MIN_HIGH,
-                                   min_ratio=1.25, max_high=T2_MAX_HIGH)
+            pairs = t2_clean_pairs(Ga, co_by_layout, want)
             if len(pairs) < want:
-                raise SystemExit(f"{name}: T2 接近对不足 {want} 对（实际 {len(pairs)}）")
+                raise SystemExit(f"{name}: 干净的 T2 接近对不足 {want} 对（实际 {len(pairs)}）")
             degmap = {n["id"]: n["deg"] for n in nodes}
-            for j, (p_raw, ratio, hi_d, lo_d) in enumerate(pairs[:want]):
-                p = [remap[x] for x in p_raw]
+            for j, (p_raw, ratio) in enumerate(pairs[:want]):
+                p = list(p_raw)
                 answer = p[0] if degmap[p[0]] >= degmap[p[1]] else p[1]
-                for layout, raw in cbl.items():
-                    co, _ = (normalize_bbox(raw) if normalization == "bbox"
-                             else normalize_median_edge(raw, edges))
+                for layout, co in co_by_layout.items():
                     pts = [{"id": k, "x": round(v[0], 2), "y": round(v[1], 2)}
                            for k, v in sorted(co.items(), key=lambda kv: int(kv[0][1:]))]
                     stimuli.append({
@@ -515,23 +566,31 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
                         "pair": list(p), "degree_ratio": round(ratio, 3),
                         "pair_kind": "close",
                     })
-        # T2 练习：取一张不属于 T1/T2 主图集的较大图
+        # 练习：池外较大图，允许略放宽到 20/6；只用于示范
         practice_candidates = [n for n in sorted(graphs_t2, key=str)
                                if n not in T2_GRAPHS and n not in set(
                                    slot["name"] for slot in slots)]
         for name in practice_candidates:
             G = graphs_t2[name]
-            pairs = t2_close_pairs(G, max_pairs=1, min_low=T2_MIN_HIGH, min_ratio=1.25, max_high=T2_MAX_HIGH)
-            if not pairs:
-                continue
             layouts = load_layouts(name)
             remap, nodes, edges, cbl = anonymize(G, layouts)
-            p_raw, ratio, hi_d, lo_d = pairs[0]
-            p = [remap[x] for x in p_raw]
+            Ga = nx.Graph()
+            for old in G.nodes():
+                Ga.add_node(remap[old])
+            for u, v in G.edges():
+                Ga.add_edge(remap[u], remap[v])
+            co_by_layout = {}
+            for layout, raw in cbl.items():
+                co, _ = (normalize_bbox(raw) if normalization == "bbox"
+                         else normalize_median_edge(raw, edges))
+                co_by_layout[layout] = co
+            pairs = t2_clean_pairs(Ga, co_by_layout, 1, dmin=20.0, nmin=6.0)
+            if not pairs:
+                continue
+            p_raw, ratio = pairs[0]
+            p = list(p_raw)
             degmap = {n["id"]: n["deg"] for n in nodes}
-            raw = cbl["LPFD"]
-            co, _ = (normalize_bbox(raw) if normalization == "bbox"
-                     else normalize_median_edge(raw, edges))
+            co = co_by_layout["LPFD"]
             pts = [{"id": k, "x": round(v[0], 2), "y": round(v[1], 2)}
                    for k, v in sorted(co.items(), key=lambda kv: int(kv[0][1:]))]
             t2_practice = {

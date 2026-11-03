@@ -16,7 +16,7 @@
 
 > **T1 的措辞有变体**：当前用事实型（*"directly connected"*），可用 `CONFIG.tasks.T1.wording = 'perceptual'` 切到 GVRRI 的感知型（VRR，*"appear to belong to the neighborhood"*）。二者交互与判分完全相同，只是一行文字不同。
 
-> **T2 于 2026-10-29 改为“接近对比较”**：两个高度节点（16–35），度数比 1.25–1.8，点击连接更多的那个即提交。T2 使用 **8 张独立的大图**（case2、pre_case2、GD10、case3、case1、pre_case1、GD8、GD12），每图 1–3 对，共 16 对；T1 仍用 16 张小图，T1/T2 不共用图。旧版“数邻居”保留为 `CONFIG.tasks.T2.mode = 'count'`，不再用于正式实验。
+> **T2 于 2026-10-29 改为“接近对比较”**：两个高度节点（16–35），度数比 1.25–1.8，点击连接更多的那个即提交。T2 使用 **8 张图**：3 张与 T1 共用并**沿用 T1 布局**（GD6/Babel/aves），5 张 T2 专用（402/GD12/GD8/pre_case1/pre_case2）；每图 1–3 对，共 16 对。所有配对在**四种布局**下都满足 **两目标距离 ≥25px、目标到最近其他节点 ≥8px**，避免目标重叠/看不清。每个 code 内 T2 的四种布局仍各 4 对。旧版“数邻居”保留为 `CONFIG.tasks.T2.mode = 'count'`。
 
 **完整任务规格见 `docs/03_任务定义.md`。**
 

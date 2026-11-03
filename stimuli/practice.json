@@ -5817,19 +5817,19 @@
     }
    ],
    "targets": [
-    "n24",
-    "n238"
+    "n238",
+    "n24"
    ],
    "target_degree": {
-    "n24": 20,
-    "n238": 33
+    "n238": 33,
+    "n24": 20
    },
    "ground_truth": {
     "answer": "n238"
    },
    "pair": [
-    "n24",
-    "n238"
+    "n238",
+    "n24"
    ],
    "degree_ratio": 1.65,
    "pair_kind": "close"

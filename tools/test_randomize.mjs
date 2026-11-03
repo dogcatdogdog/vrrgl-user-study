@@ -228,7 +228,9 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
   '当前配置：T2 为 1.25–1.8 的接近对');
   ok(Object.keys(plan.t2Mapping).length === t2GraphIds.length && t2GraphIds.length === 8,
     '当前配置：T2 独立图集 8 张', String(t2GraphIds.length));
-  ok(t2GraphIds.every((g) => !graphIds.includes(g)), '当前配置：T1/T2 图集不重叠');
+  const shared = t2GraphIds.filter((g) => graphIds.includes(g));
+  ok(shared.every((g) => plan.t2Mapping[g] === plan.mapping[g]),
+    '当前配置：T2 共用图沿用 T1 布局', JSON.stringify(shared));
   const t2c = {};
   for (const x of t2m) t2c[x.layout] = (t2c[x.layout] || 0) + 1;
   ok(['LPFD','KK','FR','FA2'].every((l) => t2c[l] === 4),
