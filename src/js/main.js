@@ -170,6 +170,7 @@ async function boot() {
 
   let reviewItems = null;
   let fixItems = null;
+  let fixStimuli = null;
   if (reviewMode === 'redo') {
     try {
       const doc = await fetchJSON(`${CONFIG.storage.stimPath}/review_errors.json`);
@@ -184,6 +185,8 @@ async function boot() {
       const doc = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fixes.json`);
       fixItems = doc.fixes?.[entry.source_pid];
       if (!fixItems || !fixItems.length) throw new Error(`没有 ${entry.source_pid} 的补测清单`);
+      const fs = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fix_stimuli.json`);
+      fixStimuli = fs.stimuli;
     } catch (e) {
       renderError(app, t('errors.noData'), String(e));
       return;
@@ -205,7 +208,7 @@ async function boot() {
 
   const makePlan = () => {
     if (reviewMode === 't2fix') {
-      return buildFixPlan({ stimuli, items: fixItems, pid: session.participant_id });
+      return buildFixPlan({ stimuli: fixStimuli, items: fixItems, pid: session.participant_id });
     }
     if (reviewMode === 'redo') {
       return buildReviewPlan({ stimuli, items: reviewItems, pid: session.participant_id });
