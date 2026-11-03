@@ -2,14 +2,8 @@
  "meta": {
   "version": "1.0",
   "generated": "2026-11-03T07:39:04+00:00",
-  "n_codes": 56,
-  "layouts_per_offset": 4,
-  "review_codes": [
-   "FIXP57PQW",
-   "FIXP588MT",
-   "FIXP5GBBK",
-   "FIXP5KU77"
-  ]
+  "n_codes": 52,
+  "layouts_per_offset": 4
  },
  "codes": {
   "P295C3": {
@@ -219,34 +213,6 @@
   "RWLVX": {
    "offset": 1,
    "group": "remote"
-  },
-  "FIXP57PQW": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "t2fix",
-   "source_pid": "P57PQW",
-   "review": true
-  },
-  "FIXP588MT": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "t2fix",
-   "source_pid": "P588MT",
-   "review": true
-  },
-  "FIXP5GBBK": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "t2fix",
-   "source_pid": "P5GBBK",
-   "review": true
-  },
-  "FIXP5KU77": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "t2fix",
-   "source_pid": "P5KU77",
-   "review": true
   }
  }
 }

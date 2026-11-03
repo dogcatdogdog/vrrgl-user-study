@@ -205,18 +205,6 @@ export function renderDone(container, { session, cfg, onExport, onShare, canShar
   container.append(w);
 }
 
-/** 补测说明屏（每位被试只做自己的几道问题 T2）。 */
-export function renderFixIntro(container, n, onStart) {
-  container.replaceChildren();
-  const w = h('div', 'screen instructions');
-  w.append(h('h2', null, t('fix.title')));
-  w.append(h('p', null, t('fix.text', { n })));
-  const b = h('button', 'btn primary', t('fix.start'));
-  b.addEventListener('click', onStart);
-  w.append(b);
-  container.append(w);
-}
-
 /** 通用错误屏 —— 绝不静默失败。 */
 export function renderError(container, message, detail = '') {
   container.replaceChildren();
