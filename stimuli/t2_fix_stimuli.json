@@ -1,7 +1,8 @@
 {
  "meta": {
   "version": "1.0",
-  "note": "T2 follow-up stimuli (geometry-problem trials from the first four-person run)"
+  "note": "T2 follow-up stimuli (geometry-problem trials from the first four-person run)",
+  "viz_note": "follow-up stimuli use smaller nodes/edges to reduce overlap"
  },
  "stimuli": [
   {
@@ -1971,7 +1972,12 @@
     "n76"
    ],
    "degree_ratio": 1.417,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case2_p0_KK",
@@ -3940,7 +3946,12 @@
     "n76"
    ],
    "degree_ratio": 1.417,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case2_p1_FR",
@@ -5909,7 +5920,12 @@
     "n20"
    ],
    "degree_ratio": 1.429,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case2_p1_KK",
@@ -7878,7 +7894,12 @@
     "n20"
    ],
    "degree_ratio": 1.429,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case2_p2_FR",
@@ -9847,7 +9868,12 @@
     "n47"
    ],
    "degree_ratio": 1.524,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case2_p2_KK",
@@ -11816,7 +11842,12 @@
     "n47"
    ],
    "degree_ratio": 1.524,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_GD10-cy_case1_p0_FR",
@@ -14671,7 +14702,12 @@
     "n138"
    ],
    "degree_ratio": 1.4,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_GD10-cy_case1_p0_KK",
@@ -17526,7 +17562,12 @@
     "n138"
    ],
    "degree_ratio": 1.4,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_GD10-cy_case1_p0_LPFD",
@@ -20381,7 +20422,12 @@
     "n138"
    ],
    "degree_ratio": 1.4,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_GD10-cy_case1_p1_FR",
@@ -23236,7 +23282,12 @@
     "n136"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_GD10-cy_case1_p1_KK",
@@ -26091,7 +26142,12 @@
     "n136"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case3_p0_FR",
@@ -28986,7 +29042,12 @@
     "n87"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case3_p0_KK",
@@ -31881,7 +31942,12 @@
     "n87"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case3_p1_FR",
@@ -34776,7 +34842,12 @@
     "n87"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case3_p1_KK",
@@ -37671,7 +37742,12 @@
     "n87"
    ],
    "degree_ratio": 1.318,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   },
   {
    "stimulus_id": "T2_case1_p0_KK",
@@ -39001,7 +39077,12 @@
     "n6"
    ],
    "degree_ratio": 1.278,
-   "pair_kind": "close"
+   "pair_kind": "close",
+   "viz": {
+    "node_radius": 2.2,
+    "edge_width": 1.0,
+    "selected_outline_width": 1.2
+   }
   }
  ]
 }

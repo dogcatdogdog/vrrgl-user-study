@@ -85,11 +85,19 @@ export class GraphRenderer {
     const v = this.cfg.viz || {};
     const f = (v.autoScaleByNodeCount && n > (v.referenceNodes || 110))
       ? Math.sqrt((v.referenceNodes || 110) / n) : 1;
-    return {
+    const out = {
       r: Math.max(v.minNodeRadius ?? 2.5, this.cfg.nodeRadius * f),
       ew: Math.max(v.minEdgeWidth ?? 1, this.cfg.edgeWidth * f),
       sow: Math.max(v.minOutlineWidth ?? 1.5, this.cfg.colors.selectedOutlineWidth * f),
     };
+    // 刺激级覆盖（仅补测刺激使用：它们的目标对本身很近）
+    const ov = this.stimulus?.viz;
+    if (ov) {
+      if (ov.node_radius != null) out.r = ov.node_radius;
+      if (ov.edge_width != null) out.ew = ov.edge_width;
+      if (ov.selected_outline_width != null) out.sow = ov.selected_outline_width;
+    }
+    return out;
   }
 
   /** 把一个 stimulus 画出来。 */
