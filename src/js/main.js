@@ -182,8 +182,8 @@ async function boot() {
   }
   if (reviewMode === 't2fix') {
     try {
-      const doc = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fixes.json`);
-      fixItems = doc.fixes?.[entry.source_pid];
+      const doc = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fix_items/${entry.source_pid}.json`);
+      fixItems = doc.items;
       if (!fixItems || !fixItems.length) throw new Error(`没有 ${entry.source_pid} 的补测清单`);
       const fs = await fetchJSON(`${CONFIG.storage.stimPath}/t2_fix_stimuli.json`);
       fixStimuli = fs.stimuli;
