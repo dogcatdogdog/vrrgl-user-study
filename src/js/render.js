@@ -79,18 +79,33 @@ export class GraphRenderer {
     }, { passive: false });
   }
 
+  /** 当前刺激的节点半径/边宽：n>110 时按 sqrt(110/n) 缩小，同一张图不变。 */
+  _viz() {
+    const n = this.stimulus?.nodes?.length || 0;
+    const v = this.cfg.viz || {};
+    const f = (v.autoScaleByNodeCount && n > (v.referenceNodes || 110))
+      ? Math.sqrt((v.referenceNodes || 110) / n) : 1;
+    return {
+      r: Math.max(v.minNodeRadius ?? 2.5, this.cfg.nodeRadius * f),
+      ew: Math.max(v.minEdgeWidth ?? 1, this.cfg.edgeWidth * f),
+      sow: Math.max(v.minOutlineWidth ?? 1.5, this.cfg.colors.selectedOutlineWidth * f),
+    };
+  }
+
   /** 把一个 stimulus 画出来。 */
   draw(stimulus, { targets = [], selected = [] } = {}) {
     this.stimulus = stimulus;
     this.targets = new Set(targets);
     this.selected = new Set(selected);
+    this._nodeViz = this._viz();
     this.nodeEls.clear();
     this.gEdges.replaceChildren();
     this.gNodes.replaceChildren();
 
     const { node: cNode, edge: cEdge, target: cTarget,
             selectedOutline, selectedOutlineWidth } = this.cfg.colors;
-    const r = this.cfg.nodeRadius;
+    const viz = this._nodeViz;
+    const r = viz.r;
 
     const pos = new Map(stimulus.nodes.map((n) => [n.id, n]));
 
@@ -99,7 +114,7 @@ export class GraphRenderer {
       if (!a || !b) continue;
       this.gEdges.append(el('line', {
         x1: a.x, y1: a.y, x2: b.x, y2: b.y,
-        stroke: cEdge, 'stroke-width': this.cfg.edgeWidth,
+        stroke: cEdge, 'stroke-width': viz.ew,
         'stroke-linecap': 'round',
       }));
     }
@@ -114,7 +129,7 @@ export class GraphRenderer {
         'data-id': n.id,
         // 已选中 = 红描边，**填充不变**（docs/01 §2.3.1：目标被选中后仍保留蓝色标识）
         stroke: isSel ? selectedOutline : 'none',
-        'stroke-width': isSel ? selectedOutlineWidth : 0,
+        'stroke-width': isSel ? viz.sow : 0,
       });
       // 略大一点的命中区，提升可点性；对四种布局完全一致，不引入偏差
       c.style.cursor = 'pointer';
@@ -125,11 +140,12 @@ export class GraphRenderer {
   }
 
   _paintSelection() {
-    const { selectedOutline, selectedOutlineWidth } = this.cfg.colors;
+    const { selectedOutline } = this.cfg.colors;
+    const sow = this._nodeViz?.sow ?? this.cfg.colors.selectedOutlineWidth;
     for (const [id, c] of this.nodeEls) {
       const on = this.selected.has(id);
       c.setAttribute('stroke', on ? selectedOutline : 'none');
-      c.setAttribute('stroke-width', on ? selectedOutlineWidth : 0);
+      c.setAttribute('stroke-width', on ? sow : 0);
     }
   }
 
@@ -173,7 +189,7 @@ export class GraphRenderer {
    */
   nodeAt(clientX, clientY, prefer = null) {
     const p = this._toCanvas(clientX, clientY);
-    const lim = this.cfg.nodeRadius + 3;
+    const lim = (this._nodeViz?.r ?? this.cfg.nodeRadius) + 3;
     let best = null, bestD = Infinity, bestPreferred = false;
     for (const n of this.stimulus?.nodes || []) {
       const d = Math.hypot(n.x - p.x, n.y - p.y);

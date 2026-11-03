@@ -58,6 +58,15 @@ const DEFAULTS = {
   canvas: { width: 900, height: 620, background: '#ffffff' },
   nodeRadius: 5,
   edgeWidth: 2,
+  // 大图（n>110）按节点数自动缩小节点/边；同一张图所有布局用同一缩放，
+  // 所有节点（含目标）仍完全同大小 —— 不泄露度数。
+  viz: {
+    autoScaleByNodeCount: true,
+    referenceNodes: 110,
+    minNodeRadius: 2.5,
+    minEdgeWidth: 1,
+    minOutlineWidth: 1.5,
+  },
   colors: {
     node: '#9e9e9e',
     edge: '#9e9e9e',
@@ -178,6 +187,7 @@ export function configSummary() {
     T2Mode: CONFIG.tasks.T2.mode,
     normalization: CONFIG.normalization,
     highlightHubs: CONFIG.highlightHubs,
+    viz: CONFIG.viz,
     practiceTrials: CONFIG.practiceTrials,
     assignment: CONFIG.assignment,
     offsetSource: CONFIG.offsetSource,
