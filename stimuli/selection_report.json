@@ -3,6 +3,7 @@
   "version": "2.0",
   "data_source": "自选数据集里 ≤110 节点的原生图（不裁剪、不重新布局）",
   "target_rule": "mid",
+  "t2_compare": true,
   "normalization": "bounding_box",
   "usable_fraction": 0.84,
   "target_median_px": null,
@@ -18,6 +19,7 @@
   ],
   "tasks": [
    "T1",
+   "T2",
    "T4"
   ],
   "graphs": 16,
@@ -48,7 +50,8 @@
    ],
    "t4_ratio": 4.0,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "ch_g103",
@@ -63,7 +66,8 @@
    ],
    "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo10051.30",
@@ -78,7 +82,8 @@
    ],
    "t4_ratio": 4.0,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo11599.91",
@@ -93,7 +98,8 @@
    ],
    "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo1567.57",
@@ -108,7 +114,8 @@
    ],
    "t4_ratio": 4.0,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo2746.38",
@@ -123,7 +130,8 @@
    ],
    "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo3202.35",
@@ -138,7 +146,8 @@
    ],
    "t4_ratio": 4.0,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "grafo3335.40",
@@ -153,7 +162,8 @@
    ],
    "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": []
   },
   {
    "graph_id": "GD2-toy_case2",
@@ -168,7 +178,16 @@
    ],
    "t4_ratio": 8.5,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n1",
+      "n23"
+     ],
+     "ratio": 1.118
+    }
+   ]
   },
   {
    "graph_id": "GD5-toy_case7_graph",
@@ -183,7 +202,16 @@
    ],
    "t4_ratio": 2.667,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n0",
+      "n39"
+     ],
+     "ratio": 1.125
+    }
+   ]
   },
   {
    "graph_id": "GD6-toy_case8",
@@ -198,7 +226,37 @@
    ],
    "t4_ratio": 4.125,
    "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n12",
+      "n63"
+     ],
+     "ratio": 1.5
+    },
+    {
+     "pair": [
+      "n77",
+      "n98"
+     ],
+     "ratio": 1.111
+    },
+    {
+     "pair": [
+      "n63",
+      "n77"
+     ],
+     "ratio": 1.222
+    },
+    {
+     "pair": [
+      "n12",
+      "n98"
+     ],
+     "ratio": 1.65
+    }
+   ]
   },
   {
    "graph_id": "Moviegalaxies - Babel_graph",
@@ -213,7 +271,16 @@
    ],
    "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n7",
+      "n10"
+     ],
+     "ratio": 1.278
+    }
+   ]
   },
   {
    "graph_id": "aves_weaver",
@@ -228,22 +295,23 @@
    ],
    "t4_ratio": 4.0,
    "t4_kind": "obvious",
-   "t4_fell_back": false
-  },
-  {
-   "graph_id": "moviegalaxies-25",
-   "degree_level": "high",
-   "n_nodes": 30,
-   "n_edges": 44,
-   "target": "n2",
-   "target_degree": 16,
-   "t4_pair": [
-    "n2",
-    "n7"
-   ],
-   "t4_ratio": 4.0,
-   "t4_kind": "obvious",
-   "t4_fell_back": true
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n1",
+      "n12"
+     ],
+     "ratio": 1.588
+    },
+    {
+     "pair": [
+      "n1",
+      "n7"
+     ],
+     "ratio": 1.688
+    }
+   ]
   },
   {
    "graph_id": "moviegalaxies-271",
@@ -253,27 +321,97 @@
    "target": "n44",
    "target_degree": 23,
    "t4_pair": [
-    "n14",
-    "n18"
+    "n6",
+    "n35"
    ],
-   "t4_ratio": 4.333,
-   "t4_kind": "obvious",
-   "t4_fell_back": false
+   "t4_ratio": 2.091,
+   "t4_kind": "close",
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n18",
+      "n26"
+     ],
+     "ratio": 1.368
+    },
+    {
+     "pair": [
+      "n26",
+      "n35"
+     ],
+     "ratio": 1.211
+    },
+    {
+     "pair": [
+      "n26",
+      "n44"
+     ],
+     "ratio": 1.211
+    }
+   ]
   },
   {
-   "graph_id": "moviegalaxies-371",
+   "graph_id": "moviegalaxies-402",
    "degree_level": "high",
-   "n_nodes": 36,
-   "n_edges": 73,
-   "target": "n17",
-   "target_degree": 19,
+   "n_nodes": 74,
+   "n_edges": 134,
+   "target": "n15",
+   "target_degree": 23,
    "t4_pair": [
-    "n7",
-    "n17"
+    "n0",
+    "n67"
    ],
-   "t4_ratio": 2.111,
+   "t4_ratio": 4.0,
+   "t4_kind": "obvious",
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n15",
+      "n67"
+     ],
+     "ratio": 1.438
+    },
+    {
+     "pair": [
+      "n15",
+      "n23"
+     ],
+     "ratio": 1.174
+    },
+    {
+     "pair": [
+      "n23",
+      "n67"
+     ],
+     "ratio": 1.688
+    }
+   ]
+  },
+  {
+   "graph_id": "moviegalaxies-92",
+   "degree_level": "high",
+   "n_nodes": 56,
+   "n_edges": 125,
+   "target": "n18",
+   "target_degree": 18,
+   "t4_pair": [
+    "n18",
+    "n39"
+   ],
+   "t4_ratio": 2.0,
    "t4_kind": "close",
-   "t4_fell_back": false
+   "t4_fell_back": false,
+   "t2_pairs": [
+    {
+     "pair": [
+      "n18",
+      "n38"
+     ],
+     "ratio": 1.278
+    }
+   ]
   }
  ],
  "selected": {
@@ -293,9 +431,9 @@
    "GD6-toy_case8",
    "Moviegalaxies - Babel_graph",
    "aves_weaver",
-   "moviegalaxies-25",
    "moviegalaxies-271",
-   "moviegalaxies-371"
+   "moviegalaxies-402",
+   "moviegalaxies-92"
   ]
  },
  "skipped_too_large": [
@@ -850,42 +988,6 @@
    "pad_y": 49.60000000000002
   },
   {
-   "graph_id": "moviegalaxies-25",
-   "layout": "FR",
-   "scale": 302.5836205548885,
-   "bbox_w": 397.9269713867603,
-   "bbox_h": 520.8,
-   "pad_x": 251.03651430661986,
-   "pad_y": 49.60000000000002
-  },
-  {
-   "graph_id": "moviegalaxies-25",
-   "layout": "KK",
-   "scale": 310.6074056004258,
-   "bbox_w": 519.7464125066582,
-   "bbox_h": 520.8,
-   "pad_x": 190.1267937466709,
-   "pad_y": 49.60000000000002
-  },
-  {
-   "graph_id": "moviegalaxies-25",
-   "layout": "FA2",
-   "scale": 8.21212973438046,
-   "bbox_w": 479.19296778673265,
-   "bbox_h": 520.8,
-   "pad_x": 210.40351610663367,
-   "pad_y": 49.60000000000002
-  },
-  {
-   "graph_id": "moviegalaxies-25",
-   "layout": "LPFD",
-   "scale": 79.93648187233997,
-   "bbox_w": 756.0,
-   "bbox_h": 507.866232519643,
-   "pad_x": 72.0,
-   "pad_y": 56.0668837401785
-  },
-  {
    "graph_id": "moviegalaxies-271",
    "layout": "FR",
    "scale": 262.0596200125784,
@@ -922,39 +1024,75 @@
    "pad_y": 49.60000000000002
   },
   {
-   "graph_id": "moviegalaxies-371",
+   "graph_id": "moviegalaxies-402",
    "layout": "FR",
-   "scale": 316.27701484676453,
-   "bbox_w": 593.8902654377205,
+   "scale": 260.73230279585846,
+   "bbox_w": 400.5169780398812,
    "bbox_h": 520.8,
-   "pad_x": 153.05486728113976,
+   "pad_x": 249.7415109800594,
    "pad_y": 49.60000000000002
   },
   {
-   "graph_id": "moviegalaxies-371",
+   "graph_id": "moviegalaxies-402",
    "layout": "KK",
-   "scale": 274.1629046164077,
-   "bbox_w": 524.3158640409918,
+   "scale": 278.2833795473471,
+   "bbox_w": 520.853987312705,
    "bbox_h": 520.8,
-   "pad_x": 187.84206797950412,
+   "pad_x": 189.57300634364748,
    "pad_y": 49.60000000000002
   },
   {
-   "graph_id": "moviegalaxies-371",
+   "graph_id": "moviegalaxies-402",
    "layout": "FA2",
-   "scale": 6.814341940837569,
-   "bbox_w": 687.6576741920317,
+   "scale": 2.84099812350509,
+   "bbox_w": 511.97470402798393,
    "bbox_h": 520.8,
-   "pad_x": 106.17116290398417,
+   "pad_x": 194.01264798600803,
    "pad_y": 49.60000000000002
   },
   {
-   "graph_id": "moviegalaxies-371",
+   "graph_id": "moviegalaxies-402",
    "layout": "LPFD",
-   "scale": 71.08221804251929,
-   "bbox_w": 587.5123173184182,
+   "scale": 38.03659943852491,
+   "bbox_w": 537.3729612398868,
    "bbox_h": 520.8,
-   "pad_x": 156.24384134079088,
+   "pad_x": 181.31351938005662,
+   "pad_y": 49.60000000000002
+  },
+  {
+   "graph_id": "moviegalaxies-92",
+   "layout": "FR",
+   "scale": 479.36052565292704,
+   "bbox_w": 756.0,
+   "bbox_h": 427.0266368154204,
+   "pad_x": 72.0,
+   "pad_y": 96.48668159228981
+  },
+  {
+   "graph_id": "moviegalaxies-92",
+   "layout": "KK",
+   "scale": 278.4895172373653,
+   "bbox_w": 390.7274211553293,
+   "bbox_h": 520.8,
+   "pad_x": 254.63628942233535,
+   "pad_y": 49.60000000000002
+  },
+  {
+   "graph_id": "moviegalaxies-92",
+   "layout": "FA2",
+   "scale": 3.1840722035620854,
+   "bbox_w": 496.36163592534086,
+   "bbox_h": 520.8,
+   "pad_x": 201.81918203732957,
+   "pad_y": 49.60000000000002
+  },
+  {
+   "graph_id": "moviegalaxies-92",
+   "layout": "LPFD",
+   "scale": 38.0794897096167,
+   "bbox_w": 384.4430726955024,
+   "bbox_h": 520.8,
+   "pad_x": 257.7784636522488,
    "pad_y": 49.60000000000002
   }
  ]

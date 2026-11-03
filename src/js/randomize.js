@@ -202,17 +202,25 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
     blocks[task] = shuffle(list, rng);
   }
 
-  // T2 复用 T1 的【图与目标节点】，但必须派生成独立对象 ——
-  // 直接复用会让 stimulus_id 记成 T1_xxx、task 记错
   if (enabled.includes('T2')) {
-    const list = [];
-    for (const g of graphIds) {
-      const layout = mapping[g];
-      const s = idx[`${g}|${layout}`]?.T1;
-      if (!s) throw new Error(`[randomize] 找不到 T2 用的刺激：${g} / ${layout}`);
-      list.push({ task: 'T2', stimulus: asTask(s, 'T2'), graphId: g, layout, phase: 'main' });
+    if (cfg.tasks.T2?.mode === 'compare') {
+      // T2 = 接近对比较：使用 stimulus 里预生成的 T2 记录（每图可能有多对）
+      const list = stimuli
+        .filter((s) => s.task === 'T2' && s.layout === mapping[s.graph_id])
+        .map((s) => ({ task: 'T2', stimulus: s, graphId: s.graph_id, layout: s.layout, phase: 'main' }));
+      if (!list.length) throw new Error('[randomize] 找不到 T2 接近对刺激');
+      blocks.T2 = shuffle(list, rng);
+    } else {
+      // 旧版 T2（计数）：复用 T1 的图与目标节点，但派生成独立对象
+      const list = [];
+      for (const g of graphIds) {
+        const layout = mapping[g];
+        const s = idx[`${g}|${layout}`]?.T1;
+        if (!s) throw new Error(`[randomize] 找不到 T2 用的刺激：${g} / ${layout}`);
+        list.push({ task: 'T2', stimulus: asTask(s, 'T2'), graphId: g, layout, phase: 'main' });
+      }
+      blocks.T2 = shuffle(list, rng);
     }
-    blocks.T2 = shuffle(list, rng);
   }
 
   // 块序按 pid 交替
@@ -277,7 +285,9 @@ export function buildPracticePlan({ practiceStimuli, pid, cfg }) {
   //    所以直接复用 T1 的练习图（题面不同、作答控件不同，图完全一样）。
   //    不做这步的话，T2 开启时被试会在正式试次里第一次遇到「数邻居」——
   //    而 docs/01 §3.1 要求 T2 开启时练习题数为 5。
-  if (enabled.includes('T2') && !(byTask.T2 || []).length && (byTask.T1 || []).length) {
+  // 仅旧版“计数 T2”可复用 T1 练习；compare 版必须有自己的左右节点对
+  if (enabled.includes('T2') && cfg.tasks.T2?.mode !== 'compare'
+      && !(byTask.T2 || []).length && (byTask.T1 || []).length) {
     byTask.T2 = byTask.T1.map((s) => asTask(s, 'T2'));
   }
 

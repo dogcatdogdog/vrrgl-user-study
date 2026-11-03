@@ -10,12 +10,18 @@
 
 import { t } from './i18n.js';
 
+/** T4 与“compare 模式的 T2”共用两节点点击交互。 */
+export function isCompareTask(task, cfg) {
+  return task === 'T4'
+    || (task === 'T2' && cfg?.tasks?.T2?.mode === 'compare');
+}
+
 export function promptFor(task, cfg) {
   // GVRRI 的 VRR 措辞 —— 只换一行字，交互与判分完全相同（docs/03 §10 #1）
   if (task === 'T1') {
     return t(cfg.tasks.T1.wording === 'perceptual' ? 'trial.t1Perceptual' : 'trial.t1Factual');
   }
-  if (task === 'T4') return t('trial.t4');
+  if (isCompareTask(task, cfg)) return t('trial.t4');
   if (task === 'T2') return t('trial.t2');
   if (task === 'ATTENTION') return t('attention.text');
   return '';
@@ -76,7 +82,8 @@ export function practiceFeedback(task, result, stimulus) {
       jaccard: result.jaccard.toFixed(2),
     });
   }
-  if (task === 'T4') {
+  if (task === 'T4' || (task === 'T2' && Array.isArray(stimulus.targets)
+      && stimulus.targets.length === 2)) {
     const [a, b] = stimulus.pair;
     const d = stimulus.target_degree;
     const hi = d[a] >= d[b] ? a : b;
@@ -118,13 +125,14 @@ export class TaskController {
     this._nSelected = 0;
     const cfg = this.cfg;
 
-    // 目标节点（T4 是两个，T1/T2 是一个）
-    const targets = task === 'T4' ? stimulus.targets : [stimulus.targets[0]];
+    // 目标节点：比较任务（T4 / compare 版 T2）是两个，其余一个
+    const compare = isCompareTask(task, cfg);
+    const targets = compare ? stimulus.targets : [stimulus.targets[0]];
     this.r.draw(stimulus, { targets, selected: [] });
     this.r.setSelected([]);
 
     if (task === 'T1') this._mountT1();
-    else if (task === 'T4') this._mountT4();
+    else if (compare) this._mountT4();
     else if (task === 'T2') this._mountT2();
     else if (task === 'ATTENTION') { /* 前庭校验不画图 */ }
   }

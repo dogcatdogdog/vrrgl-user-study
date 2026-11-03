@@ -10,7 +10,7 @@ import { Storage } from './storage.js';
 import { openSession } from './session.js';
 import { GraphRenderer } from './render.js';
 import { Recorder, installAntiCheat, systemInfo } from './record.js';
-import { TaskController, promptFor, scoreT1, scoreT2, scoreT4, practiceFeedback } from './tasks.js';
+import { TaskController, promptFor, isCompareTask, scoreT1, scoreT2, scoreT4, practiceFeedback } from './tasks.js';
 import { loadConsentText, renderConsent, routeDeclined, pickConsentDoc } from './consent.js';
 import {
   loadCodes, lookupCode, normalizeCode, renderCodeEntry, renderMissingCodes,
@@ -526,12 +526,13 @@ async function runTrial(ctx, trial, { index, isPractice }) {
   const responsePromise = new Promise((res) => { pending.resolve = res; });
 
   // 目标 / 初始选中
-  const targets = trial.task === 'T4' ? stim.targets : [stim.targets[0]];
+  const compare = isCompareTask(trial.task, CONFIG);
+  const targets = compare ? stim.targets : [stim.targets[0]];
   controller.mount(trial.task, stim);
 
   // 作答控件
   const submitBtn = h('button', 'btn primary', t('common.submit'));
-  submitBtn.disabled = trial.task === 'T1';
+  submitBtn.disabled = trial.task === 'T1' || compare;
   const noteEl = h('p', 'hint', '');
 
   function refreshPanel() {
@@ -570,6 +571,8 @@ async function runTrial(ctx, trial, { index, isPractice }) {
   if (trial.task === 'T1') {
     controls.append(noteEl, submitBtn);
     submitBtn.addEventListener('click', () => controller.submitForm());
+  } else if (compare) {
+    controls.append(h('p', 'hint', t('trial.clickOneTarget')));
   } else if (trial.task === 'T2') {
     const num = document.createElement('input');
     num.type = 'number'; num.min = '0'; num.className = 'num';
@@ -583,8 +586,6 @@ async function runTrial(ctx, trial, { index, isPractice }) {
     num.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submitT2(); } });
     controls.append(noteEl);
     setTimeout(() => num.focus(), 50);
-  } else if (trial.task === 'T4') {
-    controls.append(h('p', 'hint', t('trial.clickOneTarget')));
   }
 
   refreshPanel();
@@ -605,7 +606,7 @@ async function runTrial(ctx, trial, { index, isPractice }) {
   if (trial.task === 'T1') {
     truth = stim.ground_truth[stim.targets[0]];
     result = scoreT1(response.selected, truth);
-  } else if (trial.task === 'T4') {
+  } else if (compare) {
     result = scoreT4(response.clicked, stim);
     truth = result.answer;
   } else {
@@ -621,15 +622,15 @@ async function runTrial(ctx, trial, { index, isPractice }) {
     graph_id: stim.graph_id,
     layout: stim.layout,
     degree_level: stim.degree_level,
-    target_node: trial.task === 'T4' ? null : stim.targets[0],
+    target_node: compare ? null : stim.targets[0],
     target_degree: stim.target_degree,
     response: response.selected ?? response.clicked ?? response.answer,
     ...result,
     ...timing,
   };
 
-  // T4 的专用字段（docs/03 §3.7）—— 字段名按文档，便于分析脚本直接取用
-  if (trial.task === 'T4') {
+  // 比较任务的专用字段（T4 / compare 版 T2）
+  if (compare) {
     record.pair = stim.pair;
     record.degree_pair = stim.pair.map((p) => stim.target_degree[p]);
     record.degree_ratio = stim.degree_ratio;

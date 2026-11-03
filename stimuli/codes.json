@@ -1,13 +1,9 @@
 {
  "meta": {
   "version": "1.0",
-  "generated": "2026-10-27T08:06:33+00:00",
-  "n_codes": 45,
-  "layouts_per_offset": 4,
-  "review_codes": [
-   "LPFD1"
-  ],
-  "review_mode_note": "LPFD1 redoes only the LPFD trials the four pilot participants answered incorrectly"
+  "generated": "2026-11-03T07:28:13+00:00",
+  "n_codes": 52,
+  "layouts_per_offset": 4
  },
  "codes": {
   "P295C3": {
@@ -56,6 +52,38 @@
   },
   "P2ZLHZ": {
    "offset": 3,
+   "group": "remote"
+  },
+  "P32ZX2": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P3559N": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P35SDK": {
+   "offset": 2,
+   "group": "remote"
+  },
+  "P38AJV": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P38ASG": {
+   "offset": 0,
+   "group": "remote"
+  },
+  "P3FT3S": {
+   "offset": 1,
+   "group": "remote"
+  },
+  "P3G3CP": {
+   "offset": 3,
+   "group": "remote"
+  },
+  "P3KXUP": {
+   "offset": 2,
    "group": "remote"
   },
   "P4SUV": {
@@ -185,12 +213,6 @@
   "RWLVX": {
    "offset": 1,
    "group": "remote"
-  },
-  "LPFD1": {
-   "offset": 0,
-   "group": "remote",
-   "mode": "redo",
-   "review": true
   }
  }
 }

@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import math
 import os
@@ -75,6 +76,14 @@ TARGET_MEDIAN_PX = 40.0           # 仅 median_edge 归一化用（pilot 对比�
 T4_MIN_DIFF = 2
 T4_MIN_RATIO = 2.0
 T4_OBVIOUS_RATIO = 4.0
+
+# T2 改用“接近对比较”（2026-10-29）：两个节点度数接近，点击连接更多的那个。
+# 至少一个是高度节点（≥16），另一个 ≥9；比值限制在 1.1–1.8，避免旧 T4 的 2:1 天花板。
+T2_MIN_HIGH = 16
+T2_MIN_LOW = 9
+T2_MIN_RATIO = 1.1
+T2_MAX_RATIO = 1.8
+T2_TOTAL_PAIRS = 16
 
 
 # ─────────────────────────── 工具 ───────────────────────────
@@ -276,6 +285,42 @@ def t4_pair(G: nx.Graph, band: str, prefer_obvious: bool):
     return None
 
 
+def t2_close_pairs(G: nx.Graph, max_pairs: int = 3, min_low: int = T2_MIN_HIGH):
+    """T2 接近对：两个度数都在 16–23（默认），比值 1.1–1.8。
+
+    练习用 min_low=9 可以从池外图里找到更多对。
+    优先互不重叠的节点对；不足时允许共享节点。按“接近 1.4”排序，
+    避免全部落在 1.1（太难）或 1.8（太易）两端。
+    """
+    deg = dict(G.degree())
+    cands = []
+    for a, b in itertools.combinations(sorted(G.nodes(), key=str), 2):
+        hi, lo = max(deg[a], deg[b]), min(deg[a], deg[b])
+        if hi < T2_MIN_HIGH or lo < min_low:
+            continue
+        r = hi / lo
+        if r < T2_MIN_RATIO or r > T2_MAX_RATIO:
+            continue
+        pair = [a, b] if str(a) <= str(b) else [b, a]
+        cands.append((pair, r, hi, lo))
+    cands.sort(key=lambda t: (abs(t[1] - 1.4), t[1], str(t[0][0]), str(t[0][1])))
+    out, used = [], set()
+    for c in cands:
+        if len(out) >= max_pairs:
+            break
+        if c[0][0] in used or c[0][1] in used:
+            continue
+        out.append(c)
+        used.update(c[0])
+    for c in cands:
+        if len(out) >= max_pairs:
+            break
+        if c in out:
+            continue
+        out.append(c)
+    return out
+
+
 # ─────────────────────────── 匿名化与归一化 ───────────────────────────
 
 def anonymize(G: nx.Graph, layouts):
@@ -341,11 +386,18 @@ def normalize_median_edge(coords, edges, target_px=TARGET_MEDIAN_PX):
 
 # ─────────────────────────── 主流程 ───────────────────────────
 
-def build(normalization, allow_overlap, target_rule="top"):
+def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
     graphs, skipped = load_all_graphs()
     log(f"读入 {len(graphs)} 张图（≤{MAX_NODES} 节点），跳过 {len(skipped)} 张过大的")
 
     picked = select_graphs(graphs, allow_overlap, target_rule)
+    if t2_compare:
+        # T2 需要“双高度接近对”：从有这类节点对的图里取 8 张高档图。
+        # 低档图保持不变；这样 T1/T2 仍共用同一批图，只是高档换了两张。
+        pair_graphs = sorted([n for n, G in graphs.items() if t2_close_pairs(G, 1)])
+        if len(pair_graphs) < PER_BAND:
+            log(f"  [!] 有双高度接近对的图只有 {len(pair_graphs)} 张（需要 {PER_BAND}）")
+        picked = {"low": picked["low"], "high": pair_graphs[:PER_BAND]}
     log("选图：" + "  ".join(f"{b}={len(picked[b])}" for b in BAND_ORDER))
 
     slots = []
@@ -355,6 +407,28 @@ def build(normalization, allow_overlap, target_rule="top"):
             tgt = pick_target(G, band, target_rule)
             slots.append({"band": band, "name": name, "graph": G, "target": tgt,
                           "target_deg": G.degree(tgt)})
+
+    # T2 接近对：只在高档图上，每图最多 2 对，补足 16 对
+    t2_by_graph = {}
+    for sl in slots:
+        if sl["band"] == "high":
+            t2_by_graph[sl["name"]] = t2_close_pairs(sl["graph"], 6)
+    t2_chosen = {n: ps[:2] for n, ps in t2_by_graph.items()}
+    n_pairs = sum(len(v) for v in t2_chosen.values())
+    # 若不足，按“每图再加一对”的轮转补齐，避免某一张图占掉大部分 T2 题
+    while n_pairs < T2_TOTAL_PAIRS:
+        progressed = False
+        for n, ps in t2_by_graph.items():
+            if n_pairs >= T2_TOTAL_PAIRS:
+                break
+            if len(t2_chosen[n]) < len(ps):
+                t2_chosen[n].append(ps[len(t2_chosen[n])])
+                n_pairs += 1
+                progressed = True
+        if not progressed:
+            break
+    if n_pairs < T2_TOTAL_PAIRS:
+        log(f"  [!] T2 接近对只有 {n_pairs} 对（目标 {T2_TOTAL_PAIRS}）")
 
     stimuli, report, norm_log = [], [], []
     pair_kind = Counter()
@@ -376,7 +450,14 @@ def build(normalization, allow_overlap, target_rule="top"):
             "n_nodes": G.number_of_nodes(), "n_edges": G.number_of_edges(),
             "target": t, "target_degree": tdeg,
             "t4_pair": None, "t4_ratio": None, "t4_kind": None, "t4_fell_back": None,
+            "t2_pairs": [],
         }
+        degmap = {n["id"]: n["deg"] for n in nodes}
+        t2_pairs = t2_chosen.get(name, [])
+        entry["t2_pairs"] = [
+            {"pair": [remap[x] for x in p_raw], "ratio": round(r, 3)}
+            for p_raw, r, _hi, _lo in t2_pairs
+        ]
 
         for layout, raw in coords_by_layout.items():
             if normalization == "bbox":
@@ -404,7 +485,6 @@ def build(normalization, allow_overlap, target_rule="top"):
             else:
                 p_raw, ratio, hi_d, lo_d, fell = pair
                 p = [remap[x] for x in p_raw]
-                degmap = {n["id"]: n["deg"] for n in nodes}
                 t4.update({
                     "targets": list(p),
                     "target_degree": {p[0]: degmap[p[0]], p[1]: degmap[p[1]]},
@@ -415,6 +495,20 @@ def build(normalization, allow_overlap, target_rule="top"):
                     "pair_kind_fell_back": fell,
                 })
             stimuli.append(t4)
+
+            # T2 接近对（同一个 graph/layout 可能有多对，stimulus_id 带 pair 序号）
+            for j, (p_raw, ratio, hi_d, lo_d) in enumerate(t2_pairs):
+                p = [remap[x] for x in p_raw]
+                answer = p[0] if degmap[p[0]] >= degmap[p[1]] else p[1]
+                stimuli.append({
+                    "stimulus_id": f"T2_{name}_p{j}_{layout}", "task": "T2",
+                    "graph_id": name, "layout": layout, "degree_level": band,
+                    **geo, "targets": list(p),
+                    "target_degree": {p[0]: degmap[p[0]], p[1]: degmap[p[1]]},
+                    "ground_truth": {"answer": answer},
+                    "pair": list(p), "degree_ratio": round(ratio, 3),
+                    "pair_kind": "close",
+                })
 
         if pair is not None:
             p_raw, ratio, hi_d, lo_d, fell = pair
@@ -429,19 +523,20 @@ def build(normalization, allow_overlap, target_rule="top"):
 # ─────────────────────────── 输出 ───────────────────────────
 
 def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skipped,
-                  target_rule="top"):
+                  target_rule="top", t2_compare=False):
     os.makedirs(OUT_DIR, exist_ok=True)
     suffix = "" if normalization == "bbox" else f".{normalization}"
     meta = {
         "version": "2.0",
         "data_source": "自选数据集里 ≤110 节点的原生图（不裁剪、不重新布局）",
         "target_rule": target_rule,
+        "t2_compare": t2_compare,
         "normalization": "bounding_box" if normalization == "bbox" else "median_edge_length",
         "usable_fraction": USABLE if normalization == "bbox" else None,
         "target_median_px": TARGET_MEDIAN_PX if normalization != "bbox" else None,
         "canvas": {"width": CANVAS_W, "height": CANVAS_H},
         "layouts": list(ALGORITHMS),
-        "tasks": ["T1", "T4"],
+        "tasks": ["T1", "T2", "T4"],
         "graphs": len({s["graph_id"] for s in stimuli}),
         "trials_per_task": len({s["graph_id"] for s in stimuli}),
         "total_trials": 2 * len({s["graph_id"] for s in stimuli}),
@@ -492,6 +587,10 @@ def write_practice_and_examples(graphs, used_names, normalization, target_rule="
         return {"graph_id": name, "slot": slot, "remap": remap, "target_raw": tgt,
                 "target_deg": G.degree(tgt), "geo": out, "graph": G}
 
+    # T2 接近对练习：从池外找一张有 close pair 的图
+    t2_pool = [n for n in sorted(set(pool), key=str)
+               if t2_close_pairs(graphs[n], 1, min_low=T2_MIN_LOW)]
+
     def make_t1(sl, layout_id):
         g = sl["geo"][layout_id]
         nbrs = sorted(sl["remap"][x] for x in sl["graph"].neighbors(sl["target_raw"]))
@@ -518,6 +617,22 @@ def write_practice_and_examples(graphs, used_names, normalization, target_rule="
                 "pair": list(p), "degree_ratio": round(ratio, 3),
                 "pair_kind": "close" if ratio < T4_OBVIOUS_RATIO else "obvious"}
 
+    def make_t2(sl, layout_id):
+        pairs = t2_close_pairs(sl["graph"], 1, min_low=T2_MIN_LOW)
+        if not pairs:
+            return None
+        g = sl["geo"][layout_id]
+        p_raw, ratio, hi_d, lo_d = pairs[0]
+        p = [sl["remap"][x] for x in p_raw]
+        dm = {f"n{i}": sl["graph"].degree(v) for i, v in
+              enumerate(sorted(sl["graph"].nodes(), key=str))}
+        return {"stimulus_id": f"T2_{sl['slot']}_{layout_id}", "task": "T2",
+                "phase": "practice", "graph_id": f"{sl['slot']}", "layout": layout_id,
+                "degree_level": "high", **g, "targets": list(p),
+                "target_degree": {p[0]: dm[p[0]], p[1]: dm[p[1]]},
+                "ground_truth": {"answer": max(p, key=lambda x: dm[x])},
+                "pair": list(p), "degree_ratio": round(ratio, 3), "pair_kind": "close"}
+
     practice, examples = [], []
     lc = list(ALGORITHMS)
     for i, name in enumerate(ok[:4]):
@@ -529,6 +644,12 @@ def write_practice_and_examples(graphs, used_names, normalization, target_rule="
     for i, name in enumerate(ok[4:8]):
         sl = render(name, f"example{i}")
         examples.append(make_t1(sl, "LPFD"))
+
+    if t2_pool:
+        sl = render(t2_pool[0], "practice_t2")
+        rec = make_t2(sl, "LPFD")
+        if rec:
+            practice.append(rec)
 
     for fname, data, note in (
         ("practice.json", practice, "取自刺激池之外；题序 T4/T1/T4/T1（docs/03 §7）"),
@@ -675,6 +796,8 @@ def check(stimuli, graphs, picked):
     # 每 (图, 布局) 必须有 T1 与 T4，且几何一致
     idx = {}
     for s in stimuli:
+        if s["task"] not in ("T1", "T4"):
+            continue
         idx.setdefault((s["graph_id"], s["layout"]), {})[s["task"]] = s
     if len(idx) != len(gids) * N_LAYOUTS:
         bad(f"(图 × 布局) 组合 {len(idx)} ≠ {len(gids) * N_LAYOUTS}")
@@ -684,8 +807,35 @@ def check(stimuli, graphs, picked):
             continue
         if v["T1"]["nodes"] != v["T4"]["nodes"] or v["T1"]["edges"] != v["T4"]["edges"]:
             bad(f"{key} 的 T1/T4 几何不一致")
-    if len(stimuli) != len(gids) * N_LAYOUTS * 2:
-        bad(f"记录数 {len(stimuli)} ≠ {len(gids) * N_LAYOUTS * 2}")
+    n_t1 = sum(1 for s in stimuli if s["task"] == "T1")
+    n_t4 = sum(1 for s in stimuli if s["task"] == "T4")
+    n_t2 = sum(1 for s in stimuli if s["task"] == "T2")
+    if n_t1 != len(gids) * N_LAYOUTS or n_t4 != len(gids) * N_LAYOUTS:
+        bad(f"T1/T4 记录数 {n_t1}/{n_t4} ≠ {len(gids) * N_LAYOUTS}")
+    if n_t2 and n_t2 % N_LAYOUTS != 0:
+        bad(f"T2 记录数 {n_t2} 不是布局数的倍数")
+
+    # T2 接近对：每布局 16 对；两个度数都在 16–23；比值 1.1–1.8
+    t2_by_layout = {}
+    for s in stimuli:
+        if s["task"] == "T2":
+            t2_by_layout.setdefault(s["layout"], []).append(s)
+    for layout, arr in t2_by_layout.items():
+        if len(arr) != T2_TOTAL_PAIRS:
+            bad(f"{layout} 的 T2 对数 {len(arr)} ≠ {T2_TOTAL_PAIRS}")
+        for s in arr:
+            a, b_ = s["pair"]
+            da, db = s["target_degree"][a], s["target_degree"][b_]
+            hi, lo = max(da, db), min(da, db)
+            if lo < T2_MIN_HIGH:
+                bad(f'{s["stimulus_id"]} 低度方 {lo} < {T2_MIN_HIGH}')
+            if not (T2_MIN_RATIO <= hi / lo <= T2_MAX_RATIO):
+                bad(f'{s["stimulus_id"]} 比值 {hi}/{lo} 不在 [{T2_MIN_RATIO},{T2_MAX_RATIO}]')
+            if s["ground_truth"]["answer"] != max(s["pair"], key=lambda x: s["target_degree"][x]):
+                bad(f'{s["stimulus_id"]} answer 不是度数更大者')
+            base = idx.get((s["graph_id"], s["layout"]), {}).get("T1")
+            if base and (s["nodes"] != base["nodes"] or s["edges"] != base["edges"]):
+                bad(f'{s["stimulus_id"]} 与 T1 几何不一致')
 
     # 目标节点度数必须落在它声明的档内
     for g, b in band_of.items():
@@ -770,14 +920,17 @@ def main():
                     help="允许同一张图同时进两档（文档字面行为；默认不重合）")
     ap.add_argument("--target-rule", choices=["top", "mid", "bottom"], default="top",
                     help="档内怎么挑目标节点（文档未规定，见 pick_target 的说明）")
+    ap.add_argument("--t2-compare", action="store_true",
+                    help="T2 改用接近对比较：高档图换成有双高度接近对的 8 张")
     ap.add_argument("--check", action="store_true")
     args = ap.parse_args()
 
     (graphs, picked, slots, stimuli, report, norm_log,
-     skipped) = build(args.normalization, args.allow_overlap, args.target_rule)
+     skipped) = build(args.normalization, args.allow_overlap, args.target_rule,
+                      args.t2_compare)
 
     meta_path = write_outputs(args.normalization, stimuli, report, norm_log,
-                              graphs, picked, skipped, args.target_rule)
+                              graphs, picked, skipped, args.target_rule, args.t2_compare)
     used = {n for b in BAND_ORDER for n in picked[b]}
     if args.normalization == "bbox":
         write_practice_and_examples(graphs, used, args.normalization, args.target_rule)

@@ -89,8 +89,8 @@ const DICT = {
       t1Hint: 'You can click nodes one by one to select or deselect them, or drag a rectangle on empty space to select several at once. Use the mouse wheel to zoom.',
       t4Title: 'Comparing connections',
       t4Text: 'Two nodes are highlighted in blue. Click the one you think is connected to more nodes. Your answer is recorded as soon as you click.',
-      t2Title: 'Counting connections',
-      t2Text: 'One node is highlighted in blue. Type how many nodes are directly connected to it, then click Submit.',
+      t2Title: 'Comparing connections',
+      t2Text: 'Two nodes are highlighted in blue. Click the one you think is connected to more nodes. Your answer is recorded as soon as you click.',
       example: 'Example',
     },
 
@@ -285,8 +285,8 @@ const DICT = {
       t1Hint: '你可以逐个点击节点来选中或取消，也可以在空白处拖出一个矩形一次选中多个。用鼠标滚轮缩放。',
       t4Title: '比较连接数',
       t4Text: '有两个节点被高亮成蓝色。请点击你认为连接更多的那个。点击即提交。',
-      t2Title: '数邻居',
-      t2Text: '有一个节点被高亮成蓝色。请输入与它直接相连的节点个数，然后点「提交」。',
+      t2Title: '比较连接数',
+      t2Text: '有两个节点被高亮成蓝色。请点击你认为连接更多的那个。点击即提交。',
       example: '示例',
     },
 

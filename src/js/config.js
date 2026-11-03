@@ -18,7 +18,8 @@ const DEFAULTS = {
     T1: { enabled: true, wording: 'factual' },      // 'factual' | 'perceptual'
     // T4 于 2026-10-27 撤出：pilot 准确率 95/96（天花板），无法区分布局
     T4: { enabled: false },
-    T2: { enabled: true },
+    // T2 于 2026-10-29 改为「接近对比较」：两个高度节点，点击连接更多的那个
+    T2: { enabled: true, mode: 'compare' },          // 'compare' | 'count'（旧版）
   },
   // practiceTrials = 各任务的题数上限，**仅对 enabled 的任务生效**
   //   当前 T4 关闭 → 练习 3 题（T1:2 + T2:1）
@@ -174,6 +175,7 @@ export function configSummary() {
     degreeLevels: CONFIG.degreeLevels,
     enabledTasks: Object.entries(CONFIG.tasks).filter(([, t]) => t.enabled).map(([k]) => k),
     T1Wording: CONFIG.tasks.T1.wording,
+    T2Mode: CONFIG.tasks.T2.mode,
     normalization: CONFIG.normalization,
     highlightHubs: CONFIG.highlightHubs,
     practiceTrials: CONFIG.practiceTrials,
