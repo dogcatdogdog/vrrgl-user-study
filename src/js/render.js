@@ -96,6 +96,7 @@ export class GraphRenderer {
       if (ov.node_radius != null) out.r = ov.node_radius;
       if (ov.edge_width != null) out.ew = ov.edge_width;
       if (ov.selected_outline_width != null) out.sow = ov.selected_outline_width;
+      if (ov.edge_opacity != null) out.eo = ov.edge_opacity;
     }
     return out;
   }
@@ -122,7 +123,7 @@ export class GraphRenderer {
       if (!a || !b) continue;
       this.gEdges.append(el('line', {
         x1: a.x, y1: a.y, x2: b.x, y2: b.y,
-        stroke: cEdge, 'stroke-width': viz.ew,
+        stroke: cEdge, 'stroke-width': viz.ew, 'stroke-opacity': viz.eo ?? 1,
         'stroke-linecap': 'round',
       }));
     }

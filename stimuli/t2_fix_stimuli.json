@@ -2,7 +2,7 @@
  "meta": {
   "version": "1.0",
   "note": "T2 follow-up stimuli (geometry-problem trials from the first four-person run)",
-  "viz_note": "follow-up stimuli use smaller nodes/edges to reduce overlap"
+  "viz_note": "follow-up stimuli: r=1.2, edge=0.6 @55% opacity to reduce overlap/clutter"
  },
  "stimuli": [
   {
@@ -1974,9 +1974,10 @@
    "degree_ratio": 1.417,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -3948,9 +3949,10 @@
    "degree_ratio": 1.417,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -5922,9 +5924,10 @@
    "degree_ratio": 1.429,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -7896,9 +7899,10 @@
    "degree_ratio": 1.429,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -9870,9 +9874,10 @@
    "degree_ratio": 1.524,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -11844,9 +11849,10 @@
    "degree_ratio": 1.524,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -14704,9 +14710,10 @@
    "degree_ratio": 1.4,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -17564,9 +17571,10 @@
    "degree_ratio": 1.4,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -20424,9 +20432,10 @@
    "degree_ratio": 1.4,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -23284,9 +23293,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -26144,9 +26154,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -29044,9 +29055,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -31944,9 +31956,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -34844,9 +34857,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -37744,9 +37758,10 @@
    "degree_ratio": 1.318,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   },
   {
@@ -39079,9 +39094,10 @@
    "degree_ratio": 1.278,
    "pair_kind": "close",
    "viz": {
-    "node_radius": 2.2,
-    "edge_width": 1.0,
-    "selected_outline_width": 1.2
+    "node_radius": 1.2,
+    "edge_width": 0.6,
+    "selected_outline_width": 0.8,
+    "edge_opacity": 0.55
    }
   }
  ]
