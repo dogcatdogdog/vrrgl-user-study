@@ -166,7 +166,8 @@ export function indexStimuli(stimuli) {
  * - attention check 插在主试次之间（docs/01 §5）
  */
 export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, participantIndex,
-                                 offset: forcedOffset, cfg, forcedLayout = null }) {
+                                 offset: forcedOffset, cfg, forcedLayout = null,
+                                 t2OnlyMapping = null }) {
   // 按度档排序 —— 见 orderGraphIds 的说明，这是单元平衡的前提。
   // 档位顺序从 config 取（现在是 low/high 两档，不能写死三档）
   const bandOf = {};
@@ -203,26 +204,54 @@ export function buildTrialPlan({ stimuli, graphIds: rawGraphIds, layouts, pid, p
     const t2only = t2GraphIds.filter((g) => !mapping[g]).sort();
     t2Mapping = {};
     for (const g of shared) { t2Mapping[g] = mapping[g]; counts[mapping[g]] += pairCount[g] || 0; }
-    const assign = {};
-    const search = (i) => {
-      if (i === t2only.length) return layouts.every((l) => counts[l] === target);
-      const g = t2only[i];
-      for (const l of layouts) {
-        if (counts[l] + (pairCount[g] || 0) > target) continue;
-        counts[l] += pairCount[g] || 0; assign[g] = l;
-        if (search(i + 1)) return true;
-        counts[l] -= pairCount[g] || 0;
+    if (t2OnlyMapping) {
+      // 补平批次：编号表里带 t2Only 的编号使用固定映射，而不是默认搜索。
+      // 这组映射是为“已完成被试的旧映射 + 剩余被试”凑齐 item × layout 平衡而设计的；
+      // 必须恰好覆盖所有 T2 专用图，且每人每布局仍是 target 对。
+      const keys = Object.keys(t2OnlyMapping);
+      const unknown = keys.filter((g) => !t2only.includes(g));
+      const missing = t2only.filter((g) => !(g in t2OnlyMapping));
+      if (unknown.length || missing.length) {
+        throw new Error(
+          `[randomize] t2OnlyMapping 必须恰好覆盖 T2 专用图：`
+          + `缺少 ${missing.join(', ') || '无'}；多出 ${unknown.join(', ') || '无'}`
+        );
       }
-      return false;
-    };
-    if (!search(0)) {
-      // 兜底：按当前计数最小者分配
       for (const g of t2only) {
-        const l = layouts.slice().sort((a, b) => counts[a] - counts[b])[0];
-        assign[g] = l; counts[l] += pairCount[g] || 0;
+        const layout = t2OnlyMapping[g];
+        if (!layouts.includes(layout)) {
+          throw new Error(`[randomize] t2OnlyMapping["${g}"] = "${layout}" 不在布局列表里`);
+        }
+        t2Mapping[g] = layout;
+        counts[layout] += pairCount[g] || 0;
       }
+      if (!layouts.every((l) => counts[l] === target)) {
+        throw new Error(
+          `[randomize] t2OnlyMapping 未满足每布局 ${target} 对：${JSON.stringify(counts)}`
+        );
+      }
+    } else {
+      const assign = {};
+      const search = (i) => {
+        if (i === t2only.length) return layouts.every((l) => counts[l] === target);
+        const g = t2only[i];
+        for (const l of layouts) {
+          if (counts[l] + (pairCount[g] || 0) > target) continue;
+          counts[l] += pairCount[g] || 0; assign[g] = l;
+          if (search(i + 1)) return true;
+          counts[l] -= pairCount[g] || 0;
+        }
+        return false;
+      };
+      if (!search(0)) {
+        // 兜底：按当前计数最小者分配
+        for (const g of t2only) {
+          const l = layouts.slice().sort((a, b) => counts[a] - counts[b])[0];
+          assign[g] = l; counts[l] += pairCount[g] || 0;
+        }
+      }
+      Object.assign(t2Mapping, assign);
     }
-    Object.assign(t2Mapping, assign);
   }
   const idx = indexStimuli(stimuli);
   const enabled = Object.entries(cfg.tasks).filter(([, t]) => t.enabled).map(([k]) => k);

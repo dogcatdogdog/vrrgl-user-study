@@ -195,6 +195,8 @@ async function boot() {
     return buildTrialPlan({
       stimuli, graphIds, layouts: CONFIG.layouts, pid: session.participant_id,
       participantIndex, offset: assignedOffset, cfg: planCfg, forcedLayout,
+      // 补平批次：编号表里可带 t2Only，把剩余被试的 T2 专用图固定到指定布局。
+      t2OnlyMapping: entry?.t2Only || null,
     });
   };
 

@@ -34,6 +34,7 @@ const cfg = {
 };
 
 const stimuli = JSON.parse(readFileSync(join(ROOT, 'stimuli/stimuli.json'), 'utf8')).stimuli;
+const codesDoc = JSON.parse(readFileSync(join(ROOT, 'stimuli/codes.json'), 'utf8'));
 const graphIds = [...new Set(stimuli.filter((s) => s.task === 'T1').map((s) => s.graph_id))].sort();
 const t2GraphIds = [...new Set(stimuli.filter((s) => s.task === 'T2').map((s) => s.graph_id))];
 const bandOf = Object.fromEntries(stimuli.map((s) => [s.graph_id, s.degree_level]));
@@ -258,6 +259,51 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
       recordsByLayout: g.recordsByLayout, picks: g.original, layouts: CONFIG.layouts,
     });
     ok(r.valid, `T2 配对矩阵：${g.graphId} p${g.index} 四布局通过`, r.reasons.join('; '));
+  }
+}
+
+// 8c) P6 补平批次：已有 4 个编号的旧映射 + 剩余 8 个编号的 t2Only 映射
+//     合并后每个 T2 图在四种布局的试次数必须相等。
+{
+  const { CONFIG } = await import('../src/js/config.js');
+  const legacyCodes = ['P6CW9A', 'P6BQ2A', 'P626WM', 'P64PKQ'];   // 已完成，旧映射
+  const supplement = Object.entries(codesDoc.codes).filter(([, m]) => m.t2Only);
+  ok(supplement.length === 8, '补平批次：8 个编号带 t2Only', String(supplement.length));
+
+  const plans = [];
+  for (const code of legacyCodes) {
+    const meta = codesDoc.codes[code];
+    plans.push({ code, plan: buildTrialPlan({
+      stimuli, graphIds, layouts: CONFIG.layouts, pid: `LEGACY-${code}`,
+      participantIndex: 0, offset: meta.offset, cfg: CONFIG,
+    }) });
+  }
+  for (const [code, meta] of supplement) {
+    plans.push({ code, plan: buildTrialPlan({
+      stimuli, graphIds, layouts: CONFIG.layouts, pid: `SUP-${code}`,
+      participantIndex: 0, offset: meta.offset, cfg: CONFIG,
+      t2OnlyMapping: meta.t2Only,
+    }) });
+  }
+
+  for (const { code, plan } of plans) {
+    const t2 = plan.trials.filter((x) => x.phase === 'main' && x.task === 'T2');
+    const c = {};
+    for (const x of t2) c[x.layout] = (c[x.layout] || 0) + 1;
+    ok(t2.length === 16 && CONFIG.layouts.every((l) => c[l] === 4),
+      `补平批次：${code} 每布局 4 对`, JSON.stringify(c));
+  }
+
+  const counts = {};
+  for (const { plan } of plans) {
+    for (const x of plan.trials.filter((y) => y.phase === 'main' && y.task === 'T2')) {
+      counts[x.graphId] ||= Object.fromEntries(CONFIG.layouts.map((l) => [l, 0]));
+      counts[x.graphId][x.layout]++;
+    }
+  }
+  for (const [g, c] of Object.entries(counts)) {
+    const vals = CONFIG.layouts.map((l) => c[l]);
+    ok(new Set(vals).size === 1, `补平批次：${g} 四布局平衡`, JSON.stringify(c));
   }
 }
 

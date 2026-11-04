@@ -104,7 +104,14 @@
   },
   "P66L8R": {
    "offset": 3,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "KK",
+    "moviegalaxies-402": "FA2",
+    "pre_case1": "LPFD",
+    "pre_case2": "LPFD",
+    "GD12-dt_case2": "FR"
+   }
   },
   "P6BQ2A": {
    "offset": 1,
@@ -116,31 +123,80 @@
   },
   "P6E72B": {
    "offset": 2,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FA2",
+    "moviegalaxies-402": "FA2",
+    "pre_case1": "FR",
+    "pre_case2": "LPFD",
+    "GD12-dt_case2": "KK"
+   }
   },
   "P6HUUP": {
    "offset": 0,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FR",
+    "moviegalaxies-402": "KK",
+    "pre_case1": "LPFD",
+    "pre_case2": "KK",
+    "GD12-dt_case2": "FA2"
+   }
   },
   "P6HW99": {
    "offset": 1,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FR",
+    "moviegalaxies-402": "FA2",
+    "pre_case1": "FR",
+    "pre_case2": "KK",
+    "GD12-dt_case2": "LPFD"
+   }
   },
   "P6NRA7": {
    "offset": 2,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FA2",
+    "moviegalaxies-402": "LPFD",
+    "pre_case1": "FA2",
+    "pre_case2": "FR",
+    "GD12-dt_case2": "KK"
+   }
   },
   "P6PWZ9": {
    "offset": 0,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "KK",
+    "moviegalaxies-402": "KK",
+    "pre_case1": "LPFD",
+    "pre_case2": "FR",
+    "GD12-dt_case2": "FA2"
+   }
   },
   "P6QV5C": {
    "offset": 3,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FA2",
+    "moviegalaxies-402": "LPFD",
+    "pre_case1": "KK",
+    "pre_case2": "LPFD",
+    "GD12-dt_case2": "FR"
+   }
   },
   "P6Y925": {
    "offset": 1,
-   "group": "remote"
+   "group": "remote",
+   "t2Only": {
+    "GD8-toy_case11_graph": "FR",
+    "moviegalaxies-402": "FR",
+    "pre_case1": "FA2",
+    "pre_case2": "KK",
+    "GD12-dt_case2": "LPFD"
+   }
   },
   "P8B73": {
    "offset": 0,
