@@ -16,6 +16,7 @@ import {
   buildTrialPlan, assignLayouts, offsetFor, hashString, makeRng, shuffle,
   getOrAssignParticipantIndex,
 } from '../src/js/randomize.js';
+import { groupT2Records, validateCandidate } from './t2_pair_rules.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
@@ -238,6 +239,26 @@ console.log('\n7) offset 来源（实验室共用浏览器 vs 众包独立浏览
   ok(!plan.trials.some((x) => x.task === 'T4'), '当前配置：没有 T4');
   const pr = buildPracticePlan({ practiceStimuli, pid: 'REAL01', cfg: CONFIG });
   ok(pr.length === 3, '当前配置：3 个练习', String(pr.length));
+}
+
+// 8b) T2 配对矩阵：每对四布局齐全、ID 一致、度数/比值/答案/几何通过
+{
+  const { CONFIG } = await import('../src/js/config.js');
+  const t2Only = stimuli.filter((s) => s.task === 'T2');
+  const { groups, errors } = groupT2Records(t2Only, CONFIG.layouts);
+  ok(errors.length === 0, 'T2 配对矩阵：结构无错误', errors.join('; '));
+  ok(groups.length === 16, 'T2 配对矩阵：16 组', String(groups.length));
+  const expectedCounts = { 'Moviegalaxies - Babel_graph': 1, 'GD12-dt_case2': 3 };
+  const counts = {};
+  for (const g of groups) counts[g.graphId] = (counts[g.graphId] || 0) + 1;
+  ok(Object.entries(counts).every(([g, n]) => n === (expectedCounts[g] || 2)),
+    'T2 配对矩阵：每图配对数正确', JSON.stringify(counts));
+  for (const g of groups) {
+    const r = validateCandidate({
+      recordsByLayout: g.recordsByLayout, picks: g.original, layouts: CONFIG.layouts,
+    });
+    ok(r.valid, `T2 配对矩阵：${g.graphId} p${g.index} 四布局通过`, r.reasons.join('; '));
+  }
 }
 
 // 9) 复测模式：强制单一布局

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T2 选点复核</title>
+  <link rel="stylesheet" href="./t2_pair_tool.css">
+</head>
+<body>
+  <div id="tool">
+    <aside id="sidebar">
+      <h1>T2 选点复核</h1>
+      <p class="criteria" id="criteria"></p>
+      <div id="progress" class="progress"></div>
+      <div id="banner" class="banner" hidden></div>
+      <div id="pair-list"></div>
+    </aside>
+
+    <main id="main">
+      <header id="topbar">
+        <div class="title-wrap">
+          <div id="pair-title">加载中…</div>
+          <div id="hover-status" class="muted">把鼠标移到节点上查看 ID 和度数</div>
+        </div>
+        <div class="top-actions">
+          <button id="export" class="btn primary" disabled>导出覆盖 JSON</button>
+        </div>
+      </header>
+
+      <div id="legend" class="legend">
+        <span><i class="dot original"></i>原配对（蓝）</span>
+        <span><i class="dot candidate"></i>候选配对（红描边）</span>
+        <span class="muted">KK/FR/FA2 缩略图在下方，点击可切换大图。点击节点选/取消；选满两个后点第三个节点会替换较早的那个。</span>
+      </div>
+
+      <div id="canvas-grid"></div>
+
+      <section id="details">
+        <div id="pair-summary" class="summary"></div>
+        <div id="metrics"></div>
+        <div id="reasons"></div>
+        <div id="warnings"></div>
+
+        <label class="note-label">备注（可选，修改过的配对建议写明原因）
+          <textarea id="note" rows="2" placeholder="例如：原配对在 FR 下过近；新配对四种布局均通过。"></textarea>
+        </label>
+
+        <div class="actions">
+          <button id="accept" class="btn primary" disabled>确认这组</button>
+          <button id="reset" class="btn">恢复原配对</button>
+          <button id="clear" class="btn">清空选择</button>
+          <button id="next" class="btn">下一组未复核</button>
+          <button id="reset-view" class="btn">复位缩放</button>
+        </div>
+        <p class="hint">导出后把文件保存为 <code>stimuli/t2_overrides_pilot6.json</code>，再用
+          <code>build_stimuli.py --t2-overrides ... --check</code> 重建。</p>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./t2_pair_tool.js"></script>
+</body>
+</html>

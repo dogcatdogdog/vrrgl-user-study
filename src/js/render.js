@@ -61,6 +61,12 @@ export class GraphRenderer {
     this.gView.setAttribute('transform', `translate(${x},${y}) scale(${k})`);
   }
 
+  /** 复位平移/缩放 —— 本地选点工具切换大图/缩略图时用。 */
+  resetView() {
+    this.view = { k: 1, x: 0, y: 0 };
+    this._applyTransform();
+  }
+
   _bindViewControls() {
     if (!this.cfg.enablePanZoom) return;
     this.svg.addEventListener('wheel', (e) => {

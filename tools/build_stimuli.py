@@ -29,6 +29,7 @@ import itertools
 import json
 import math
 import os
+import re
 import statistics
 import sys
 from collections import Counter
@@ -81,7 +82,8 @@ T4_OBVIOUS_RATIO = 4.0
 # 至少一个是高度节点（≥16），另一个 ≥9；比值限制在 1.1–1.8，避免旧 T4 的 2:1 天花板。
 T2_MIN_HIGH = 16
 T2_MIN_LOW = 9
-T2_MIN_RATIO = 1.1
+T2_MIN_RATIO = 1.1          # 旧版/练习用的宽松下限
+T2_CLEAN_MIN_RATIO = 1.25   # 正式 T2 接近对的严格下限（与 t2_pair_rules.js 一致）
 T2_MAX_RATIO = 1.8
 T2_TOTAL_PAIRS = 16
 # T2 独立图集（2026-11-03）：较大的自选图，T1 不使用这些图。
@@ -349,7 +351,7 @@ def t2_clean_pairs(G, co_by_layout, want, dmin=T2_MIN_DAB, nmin=T2_MIN_NEAR):
         if hi > T2_MAX_HIGH or lo < T2_MIN_HIGH:
             continue
         r = hi / lo
-        if not (1.25 <= r <= 1.8):
+        if not (T2_CLEAN_MIN_RATIO <= r <= T2_MAX_RATIO):
             continue
         ok = True
         for P in co_by_layout.values():
@@ -609,7 +611,7 @@ def build(normalization, allow_overlap, target_rule="top", t2_compare=False):
 # ─────────────────────────── 输出 ───────────────────────────
 
 def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skipped,
-                  target_rule="top", t2_compare=False):
+                  target_rule="top", t2_compare=False, t2_override_meta=None):
     os.makedirs(OUT_DIR, exist_ok=True)
     suffix = "" if normalization == "bbox" else f".{normalization}"
     meta = {
@@ -629,6 +631,8 @@ def write_outputs(normalization, stimuli, report, norm_log, graphs, picked, skip
         "total_trials": 2 * len({s["graph_id"] for s in stimuli if s["task"] == "T1"}),
         "degree_bands": {k: list(v) for k, v in BANDS.items()},
     }
+    if t2_override_meta is not None:
+        meta["t2_overrides"] = t2_override_meta
     path = os.path.join(OUT_DIR, f"stimuli{suffix}.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "stimuli": stimuli}, f, ensure_ascii=False, indent=1)
@@ -866,6 +870,231 @@ def write_readme(report, picked, skipped, normalization, allow_overlap, target_r
     log(f"写出 {p}")
 
 
+# ─────────────────────── T2 人工覆盖 ───────────────────────
+
+T2_OVERRIDE_TOP_KEYS = {"version", "created_at", "criteria", "pairs"}
+T2_OVERRIDE_ENTRY_KEYS = {"graph_id", "index", "original", "pair", "changed", "note"}
+
+
+def canonical_pair(a, b):
+    if not isinstance(a, str) or not isinstance(b, str) or not a or not b:
+        raise ValueError("配对必须是两个非空节点 id")
+    if a == b:
+        raise ValueError("配对的两个节点不能相同")
+    return [a, b] if a <= b else [b, a]
+
+
+def degrees_from_edges(edges):
+    deg = Counter()
+    for e in edges:
+        deg[e["s"]] += 1
+        deg[e["t"]] += 1
+    return deg
+
+
+def pair_geometry(nodes, pair):
+    """用已发布的 2 位小数坐标算 dAB / near，返回 (dAB, near, reasons)。"""
+    pos = {n["id"]: (round(float(n["x"]), 2), round(float(n["y"]), 2)) for n in nodes}
+    a, b = pair
+    missing = [x for x in pair if x not in pos]
+    if missing:
+        return None, None, [f"节点不存在：{', '.join(missing)}"]
+    pa, pb = pos[a], pos[b]
+    dAB = math.dist(pa, pb)
+    others = [p for k, p in pos.items() if k not in (a, b)]
+    near = (min([math.dist(pa, p) for p in others] + [math.dist(pb, p) for p in others])
+            if others else float("inf"))
+    reasons = []
+    if dAB < T2_MIN_DAB - 1e-6:
+        reasons.append(f"两目标距离 {dAB:.1f} < {T2_MIN_DAB}")
+    if near < T2_MIN_NEAR - 1e-6:
+        reasons.append(f"目标到最近其他节点 {near:.1f} < {T2_MIN_NEAR}")
+    return dAB, near, reasons
+
+
+def parse_t2_stimulus_id(stimulus_id):
+    """T2_<graph>_p<j>_<layout> → (j, layout)；解析失败返回 None。"""
+    labels = "|".join(re.escape(x) for x in ALGORITHMS)
+    m = re.search(rf"_p(\d+)_({labels})$", str(stimulus_id))
+    return (int(m.group(1)), m.group(2)) if m else None
+
+
+def expected_override_criteria(normalization):
+    return {
+        "layouts": list(ALGORITHMS),
+        "canvas": {"width": CANVAS_W, "height": CANVAS_H},
+        "normalization": "bounding_box" if normalization == "bbox" else "median_edge_length",
+        "min_degree": T2_MIN_HIGH,
+        "max_degree": T2_MAX_HIGH,
+        "min_degree_ratio": T2_CLEAN_MIN_RATIO,
+        "max_degree_ratio": T2_MAX_RATIO,
+        "min_pair_distance_px": T2_MIN_DAB,
+        "min_target_to_nearest_other_px": T2_MIN_NEAR,
+        "degree_source": "edges",
+        "coordinate_decimals": 2,
+    }
+
+
+def load_t2_override_doc(path, normalization):
+    """读取并严格校验覆盖文件；返回 {entries, sha256, path, n_entries}。"""
+    try:
+        raw = open(path, "rb").read()
+    except OSError as e:
+        raise SystemExit(f"无法读取 T2 覆盖文件：{path}（{e}）")
+    sha = hashlib.sha256(raw).hexdigest()
+    try:
+        doc = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as e:
+        raise SystemExit(f"T2 覆盖文件不是合法 UTF-8 JSON：{path}（{e}）")
+
+    if not isinstance(doc, dict) or set(doc) != T2_OVERRIDE_TOP_KEYS:
+        raise SystemExit(f"T2 覆盖文件顶层键必须是 {sorted(T2_OVERRIDE_TOP_KEYS)}")
+    if doc.get("version") != "1.0":
+        raise SystemExit('T2 覆盖文件 version 必须是 "1.0"')
+    if not isinstance(doc.get("created_at"), str) or not doc["created_at"]:
+        raise SystemExit("T2 覆盖文件缺少 created_at")
+
+    expected = expected_override_criteria(normalization)
+    if doc.get("criteria") != expected:
+        raise SystemExit(
+            "T2 覆盖文件的 criteria 与当前构建参数不一致：\n"
+            f"  期望 {json.dumps(expected, ensure_ascii=False, sort_keys=True)}\n"
+            f"  实际 {json.dumps(doc.get('criteria'), ensure_ascii=False, sort_keys=True)}"
+        )
+
+    pairs = doc.get("pairs")
+    if not isinstance(pairs, list) or not pairs:
+        raise SystemExit("T2 覆盖文件的 pairs 必须是非空数组")
+
+    entries = {}
+    for i, e in enumerate(pairs):
+        if not isinstance(e, dict) or set(e) != T2_OVERRIDE_ENTRY_KEYS:
+            raise SystemExit(f"pairs[{i}] 的键必须是 {sorted(T2_OVERRIDE_ENTRY_KEYS)}")
+        gid = e["graph_id"]
+        idx = e["index"]
+        if gid not in T2_GRAPHS:
+            raise SystemExit(f"pairs[{i}] 的 graph_id 不在 T2 图集：{gid}")
+        want = T2_PAIR_COUNTS.get(gid, 2)
+        if (not isinstance(idx, int) or isinstance(idx, bool)
+                or idx < 0 or idx >= want):
+            raise SystemExit(f"pairs[{i}] 的 index 必须是 0..{want - 1}：{idx}")
+
+        orig, pair = e["original"], e["pair"]
+        for label, p in (("original", orig), ("pair", pair)):
+            if (not isinstance(p, list) or len(p) != 2
+                    or not all(isinstance(x, str) and x for x in p)):
+                raise SystemExit(f"{gid} p{idx} 的 {label} 必须是两个非空节点 id")
+            if p[0] == p[1]:
+                raise SystemExit(f"{gid} p{idx} 的 {label} 两个节点不能相同")
+            if p != sorted(p):
+                raise SystemExit(f"{gid} p{idx} 的 {label} 必须按字典序排序：{p}")
+        if not isinstance(e["changed"], bool):
+            raise SystemExit(f"{gid} p{idx} 的 changed 必须是布尔值")
+        if e["changed"] != (pair != orig):
+            raise SystemExit(f"{gid} p{idx} 的 changed 与 pair/original 不一致")
+        if not isinstance(e["note"], str):
+            raise SystemExit(f"{gid} p{idx} 的 note 必须是字符串")
+
+        key = (gid, idx)
+        if key in entries:
+            raise SystemExit(f"重复的覆盖条目：{gid} p{idx}")
+        entries[key] = {
+            "graph_id": gid, "index": idx,
+            "original": list(orig), "pair": list(pair),
+            "changed": e["changed"], "note": e["note"],
+        }
+
+    rel = os.path.relpath(os.path.abspath(path), ROOT).replace("\\", "/")
+    return {"entries": entries, "sha256": sha, "path": rel, "n_entries": len(entries)}
+
+
+def apply_t2_overrides(stimuli, override_doc):
+    """把覆盖应用到已生成的 T2 记录；同一条目写入四个布局。返回 meta。"""
+    groups = {}
+    for s in stimuli:
+        if s.get("task") != "T2":
+            continue
+        parsed = parse_t2_stimulus_id(s.get("stimulus_id", ""))
+        if not parsed:
+            raise SystemExit(f'T2 stimulus_id 不合法：{s.get("stimulus_id")}')
+        groups.setdefault((s["graph_id"], parsed[0]), []).append(s)
+
+    changed = 0
+    for (gid, idx), entry in override_doc["entries"].items():
+        recs = groups.get((gid, idx))
+        if not recs:
+            raise SystemExit(f"覆盖条目找不到对应刺激：{gid} p{idx}")
+        layouts_found = {s["layout"] for s in recs}
+        if len(recs) != len(ALGORITHMS) or layouts_found != set(ALGORITHMS):
+            raise SystemExit(f"{gid} p{idx} 的布局不完整：{sorted(layouts_found)}")
+
+        generated = canonical_pair(*recs[0]["pair"])
+        if generated != entry["original"]:
+            raise SystemExit(
+                f"{gid} p{idx} 的 original 与当前自动配对不一致："
+                f"{generated} vs {entry['original']}（刺激配方可能已变化，请重新复核）"
+            )
+
+        node_ids = {n["id"] for n in recs[0]["nodes"]}
+        edges = recs[0]["edges"]
+        for s in recs:
+            if {n["id"] for n in s["nodes"]} != node_ids or s["edges"] != edges:
+                raise SystemExit(f"{gid} p{idx}: 四个布局的节点/边集合不一致")
+
+        pair = entry["pair"]
+        missing = [x for x in pair if x not in node_ids]
+        if missing:
+            raise SystemExit(f"{gid} p{idx}: 配对节点不存在：{missing}")
+        deg = degrees_from_edges(edges)
+        da, db = deg.get(pair[0], 0), deg.get(pair[1], 0)
+        hi, lo = max(da, db), min(da, db)
+        if lo < T2_MIN_HIGH or hi > T2_MAX_HIGH:
+            raise SystemExit(f"{gid} p{idx}: 度数 {da}/{db} 不在 [{T2_MIN_HIGH},{T2_MAX_HIGH}]")
+        ratio = hi / lo if lo else float("inf")
+        if not (T2_CLEAN_MIN_RATIO <= ratio <= T2_MAX_RATIO):
+            raise SystemExit(
+                f"{gid} p{idx}: 度数比 {ratio:.3f} 不在 "
+                f"[{T2_CLEAN_MIN_RATIO},{T2_MAX_RATIO}]"
+            )
+        for s in recs:
+            _, _, reasons = pair_geometry(s["nodes"], pair)
+            if reasons:
+                raise SystemExit(f"{gid} p{idx} {s['layout']}: " + "；".join(reasons))
+
+        answer = pair[0] if da >= db else pair[1]
+        for s in recs:
+            s["targets"] = list(pair)
+            s["pair"] = list(pair)
+            s["target_degree"] = {pair[0]: da, pair[1]: db}
+            s["ground_truth"] = {"answer": answer}
+            s["degree_ratio"] = round(ratio, 3)
+            s["pair_kind"] = "close"
+        changed += int(entry["changed"])
+
+    # 只对“修改过”的配对提醒共用节点/完全重复；原配方本来就允许少数配对共用节点。
+    warnings = set()
+    for (gid, idx), entry in override_doc["entries"].items():
+        if not entry["changed"]:
+            continue
+        pair = entry["pair"]
+        for (g2, idx2), recs in groups.items():
+            if g2 != gid or idx2 == idx:
+                continue
+            other = canonical_pair(*recs[0]["pair"])
+            if other == pair:
+                warnings.add(f"{gid}: p{idx} 与 p{idx2} 配对完全相同")
+            elif set(other) & set(pair):
+                warnings.add(f"{gid}: p{idx} 与 p{idx2} 共用节点")
+
+    return {
+        "path": override_doc["path"],
+        "sha256": override_doc["sha256"],
+        "entries": override_doc["n_entries"],
+        "changed": changed,
+        "warnings": sorted(warnings),
+    }
+
+
 # ─────────────────────────── 不变量检查 ───────────────────────────
 
 def check(stimuli, graphs, picked):
@@ -921,8 +1150,8 @@ def check(stimuli, graphs, picked):
                 bad(f'{s["stimulus_id"]} 低度方 {lo} < {T2_MIN_HIGH}')
             if hi > T2_MAX_HIGH:
                 bad(f'{s["stimulus_id"]} 高度方 {hi} > {T2_MAX_HIGH}')
-            if not (1.25 <= hi / lo <= T2_MAX_RATIO):
-                bad(f'{s["stimulus_id"]} 比值 {hi}/{lo} 不在 [1.25,{T2_MAX_RATIO}]')
+            if not (T2_CLEAN_MIN_RATIO <= hi / lo <= T2_MAX_RATIO):
+                bad(f'{s["stimulus_id"]} 比值 {hi}/{lo} 不在 [{T2_CLEAN_MIN_RATIO},{T2_MAX_RATIO}]')
             if s["ground_truth"]["answer"] != max(s["pair"], key=lambda x: s["target_degree"][x]):
                 bad(f'{s["stimulus_id"]} answer 不是度数更大者')
 
@@ -936,6 +1165,74 @@ def check(stimuli, graphs, picked):
         want_c = T2_PAIR_COUNTS.get(g, 2)
         if c != want_c:
             bad(f"{g} 的 T2 配对 {c} 对 ≠ {want_c}")
+
+    # T2 跨布局一致性与几何 —— 人工覆盖最容易破坏的就是这里。
+    # 旧的逐条检查只看 target_degree/ratio/answer，不重算 edges，也不看四布局几何。
+    t2_groups = {}
+    for s in stimuli:
+        if s["task"] != "T2":
+            continue
+        parsed = parse_t2_stimulus_id(s.get("stimulus_id", ""))
+        if not parsed:
+            bad(f'T2 stimulus_id 不合法：{s.get("stimulus_id")}')
+            continue
+        if s["layout"] != parsed[1]:
+            bad(f'{s["stimulus_id"]}: 布局标签与 id 不一致')
+        t2_groups.setdefault((s["graph_id"], parsed[0]), []).append(s)
+
+    for (g, idx), recs in sorted(t2_groups.items()):
+        names = sorted(s["layout"] for s in recs)
+        if names != sorted(ALGORITHMS):
+            bad(f"{g} p{idx}: 四布局不完整 {names}")
+            continue
+        try:
+            pair = canonical_pair(*recs[0].get("pair"))
+        except (TypeError, ValueError) as e:
+            bad(f"{g} p{idx}: 配对非法（{e}）")
+            continue
+        node_ids = {n["id"] for n in recs[0]["nodes"]}
+        edges = recs[0]["edges"]
+        if pair[0] not in node_ids or pair[1] not in node_ids:
+            bad(f"{g} p{idx}: 配对节点不存在")
+            continue
+        deg = degrees_from_edges(edges)
+        da, db = deg.get(pair[0], 0), deg.get(pair[1], 0)
+        hi, lo = max(da, db), min(da, db)
+        if lo < T2_MIN_HIGH or hi > T2_MAX_HIGH:
+            bad(f"{g} p{idx}: 度数 {da}/{db} 不在 [{T2_MIN_HIGH},{T2_MAX_HIGH}]")
+        ratio = hi / lo if lo else float("inf")
+        if not (T2_CLEAN_MIN_RATIO <= ratio <= T2_MAX_RATIO):
+            bad(f"{g} p{idx}: 比值 {ratio:.3f} 不在 [{T2_CLEAN_MIN_RATIO},{T2_MAX_RATIO}]")
+        answer = pair[0] if da >= db else pair[1]
+        for s in recs:
+            if {n["id"] for n in s["nodes"]} != node_ids:
+                bad(f'{s["stimulus_id"]}: 节点集合与其他布局不一致')
+            if s["edges"] != edges:
+                bad(f'{s["stimulus_id"]}: 边集合与其他布局不一致')
+            try:
+                s_pair = canonical_pair(*s.get("pair"))
+            except (TypeError, ValueError):
+                s_pair = None
+            if s_pair != pair:
+                bad(f'{s["stimulus_id"]}: 配对与其他布局不一致')
+            if s.get("targets") != s.get("pair"):
+                bad(f'{s["stimulus_id"]}: targets 与 pair 不一致')
+            if s.get("target_degree") != {pair[0]: da, pair[1]: db}:
+                bad(f'{s["stimulus_id"]}: target_degree 与 edges 重算不一致')
+            if s.get("ground_truth", {}).get("answer") != answer:
+                bad(f'{s["stimulus_id"]}: answer 不是度数更大者')
+            dr = s.get("degree_ratio")
+            if not isinstance(dr, (int, float)) or abs(float(dr) - round(ratio, 3)) > 1e-6:
+                bad(f'{s["stimulus_id"]}: degree_ratio 与重算不一致')
+            _, _, reasons = pair_geometry(s["nodes"], pair)
+            for r in reasons:
+                bad(f'{s["stimulus_id"]}: {r}')
+
+    for g in sorted({k[0] for k in t2_groups}):
+        idxs = sorted({k[1] for k in t2_groups if k[0] == g})
+        want_idx = T2_PAIR_COUNTS.get(g, 2)
+        if idxs != list(range(want_idx)):
+            bad(f"{g}: T2 配对索引 {idxs} 不是 0..{want_idx - 1}")
 
     # 目标节点度数必须落在它声明的档内
     for g, b in band_of.items():
@@ -1022,15 +1319,41 @@ def main():
                     help="档内怎么挑目标节点（文档未规定，见 pick_target 的说明）")
     ap.add_argument("--t2-compare", action="store_true",
                     help="T2 改用接近对比较：高档图换成有双高度接近对的 8 张")
+    ap.add_argument("--t2-overrides", default=None,
+                    help="T2 人工覆盖 JSON（必须与 --t2-compare 一起用；不带时输出不变）")
     ap.add_argument("--check", action="store_true")
     args = ap.parse_args()
+
+    if args.t2_overrides and not args.t2_compare:
+        ap.error("--t2-overrides 需要与 --t2-compare 一起使用")
 
     (graphs, picked, slots, stimuli, report, norm_log,
      skipped, t2_practice) = build(args.normalization, args.allow_overlap, args.target_rule,
                                    args.t2_compare)
 
+    t2_override_meta = None
+    if args.t2_overrides:
+        doc = load_t2_override_doc(args.t2_overrides, args.normalization)
+        t2_override_meta = apply_t2_overrides(stimuli, doc)
+        log(f"应用 T2 覆盖 {t2_override_meta['entries']} 条"
+            f"（修改 {t2_override_meta['changed']} 条）")
+        for w in t2_override_meta["warnings"]:
+            log(f"  [!] {w}")
+
+    # 先检查再写文件：坏的覆盖/刺激不能覆盖掉上一份好数据。
+    check_notes, check_extra = [], None
+    if args.check:
+        log("")
+        log("跑不变量检查 …")
+        fails, check_notes, check_extra = check(stimuli, graphs, picked)
+        if fails:
+            for m in fails:
+                log(f"  [x] {m}")
+            sys.exit(f"\n{len(fails)} 项检查失败（未写出文件）")
+
     meta_path = write_outputs(args.normalization, stimuli, report, norm_log,
-                              graphs, picked, skipped, args.target_rule, args.t2_compare)
+                              graphs, picked, skipped, args.target_rule, args.t2_compare,
+                              t2_override_meta=t2_override_meta)
     used = {n for b in BAND_ORDER for n in picked[b]}
     if args.t2_compare:
         used |= set(T2_GRAPHS)
@@ -1052,17 +1375,10 @@ def main():
     log(f"T4 配对 = {sum(1 for e in report if e['t4_pair'])}/{len(report)}")
 
     if args.check:
-        log("")
-        log("跑不变量检查 …")
-        fails, notes, extra = check(stimuli, graphs, picked)
-        for n in notes:
+        for n in check_notes:
             log(f"  [i] {n}")
-        if fails:
-            for m in fails:
-                log(f"  [x] {m}")
-            sys.exit(f"\n{len(fails)} 项检查失败")
-        log(f"  [ok] 全部通过（最小留白 {extra['worst_pad']:.1f}px，"
-            f"裁切 {extra['clipped']} 条，T4 {extra['t4_kinds']}）")
+        log(f"  [ok] 全部通过（最小留白 {check_extra['worst_pad']:.1f}px，"
+            f"裁切 {check_extra['clipped']} 条，T4 {check_extra['t4_kinds']}）")
 
 
 if __name__ == "__main__":

@@ -261,6 +261,27 @@ python tools/build_stimuli.py --check # 刺激数据不变量（含跨 PYTHONHAS
 
 浏览器端自动走查见 `tools/e2e_driver.js`（把它 `<script>` 注入页面即可自动跑完全流程）。
 
+### T2 人工选点复核（研究工具，不进入被试界面）
+
+```powershell
+python tools/serve.py
+# 打开 http://127.0.0.1:8000/tools/t2_pair_tool.html
+```
+
+- 默认在 **LPFD** 大图上选点；KK/FR/FA2 为实时缩略图。原配对蓝色，候选红色描边。
+- 同一组两个节点会应用到四种布局；任一布局 `dAB < 25px` 或 `near < 8px` 即判无效，不能导出。
+- 导出 `t2_overrides_pilot6.json`，放到 `stimuli/`，然后重建：
+
+```powershell
+python tools/build_stimuli.py --t2-compare --target-rule mid --t2-overrides stimuli/t2_overrides_pilot6.json --check
+node tools/test_randomize.mjs
+node tools/test_t2_rules.mjs
+python tools/verify_t2_override.py --before <备份>/stimuli.json --after stimuli/stimuli.json --overrides stimuli/t2_overrides_pilot6.json
+```
+
+- 只改配对内容，不增删配对、不改 T1/T4/练习；`codes.json` 不需要重建。
+- 选点与修改理由要留档；不要根据 pilot 中 LPFD 的表现反复调整配对。
+
 ### 界面语言
 
 ```js

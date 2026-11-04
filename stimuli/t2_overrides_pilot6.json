@@ -1,0 +1,251 @@
+{
+  "version": "1.0",
+  "created_at": "2026-11-04T02:41:04.731Z",
+  "criteria": {
+    "layouts": [
+      "LPFD",
+      "KK",
+      "FR",
+      "FA2"
+    ],
+    "canvas": {
+      "width": 900,
+      "height": 620
+    },
+    "normalization": "bounding_box",
+    "min_degree": 16,
+    "max_degree": 35,
+    "min_degree_ratio": 1.25,
+    "max_degree_ratio": 1.8,
+    "min_pair_distance_px": 25,
+    "min_target_to_nearest_other_px": 8,
+    "degree_source": "edges",
+    "coordinate_decimals": 2
+  },
+  "pairs": [
+    {
+      "graph_id": "aves_weaver",
+      "index": 0,
+      "original": [
+        "n1",
+        "n12"
+      ],
+      "pair": [
+        "n1",
+        "n12"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "aves_weaver",
+      "index": 1,
+      "original": [
+        "n1",
+        "n7"
+      ],
+      "pair": [
+        "n1",
+        "n7"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD12-dt_case2",
+      "index": 0,
+      "original": [
+        "n112",
+        "n205"
+      ],
+      "pair": [
+        "n112",
+        "n205"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD12-dt_case2",
+      "index": 1,
+      "original": [
+        "n224",
+        "n236"
+      ],
+      "pair": [
+        "n224",
+        "n236"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD12-dt_case2",
+      "index": 2,
+      "original": [
+        "n205",
+        "n224"
+      ],
+      "pair": [
+        "n205",
+        "n224"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD6-toy_case8",
+      "index": 0,
+      "original": [
+        "n12",
+        "n63"
+      ],
+      "pair": [
+        "n12",
+        "n63"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD6-toy_case8",
+      "index": 1,
+      "original": [
+        "n12",
+        "n98"
+      ],
+      "pair": [
+        "n12",
+        "n98"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD8-toy_case11_graph",
+      "index": 0,
+      "original": [
+        "n0",
+        "n109"
+      ],
+      "pair": [
+        "n0",
+        "n109"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "GD8-toy_case11_graph",
+      "index": 1,
+      "original": [
+        "n200",
+        "n229"
+      ],
+      "pair": [
+        "n109",
+        "n208"
+      ],
+      "changed": true,
+      "note": ""
+    },
+    {
+      "graph_id": "Moviegalaxies - Babel_graph",
+      "index": 0,
+      "original": [
+        "n10",
+        "n7"
+      ],
+      "pair": [
+        "n10",
+        "n7"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "moviegalaxies-402",
+      "index": 0,
+      "original": [
+        "n15",
+        "n67"
+      ],
+      "pair": [
+        "n15",
+        "n67"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "moviegalaxies-402",
+      "index": 1,
+      "original": [
+        "n23",
+        "n67"
+      ],
+      "pair": [
+        "n23",
+        "n67"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "pre_case1",
+      "index": 0,
+      "original": [
+        "n192",
+        "n215"
+      ],
+      "pair": [
+        "n192",
+        "n215"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "pre_case1",
+      "index": 1,
+      "original": [
+        "n200",
+        "n215"
+      ],
+      "pair": [
+        "n200",
+        "n215"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "pre_case2",
+      "index": 0,
+      "original": [
+        "n134",
+        "n72"
+      ],
+      "pair": [
+        "n134",
+        "n72"
+      ],
+      "changed": false,
+      "note": ""
+    },
+    {
+      "graph_id": "pre_case2",
+      "index": 1,
+      "original": [
+        "n0",
+        "n72"
+      ],
+      "pair": [
+        "n0",
+        "n72"
+      ],
+      "changed": false,
+      "note": ""
+    }
+  ]
+}

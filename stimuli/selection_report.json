@@ -35,6 +35,15 @@
     16,
     null
    ]
+  },
+  "t2_overrides": {
+   "path": "stimuli/t2_overrides_pilot6.json",
+   "sha256": "1f0e5f8078f3fadb55b8b5af134942102e9cfcf1b334dcb1f4548a07c7cbc0af",
+   "entries": 16,
+   "changed": 1,
+   "warnings": [
+    "GD8-toy_case11_graph: p1 与 p0 共用节点"
+   ]
   }
  },
  "graphs": [
